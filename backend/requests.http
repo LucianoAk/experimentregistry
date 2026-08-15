@@ -22,5 +22,12 @@ DELETE {{baseUrl}}/researchers/{{deleteUUID}}
 GET {{baseUrl}}/researchers/{{findUUID}}
 
 ### Search by name
-@name = 
+@name = a
 GET {{baseUrl}}/researchers?name={{name}}
+
+#####################
+# EXPERIMENT STATUS #
+#####################
+
+### Find All and Order By Sequence Order
+GET  {{baseUrl}}/experiments/status

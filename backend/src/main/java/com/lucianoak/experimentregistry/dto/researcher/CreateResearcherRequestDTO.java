@@ -8,5 +8,9 @@ public record CreateResearcherRequestDTO(
     @NotBlank(message = "Field name is required")
     @Size(max = 255, message = "Max Researcher name is 255") 
     String name,
-    @Email String email
+    
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Invalid email")
+    String email
+
 ) {}

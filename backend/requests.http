@@ -20,3 +20,7 @@ DELETE {{baseUrl}}/researchers/{{deleteUUID}}
 ### Find by Id
 @findUUID = 
 GET {{baseUrl}}/researchers/{{findUUID}}
+
+### Search by name
+@name = 
+GET {{baseUrl}}/researchers?name={{name}}

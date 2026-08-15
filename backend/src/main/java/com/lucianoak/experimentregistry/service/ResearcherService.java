@@ -63,4 +63,8 @@ public class ResearcherService {
         Researcher researcher = researcherRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Researcher not found"));
         researcherRepository.delete(researcher);
     }
+
+    public boolean existsByEmail(String email) {
+        return researcherRepository.existsByEmail(email);
+    }
 }

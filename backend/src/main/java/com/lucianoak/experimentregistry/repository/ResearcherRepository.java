@@ -24,5 +24,7 @@ public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
             r.name
     """)
     List<Researcher> searchByName(@Param("name") String name);
+    
+    boolean existsByEmail(String email);
 
 }

@@ -1,0 +1,22 @@
+@baseUrl = http://localhost:8080/api
+
+##############
+# RESEARCHER #
+##############
+
+### Create
+POST {{baseUrl}}/researchers
+Content-Type: application/json
+
+{
+    "name": "",
+    "email": ""
+}
+
+### Delete
+@deleteUUID =  
+DELETE {{baseUrl}}/researchers/{{deleteUUID}}
+
+### Find by Id
+@findUUID = 
+GET {{baseUrl}}/researchers/{{findUUID}}

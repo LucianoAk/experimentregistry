@@ -25,11 +25,11 @@ public class ResearcherService {
 
     @Transactional
     public CreateResearcherResponseDTO create(CreateResearcherRequestDTO dto) {
-        Researcher researcher = new Researcher();
-        researcher.setName(dto.name());
-        researcher.setEmail(dto.email());
 
-        Researcher savedResearcher = researcherRepository.save(researcher);
+        Researcher savedResearcher = researcherRepository.save(Researcher.builder()
+                .name(dto.name())
+                .email(dto.email())
+                .build());
 
         return new CreateResearcherResponseDTO(
             savedResearcher.getId(), 

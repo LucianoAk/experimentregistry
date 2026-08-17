@@ -37,8 +37,7 @@ public class ResearcherService {
         return new CreateResearcherResponseDTO(
             savedResearcher.getId(), 
             savedResearcher.getName(),
-            savedResearcher.getEmail(),
-            savedResearcher.getCreatedAt()
+            savedResearcher.getEmail()
         );
     }
 

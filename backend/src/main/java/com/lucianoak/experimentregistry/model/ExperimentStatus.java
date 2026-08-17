@@ -3,10 +3,12 @@ package com.lucianoak.experimentregistry.model;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class ExperimentStatus {
     
     @Builder
@@ -40,8 +43,8 @@ public class ExperimentStatus {
     @Column(name = "sequence_order", nullable = false, unique = true)
     private Integer sequenceOrder;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
 }

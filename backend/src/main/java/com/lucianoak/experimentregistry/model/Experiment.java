@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +30,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Experiment {
 
     @Builder
@@ -67,7 +72,8 @@ public class Experiment {
     @OneToMany(mappedBy = "experiment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Parameter> parameters = new ArrayList<>();
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
 }

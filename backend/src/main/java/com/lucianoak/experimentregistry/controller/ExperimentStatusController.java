@@ -22,7 +22,7 @@ public class ExperimentStatusController {
 
     @GetMapping
     public ResponseEntity<List<FindExperimentStatusResponseDTO>> findAll() {
-        return ResponseEntity.ok(experimentStatusService.findAll());
+        return ResponseEntity.ok(experimentStatusService.findAllInSequence());
     }
     
 }

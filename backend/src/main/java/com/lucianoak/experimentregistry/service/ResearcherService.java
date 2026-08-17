@@ -64,7 +64,7 @@ public class ResearcherService {
         researcherRepository.delete(researcher);
     }
 
-    public boolean existsByEmail(String email) {
-        return researcherRepository.existsByEmail(email);
+    public boolean checkEmailAvailability (String email) {
+        return !researcherRepository.existsByEmail(email);
     }
 }

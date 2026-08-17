@@ -15,7 +15,7 @@ public class ExperimentStatusService {
 
     private final ExperimentStatusRepository experimentStatusRepository;
 
-    public List<FindExperimentStatusResponseDTO> findAll() {
+    public List<FindExperimentStatusResponseDTO> findAllInSequence() {
         return experimentStatusRepository.findAllByOrderBySequenceOrderAsc().stream().map(s -> new FindExperimentStatusResponseDTO(
             s.getId(),
             s.getName(),

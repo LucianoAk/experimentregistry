@@ -3,14 +3,14 @@ package com.lucianoak.experimentregistry.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
+import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 
@@ -26,8 +26,9 @@ public class ResearcherService {
     @Transactional
     public CreateResearcherResponseDTO create(CreateResearcherRequestDTO dto) {
         if (dto.email() != null && researcherRepository.existsByEmail(dto.email())) {
-            throw new RuntimeException();
+            throw new EmailAlreadyExistsException(dto.email());
         }
+
         Researcher savedResearcher = researcherRepository.save(Researcher.builder()
                 .name(dto.name())
                 .email(dto.email())
@@ -51,7 +52,8 @@ public class ResearcherService {
     }
 
     public FindResearcherResponseDTO findById(UUID id) {
-        Researcher researcher = researcherRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Researcher not found"));
+        Researcher researcher = researcherRepository.findById(id)
+                .orElseThrow(() -> new ResearcherNotFoundException(id));
         
         return new FindResearcherResponseDTO(
             researcher.getId(),
@@ -62,7 +64,8 @@ public class ResearcherService {
 
     @Transactional
     public void delete(UUID id) {
-        Researcher researcher = researcherRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Researcher not found"));
+        Researcher researcher = researcherRepository.findById(id)
+                .orElseThrow(() -> new ResearcherNotFoundException(id));
         researcherRepository.delete(researcher);
     }
 

@@ -6,10 +6,10 @@ import jakarta.validation.constraints.Size;
 
 public record CreateResearcherRequestDTO(
     @NotBlank(message = "Field name is required")
-    @Size(max = 255, message = "Max Researcher name is 255") 
+    @Size(max = 255, message = "Name must not exceed 255 characters")
     String name,
     
-    @NotBlank(message = "Email cannot be blank")
+    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email")
     String email
 

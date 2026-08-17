@@ -22,7 +22,7 @@ DELETE {{baseUrl}}/researchers/{{deleteUUID}}
 GET {{baseUrl}}/researchers/{{findUUID}}
 
 ### Search by name
-@name = a
+@name = 
 GET {{baseUrl}}/researchers?name={{name}}
 
 #####################

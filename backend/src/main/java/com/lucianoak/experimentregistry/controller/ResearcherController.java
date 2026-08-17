@@ -49,10 +49,6 @@ class resourceNameController {
 
     @PostMapping
     public ResponseEntity<CreateResearcherResponseDTO> create(@RequestBody @Valid CreateResearcherRequestDTO dto) {
-        if (dto.email() != null && researcherService.checkEmailAvailability(dto.email())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
         return ResponseEntity.status(HttpStatus.CREATED).body(researcherService.create(dto));
     }
 

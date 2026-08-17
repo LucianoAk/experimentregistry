@@ -25,7 +25,9 @@ public class ResearcherService {
 
     @Transactional
     public CreateResearcherResponseDTO create(CreateResearcherRequestDTO dto) {
-
+        if (dto.email() != null && researcherRepository.existsByEmail(dto.email())) {
+            throw new RuntimeException();
+        }
         Researcher savedResearcher = researcherRepository.save(Researcher.builder()
                 .name(dto.name())
                 .email(dto.email())

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
@@ -68,7 +69,9 @@ public class ResearcherService {
         researcherRepository.delete(researcher);
     }
 
-    public boolean checkEmailAvailability (String email) {
-        return !researcherRepository.existsByEmail(email);
+    public EmailAvailabilityResponseDTO checkEmailAvailability(String email) {
+        return new EmailAvailabilityResponseDTO(
+            !researcherRepository.existsByEmail(email)
+        );
     }
 }

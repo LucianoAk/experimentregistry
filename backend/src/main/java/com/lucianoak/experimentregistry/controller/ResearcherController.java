@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
@@ -32,28 +34,38 @@ class resourceNameController {
 
     private final ResearcherService researcherService;
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<List<SearchResearcherResponseDTO>> searchByName(
-        @RequestParam
-        @Size(min = 1, max = 255, message = "Name has invalid number of characters")
-        String name
+            @RequestParam
+            @Size(min = 1, max = 255, message = "Name has invalid number of characters")
+            String name
     ) {
         return ResponseEntity.ok(researcherService.searchByName(name));
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<FindResearcherResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(researcherService.findById(id));
+    }
 
+    @GetMapping("/email-availability")
+    public ResponseEntity<EmailAvailabilityResponseDTO> checkEmailAvailability(
+            @RequestParam @Email String email
+    ) {
+        return ResponseEntity.ok(researcherService.checkEmailAvailability(email));
     }
 
     @PostMapping
-    public ResponseEntity<CreateResearcherResponseDTO> create(@RequestBody @Valid CreateResearcherRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(researcherService.create(dto));
+    public ResponseEntity<CreateResearcherResponseDTO> create(
+            @RequestBody @Valid CreateResearcherRequestDTO dto
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(researcherService.create(dto));
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable UUID id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         researcherService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -38,7 +38,7 @@ class resourceNameController {
         @Size(min = 1, max = 255, message = "Name has invalid number of characters")
         String name
     ) {
-        return ResponseEntity.ok(researcherService.findByName(name));
+        return ResponseEntity.ok(researcherService.searchByName(name));
     }
 
     @GetMapping("{id}")

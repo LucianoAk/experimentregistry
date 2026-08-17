@@ -39,7 +39,7 @@ public class ResearcherService {
         );
     }
 
-    public List<SearchResearcherResponseDTO> findByName(String name) {
+    public List<SearchResearcherResponseDTO> searchByName(String name) {
         return researcherRepository.searchByName(name).stream()
                 .map(r -> new SearchResearcherResponseDTO(
                         r.getId(),

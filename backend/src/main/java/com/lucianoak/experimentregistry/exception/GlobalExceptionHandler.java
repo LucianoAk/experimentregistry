@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,11 +49,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
-            MethodArgumentNotValidException ex
+            MethodArgumentNotValidException e
     ) {
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult()
+        e.getBindingResult()
             .getFieldErrors()
             .forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
@@ -66,6 +68,49 @@ public class GlobalExceptionHandler {
                 "Validation failed",
                 errors
             ));
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleMethodValidation(
+            HandlerMethodValidationException e
+    ) {
+        Map<String, String> errors = new HashMap<>();
+
+        e.getValueResults().forEach(result -> {
+            String parameterName = result.getMethodParameter().getParameterName();
+
+            result.getResolvableErrors().forEach(error -> {
+                String message = error.getDefaultMessage();
+
+                if (parameterName != null && message != null) {
+                    errors.put(parameterName, message);
+                }
+            });
+        });
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity
+            .status(status)
+            .body(new ErrorResponse(
+                status,
+                "Validation failed",
+                errors
+            ));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(
+        NoResourceFoundException e
+    ) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "Resource not found"
+        ));
     }
 
     @ExceptionHandler(Exception.class)

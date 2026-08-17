@@ -1,4 +1,4 @@
-package com.lucianoak.experimentregistry.dto.researcher;
+package com.lucianoak.experimentregistry.dto.researcher.response;
 
 import java.time.Instant;
 import java.util.UUID;

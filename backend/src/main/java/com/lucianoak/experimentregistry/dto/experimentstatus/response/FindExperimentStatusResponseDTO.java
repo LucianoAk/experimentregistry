@@ -1,4 +1,4 @@
-package com.lucianoak.experimentregistry.dto.experimentstatus;
+package com.lucianoak.experimentregistry.dto.experimentstatus.response;
 
 import java.util.UUID;
 

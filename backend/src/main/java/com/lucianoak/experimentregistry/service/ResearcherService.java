@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.lucianoak.experimentregistry.dto.researcher.CreateResearcherRequestDTO;
-import com.lucianoak.experimentregistry.dto.researcher.CreateResearcherResponseDTO;
-import com.lucianoak.experimentregistry.dto.researcher.FindResearcherResponseDTO;
-import com.lucianoak.experimentregistry.dto.researcher.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 

@@ -1,4 +1,4 @@
-package com.lucianoak.experimentregistry.dto.researcher;
+package com.lucianoak.experimentregistry.dto.researcher.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

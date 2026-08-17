@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.lucianoak.experimentregistry.dto.experimentstatus.FindExperimentStatusResponseDTO;
+import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.repository.ExperimentStatusRepository;
 
 import lombok.RequiredArgsConstructor;

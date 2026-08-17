@@ -9,8 +9,8 @@ POST {{baseUrl}}/researchers
 Content-Type: application/json
 
 {
-    "name": "",
-    "email": ""
+    "name": "a",
+    "email": "a@A"
 }
 
 ### Delete

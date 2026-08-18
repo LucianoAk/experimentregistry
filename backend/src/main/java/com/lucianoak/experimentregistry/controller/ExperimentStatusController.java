@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/experiments/status")
+@RequestMapping("/api/experiment-statuses")
 @RequiredArgsConstructor
 public class ExperimentStatusController {
     

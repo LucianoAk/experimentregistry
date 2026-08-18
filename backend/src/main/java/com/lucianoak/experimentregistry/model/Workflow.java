@@ -39,7 +39,6 @@ public class Workflow {
     private UUID id;
 
     @Column(name = "version", nullable = false, unique = true)
-    @Min(1)
     private Integer version;
 
     @CreatedDate

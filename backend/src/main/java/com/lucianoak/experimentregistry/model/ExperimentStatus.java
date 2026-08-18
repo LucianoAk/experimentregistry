@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,7 +49,6 @@ public class ExperimentStatus {
     private Workflow workflow;
 
     @Column(name = "sequence_order", nullable = false)
-    @Min(1)
     private Integer sequenceOrder;
 
     @CreatedDate

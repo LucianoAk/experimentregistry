@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,12 @@ import lombok.Setter;
 @Table(name = "experiment_statuses")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class ExperimentStatus {
     
     @Builder
-    public ExperimentStatus(String name, Integer sequenceOrder) {
+    private ExperimentStatus(String name, Integer sequenceOrder) {
         this.name = name;
         this.sequenceOrder = sequenceOrder;
     }

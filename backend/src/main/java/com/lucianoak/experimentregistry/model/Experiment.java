@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,12 @@ import lombok.Setter;
 @Table(name = "experiments")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access =  AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Experiment {
 
     @Builder
-    public Experiment(String title, Instant startDate, Instant finishDate, String result, ExperimentStatus status, Researcher researcher) {
+    private Experiment(String title, Instant startDate, Instant finishDate, String result, ExperimentStatus status, Researcher researcher) {
         this.title = title;
         this.startDate = startDate;
         this.finishDate = finishDate;

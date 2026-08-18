@@ -9,12 +9,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -23,17 +20,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "experiment_statuses")
+@Table(name = "experiment_workflows")
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class ExperimentStatus {
-    
+public class Workflow {
+
     @Builder
-    public ExperimentStatus(String name, Integer sequenceOrder) {
-        this.name = name;
-        this.sequenceOrder = sequenceOrder;
+    public Workflow(Integer version) {
+        this.version = version;
     }
 
     @Id
@@ -41,16 +37,9 @@ public class ExperimentStatus {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "workflow_id", nullable = false)
-    private Workflow workflow;
-
-    @Column(name = "sequence_order", nullable = false)
+    @Column(name = "version", nullable = false, unique = true)
     @Min(1)
-    private Integer sequenceOrder;
+    private Integer version;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

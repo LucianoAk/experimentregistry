@@ -22,8 +22,12 @@ DELETE {{baseUrl}}/researchers/{{deleteUUID}}
 GET {{baseUrl}}/researchers/{{findUUID}}
 
 ### Search by name
-@name = 
-GET {{baseUrl}}/researchers?name={{name}}
+@searchName = 
+GET {{baseUrl}}/researchers/search?name={{searchName}}
+
+### Check email availability
+@checkEmail = 
+GET {{baseUrl}}/researchers/email-availability?email={{checkEmail}}
 
 #####################
 # EXPERIMENT STATUS #

@@ -9,6 +9,6 @@ import com.lucianoak.experimentregistry.model.ExperimentStatus;
 
 public interface ExperimentStatusRepository extends JpaRepository<ExperimentStatus, UUID> {
 
-    List<ExperimentStatus> findAllByOrderBySequenceOrderAsc();
-    
+    List<ExperimentStatus> findAllByWorkflowIdOrderBySequenceOrder(UUID workflowID);
+
 }

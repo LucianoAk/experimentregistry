@@ -35,6 +35,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
     }
 
+    @ExceptionHandler(WorkflowNotFountException.class)
+    public ResponseEntity<ErrorResponse> handleWorkflowNotFound(
+        WorkflowNotFountException e
+    ) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+    }
+
+    @ExceptionHandler(DuplicateStatusException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateStatus(
+        DuplicateStatusException e
+    ) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
             MethodArgumentTypeMismatchException e
@@ -100,7 +116,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(
         NoResourceFoundException e
     ) {
     HttpStatus status = HttpStatus.NOT_FOUND;
@@ -114,7 +130,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnexpectedException(
+    public ResponseEntity<ErrorResponse> handleUnexpected(
             Exception e
     ) {
         log.error("Unexpected error", e);

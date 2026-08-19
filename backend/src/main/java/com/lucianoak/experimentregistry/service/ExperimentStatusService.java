@@ -1,6 +1,7 @@
 package com.lucianoak.experimentregistry.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,13 @@ public class ExperimentStatusService {
 
     private final ExperimentStatusRepository experimentStatusRepository;
 
-    public List<FindExperimentStatusResponseDTO> findAllInSequence() {
-        return experimentStatusRepository.findAllByOrderBySequenceOrderAsc().stream().map(s -> new FindExperimentStatusResponseDTO(
+    public List<FindExperimentStatusResponseDTO> searchByWorkflow(UUID workflowId) {
+        return experimentStatusRepository.findAllByWorkflowIdOrderBySequenceOrder(workflowId).stream()
+        .map(s -> new FindExperimentStatusResponseDTO(
             s.getId(),
             s.getName(),
             s.getSequenceOrder()
         )).toList();
-    };
+    }
     
 }

@@ -46,6 +46,7 @@ public class ExperimentStatus {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "workflow_id", nullable = false)
+    @Setter(AccessLevel.PACKAGE)
     private Workflow workflow;
 
     @Column(name = "sequence_order", nullable = false)

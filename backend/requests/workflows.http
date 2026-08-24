@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:8080/api
+
+### Create
+POST {{baseUrl}}/workflows
+Content-Type: application/json
+
+{
+  "statuses": [
+    { "name": "Draft" },
+    { "name": "Completed"}
+  ]
+}
+
+### Find All
+GET {{baseUrl}}/workflows
+
+### Find by Id
+@findUUID = 
+GET {{baseUrl}}/workflows/{{findUUID}}

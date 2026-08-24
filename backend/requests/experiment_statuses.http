@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:8080/api
+
+### Find By Workflow and Order By Sequence Order
+@findUUID = 
+GET  {{baseUrl}}/experiment-statuses?workflowId={{findUUID}}

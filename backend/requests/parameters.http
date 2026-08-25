@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8080/api
+
+### Create
+POST {{baseUrl}}/parameters
+Content-Type: application/json
+
+{
+  "experimentId": "",
+  "name": "",
+  measurament
+  "unit
+  "description
+}

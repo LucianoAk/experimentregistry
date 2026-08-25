@@ -26,47 +26,41 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequestMapping("/api/researchers")
 @RequiredArgsConstructor
-class resourceNameController {
+public class ResearcherController {
 
-    private final ResearcherService researcherService;
+  private final ResearcherService researcherService;
 
-    @GetMapping("/search")
-    public ResponseEntity<List<SearchResearcherResponseDTO>> searchByName(
-            @RequestParam
-            @Size(min = 1, max = 255, message = "Name has invalid number of characters")
-            String name
-    ) {
-        return ResponseEntity.ok(researcherService.searchByName(name));
-    }
+  @GetMapping("/search")
+  public ResponseEntity<List<SearchResearcherResponseDTO>> searchByName(
+      @RequestParam @Size(min = 1, max = 255, message = "Name has invalid number of characters") String name) {
+    return ResponseEntity.ok(researcherService.searchByName(name));
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FindResearcherResponseDTO> findById(@PathVariable UUID id) {
-        return ResponseEntity.ok(researcherService.findById(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<FindResearcherResponseDTO> findById(@PathVariable UUID id) {
+    return ResponseEntity.ok(researcherService.findById(id));
+  }
 
-    @GetMapping("/email-availability")
-    public ResponseEntity<EmailAvailabilityResponseDTO> checkEmailAvailability(
-            @RequestParam @Email String email
-    ) {
-        return ResponseEntity.ok(researcherService.checkEmailAvailability(email));
-    }
+  @GetMapping("/email-availability")
+  public ResponseEntity<EmailAvailabilityResponseDTO> checkEmailAvailability(
+      @RequestParam @Email String email) {
+    return ResponseEntity.ok(researcherService.checkEmailAvailability(email));
+  }
 
-    @PostMapping
-    public ResponseEntity<CreateResearcherResponseDTO> create(
-            @RequestBody @Valid CreateResearcherRequestDTO dto
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(researcherService.create(dto));
-    }
+  @PostMapping
+  public ResponseEntity<CreateResearcherResponseDTO> create(
+      @RequestBody @Valid CreateResearcherRequestDTO dto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(researcherService.create(dto));
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        researcherService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    researcherService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

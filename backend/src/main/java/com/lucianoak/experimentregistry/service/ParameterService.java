@@ -1,11 +1,14 @@
 package com.lucianoak.experimentregistry.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.ParameterAlreadyExistsInExperimentException;
+import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.model.Experiment;
 import com.lucianoak.experimentregistry.model.Parameter;
 import com.lucianoak.experimentregistry.repository.ExperimentRepository;
@@ -47,4 +50,10 @@ public class ParameterService {
         parameter.getDescription());
   }
 
+  @Transactional
+  public void delete(UUID id) {
+    Parameter parameter = parameterRepository.findById(id).orElseThrow(
+        () -> new ParameterNotFoundException(id));
+    parameterRepository.delete(parameter);
+  }
 }

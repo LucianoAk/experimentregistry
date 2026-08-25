@@ -17,131 +17,129 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
-        EmailAlreadyExistsException e
-    ){
-        HttpStatus status = HttpStatus.CONFLICT;
-        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
-    }
+  @ExceptionHandler(EmailAlreadyExistsException.class)
+  public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
+      EmailAlreadyExistsException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-    @ExceptionHandler(ResearcherNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResearcherNotFound(
-        ResearcherNotFoundException e
-    ) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
-    }
+  @ExceptionHandler(ResearcherNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleResearcherNotFound(
+      ResearcherNotFoundException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-    @ExceptionHandler(WorkflowNotFountException.class)
-    public ResponseEntity<ErrorResponse> handleWorkflowNotFound(
-        WorkflowNotFountException e
-    ) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
-    }
+  @ExceptionHandler(WorkflowNotFountException.class)
+  public ResponseEntity<ErrorResponse> handleWorkflowNotFound(
+      WorkflowNotFountException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-    @ExceptionHandler(DuplicateStatusException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateStatus(
-        DuplicateStatusException e
-    ) {
-        HttpStatus status = HttpStatus.CONFLICT;
-        return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
-    }
+  @ExceptionHandler(DuplicateStatusException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicateStatus(
+      DuplicateStatusException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(
-            MethodArgumentTypeMismatchException e
-    ) {
-        
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        
-        return ResponseEntity.status(status).body(new ErrorResponse(status,
-                "Invalid value for parameter '" + e.getName() + "'"
-            ));
-    }
+  @ExceptionHandler(ExperimentNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleExperimentNotFound(
+      ExperimentNotFoundException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(
-            MethodArgumentNotValidException e
-    ) {
-        Map<String, String> errors = new HashMap<>();
+  @ExceptionHandler(ParameterAlreadyExistsInExperimentException.class)
+  public ResponseEntity<ErrorResponse> handleParameterAlreadyExistsInExperiment(
+      ParameterAlreadyExistsInExperimentException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
 
-        e.getBindingResult()
-            .getFieldErrors()
-            .forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-            );
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleTypeMismatch(
+      MethodArgumentTypeMismatchException e) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+    HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        return ResponseEntity
-            .status(status)
-            .body(new ErrorResponse(
-                status,
-                "Validation failed",
-                errors
-            ));
-    }
+    return ResponseEntity.status(status).body(new ErrorResponse(status,
+        "Invalid value for parameter '" + e.getName() + "'"));
+  }
 
-    @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ErrorResponse> handleMethodValidation(
-            HandlerMethodValidationException e
-    ) {
-        Map<String, String> errors = new HashMap<>();
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleValidation(
+      MethodArgumentNotValidException e) {
+    Map<String, String> errors = new HashMap<>();
 
-        e.getValueResults().forEach(result -> {
-            String parameterName = result.getMethodParameter().getParameterName();
+    e.getBindingResult()
+        .getFieldErrors()
+        .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-            result.getResolvableErrors().forEach(error -> {
-                String message = error.getDefaultMessage();
+    HttpStatus status = HttpStatus.BAD_REQUEST;
 
-                if (parameterName != null && message != null) {
-                    errors.put(parameterName, message);
-                }
-            });
-        });
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "Validation failed",
+            errors));
+  }
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  public ResponseEntity<ErrorResponse> handleMethodValidation(
+      HandlerMethodValidationException e) {
+    Map<String, String> errors = new HashMap<>();
 
-        return ResponseEntity
-            .status(status)
-            .body(new ErrorResponse(
-                status,
-                "Validation failed",
-                errors
-            ));
-    }
+    e.getValueResults().forEach(result -> {
+      String parameterName = result.getMethodParameter().getParameterName();
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoResourceFound(
-        NoResourceFoundException e
-    ) {
+      result.getResolvableErrors().forEach(error -> {
+        String message = error.getDefaultMessage();
+
+        if (parameterName != null && message != null) {
+          errors.put(parameterName, message);
+        }
+      });
+    });
+
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "Validation failed",
+            errors));
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNoResourceFound(
+      NoResourceFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
 
     return ResponseEntity
         .status(status)
         .body(new ErrorResponse(
             status,
-            "Resource not found"
-        ));
-    }
+            "Resource not found"));
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnexpected(
-            Exception e
-    ) {
-        log.error("Unexpected error", e);
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorResponse> handleUnexpected(
+      Exception e) {
+    log.error("Unexpected error", e);
 
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        return ResponseEntity
-            .status(status)
-            .body(new ErrorResponse(
-                status,
-                "An unexpected error occurred"
-            ));
-    }
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "An unexpected error occurred"));
+  }
 }

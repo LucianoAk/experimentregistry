@@ -54,6 +54,20 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
+  @ExceptionHandler(NoStatusAssociatedWithWorkflowException.class)
+  public ResponseEntity<ErrorResponse> hendleNoStatusAssociatedWithWorkflow(
+      NoStatusAssociatedWithWorkflowException e) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
+  @ExceptionHandler(DuplicateExperimentTitleException.class)
+  public ResponseEntity<ErrorResponse> handleDublicateExperimentTitle(
+      DuplicateExperimentTitleException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
   @ExceptionHandler(ParameterAlreadyExistsInExperimentException.class)
   public ResponseEntity<ErrorResponse> handleParameterAlreadyExistsInExperiment(
       ParameterAlreadyExistsInExperimentException e) {

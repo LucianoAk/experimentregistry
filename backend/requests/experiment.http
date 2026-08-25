@@ -1,0 +1,14 @@
+@baseUrl = http://localhost:8080/api
+
+### Create
+POST {{baseUrl}}/experiment
+Content-Type: application/json
+
+{
+  "title": "Experiment 1",
+  "workflowId": "4a1b067c-321f-40a6-b4f7-f899f29c5638",
+  "researcherId": "803ca790-2a18-4929-828b-3146d9f9d268"
+}
+
+### Check tittle availability
+GET {{baseUrl}}/experiment?title=Experiment%201

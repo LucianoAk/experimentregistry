@@ -31,38 +31,37 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public class Parameter {
 
-    @Builder
-    private Parameter(Experiment experiment, String name, BigDecimal measurement, String unit, String description) {
-        this.experiment = experiment;
-        this.name = name;
-        this.measurement = measurement;
-        this.unit = unit;
-        this.description = description;
-    }
+  @Builder
+  private Parameter(String name, BigDecimal measurement, String unit, String description) {
+    this.name = name;
+    this.measurement = measurement;
+    this.unit = unit;
+    this.description = description;
+  }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id")
+  private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "experiment_id", nullable = false)
-    private Experiment experiment;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "experiment_id", nullable = false)
+  private Experiment experiment;
 
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
+  @Column(name = "name", nullable = false, length = 255)
+  private String name;
 
-    @Column(name = "measurement", nullable = false, precision = 19, scale = 6)
-    private BigDecimal measurement;
+  @Column(name = "measurement", nullable = false, precision = 19, scale = 6)
+  private BigDecimal measurement;
 
-    @Column(name = "unit", length = 50)
-    private String unit;
+  @Column(name = "unit", length = 50)
+  private String unit;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description")
+  private String description;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
 }

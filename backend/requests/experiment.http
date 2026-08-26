@@ -6,8 +6,22 @@ Content-Type: application/json
 
 {
   "title": "Experiment 1",
-  "workflowId": "4a1b067c-321f-40a6-b4f7-f899f29c5638",
-  "researcherId": "803ca790-2a18-4929-828b-3146d9f9d268"
+  "workflowId": "766d1b52-1c3b-4f0c-9a1f-d7004af69c3a",
+  "researcherId": "c0533ea4-f6d6-4592-8428-163141ac8a81",
+  "parameters": [
+    {
+      "name": "Parameter 1",
+      "measurament": 100,
+      "unit": "°C",
+      "description": "Temperature of the experiment"
+    },
+    {
+      "name": "Parameter 2",
+      "measurament": 8,
+      "unit": "mg",
+      "description": "Quantity of Substance a"
+    }
+  ]
 }
 
 ### Check tittle availability

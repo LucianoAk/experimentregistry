@@ -1,11 +1,16 @@
 package com.lucianoak.experimentregistry.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.lucianoak.experimentregistry.exception.ParameterAlreadyExistsInExperimentException;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -67,8 +73,27 @@ public class Experiment {
   @JoinColumn(name = "researcher_id", nullable = false)
   private Researcher researcher;
 
+  @OneToMany(mappedBy = "experiment", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private List<Parameter> parameters = new ArrayList<>();
+
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
+
+  public void addParameter(Parameter parameter) {
+    boolean alreadyExists = parameters.stream()
+        .anyMatch(existing -> existing.getName().equals(parameter.getName()));
+    if (alreadyExists) {
+      throw new ParameterAlreadyExistsInExperimentException(parameter.getName(), this.getId());
+    }
+    parameters.add(parameter);
+    parameter.setExperiment(this);
+  }
+
+  public List<Parameter> getParameters() {
+    return List.copyOf(parameters);
+  }
 
 }

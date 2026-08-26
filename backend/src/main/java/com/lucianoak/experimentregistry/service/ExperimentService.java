@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFountException;
 import com.lucianoak.experimentregistry.model.Experiment;
 import com.lucianoak.experimentregistry.model.ExperimentStatus;
+import com.lucianoak.experimentregistry.model.Parameter;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.model.Workflow;
 import com.lucianoak.experimentregistry.repository.ExperimentRepository;
@@ -49,24 +51,41 @@ public class ExperimentService {
         .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
         .orElseThrow();
 
-    Experiment experiment = experimentRepository.save(
-        Experiment.builder()
-            .title(dto.title())
-            .workflow(workflow)
-            .status(status)
-            .researcher(researcher)
-            .build());
+    Experiment experiment = Experiment.builder()
+        .title(dto.title())
+        .workflow(workflow)
+        .status(status)
+        .researcher(researcher)
+        .build();
+
+    dto.parameters().forEach(p -> experiment.addParameter(
+        Parameter.builder()
+            .name(p.name())
+            .measurement(p.measurament())
+            .unit(p.unit())
+            .description(p.description())
+            .build()));
+
+    Experiment savedExperiment = experimentRepository.save(experiment);
 
     return new CreateExperimentResponseDTO(
-        experiment.getId(),
-        experiment.getTitle(),
-        "v" + experiment.getWorkflow().getVersion(),
-        experiment.getStatus().getName(),
-        experiment.getResearcher().getName());
+        savedExperiment.getId(),
+        savedExperiment.getTitle(),
+        "v" + savedExperiment.getWorkflow().getVersion(),
+        savedExperiment.getStatus().getName(),
+        savedExperiment.getResearcher().getName(),
+        savedExperiment.getParameters().stream()
+            .map(p -> new CreateParameterResponseDTO(
+                p.getId(),
+                p.getName(),
+                p.getMeasurement(),
+                p.getUnit(),
+                p.getDescription()))
+            .toList());
   }
 
-  public TitleAvailabilityResponseDTO checkTitleAvailability(String tittle) {
+  public TitleAvailabilityResponseDTO checkTitleAvailability(String title) {
     return new TitleAvailabilityResponseDTO(
-        !experimentRepository.existsByTitle(tittle));
+        !experimentRepository.existsByTitle(title));
   }
 }

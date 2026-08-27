@@ -23,6 +23,7 @@ import com.lucianoak.experimentregistry.service.ResearcherService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
@@ -46,7 +47,7 @@ public class ResearcherController {
 
   @GetMapping("/email-availability")
   public ResponseEntity<EmailAvailabilityResponseDTO> checkEmailAvailability(
-      @RequestParam @Email String email) {
+      @RequestParam @NotBlank @Email String email) {
     return ResponseEntity.ok(researcherService.checkEmailAvailability(email));
   }
 

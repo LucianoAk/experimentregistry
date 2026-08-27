@@ -22,56 +22,53 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ResearcherService {
 
-    private final ResearcherRepository researcherRepository;
+  private final ResearcherRepository researcherRepository;
 
-    @Transactional
-    public CreateResearcherResponseDTO create(CreateResearcherRequestDTO dto) {
-        if (dto.email() != null && researcherRepository.existsByEmail(dto.email())) {
-            throw new EmailAlreadyExistsException(dto.email());
-        }
-
-        Researcher savedResearcher = researcherRepository.save(Researcher.builder()
-                .name(dto.name())
-                .email(dto.email())
-                .build());
-
-        return new CreateResearcherResponseDTO(
-            savedResearcher.getId(), 
-            savedResearcher.getName(),
-            savedResearcher.getEmail()
-        );
+  @Transactional
+  public CreateResearcherResponseDTO create(CreateResearcherRequestDTO dto) {
+    if (researcherRepository.existsByEmail(dto.email())) {
+      throw new EmailAlreadyExistsException(dto.email());
     }
 
-    public List<SearchResearcherResponseDTO> searchByName(String name) {
-        return researcherRepository.searchByName(name).stream()
-                .map(r -> new SearchResearcherResponseDTO(
-                        r.getId(),
-                        r.getName(),
-                        r.getEmail()))
-                .toList();
-    }
+    Researcher savedResearcher = researcherRepository.save(Researcher.builder()
+        .name(dto.name())
+        .email(dto.email())
+        .build());
 
-    public FindResearcherResponseDTO findById(UUID id) {
-        Researcher researcher = researcherRepository.findById(id)
-                .orElseThrow(() -> new ResearcherNotFoundException(id));
-        
-        return new FindResearcherResponseDTO(
-            researcher.getId(),
-            researcher.getName(),
-            researcher.getEmail()
-        );
-    }
+    return new CreateResearcherResponseDTO(
+        savedResearcher.getId(),
+        savedResearcher.getName(),
+        savedResearcher.getEmail());
+  }
 
-    @Transactional
-    public void delete(UUID id) {
-        Researcher researcher = researcherRepository.findById(id)
-                .orElseThrow(() -> new ResearcherNotFoundException(id));
-        researcherRepository.delete(researcher);
-    }
+  public List<SearchResearcherResponseDTO> searchByName(String name) {
+    return researcherRepository.searchByName(name).stream()
+        .map(r -> new SearchResearcherResponseDTO(
+            r.getId(),
+            r.getName(),
+            r.getEmail()))
+        .toList();
+  }
 
-    public EmailAvailabilityResponseDTO checkEmailAvailability(String email) {
-        return new EmailAvailabilityResponseDTO(
-            !researcherRepository.existsByEmail(email)
-        );
-    }
+  public FindResearcherResponseDTO findById(UUID id) {
+    Researcher researcher = researcherRepository.findById(id)
+        .orElseThrow(() -> new ResearcherNotFoundException(id));
+
+    return new FindResearcherResponseDTO(
+        researcher.getId(),
+        researcher.getName(),
+        researcher.getEmail());
+  }
+
+  @Transactional
+  public void delete(UUID id) {
+    Researcher researcher = researcherRepository.findById(id)
+        .orElseThrow(() -> new ResearcherNotFoundException(id));
+    researcherRepository.delete(researcher);
+  }
+
+  public EmailAvailabilityResponseDTO checkEmailAvailability(String email) {
+    return new EmailAvailabilityResponseDTO(
+        !researcherRepository.existsByEmail(email));
+  }
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -39,16 +40,22 @@ class ResearcherServiceTest {
 
     researcher.setId(id);
 
-    // when(researcherRepository.existsByEmail(dto.email());
     Mockito.when(researcherRepository.existsByEmail(dto.email())).thenReturn(false);
     Mockito.when(researcherRepository.save(Mockito.any(Researcher.class))).thenReturn(researcher);
 
-    CreateResearcherResponseDTO response = researcherService.create(dto);
+    CreateResearcherResponseDTO result = researcherService.create(dto);
 
-    Assertions.assertEquals(id, response.id());
-    Assertions.assertEquals(dto.name(), response.name());
-    Assertions.assertEquals(dto.email(), response.email());
-    Mockito.verify(researcherRepository).save(Mockito.any(Researcher.class));
+    Assertions.assertEquals(id, result.id());
+    Assertions.assertEquals(dto.name(), result.name());
+    Assertions.assertEquals(dto.email(), result.email());
+
+    ArgumentCaptor<Researcher> captor = ArgumentCaptor.forClass(Researcher.class);
+    Mockito.verify(researcherRepository).save(captor.capture());
+
+    Researcher capturedResearcher = captor.getValue();
+
+    Assertions.assertEquals(dto.name(), capturedResearcher.getName());
+    Assertions.assertEquals(dto.email(), capturedResearcher.getEmail());
   }
 
 }

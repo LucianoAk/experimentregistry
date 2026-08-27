@@ -30,7 +30,7 @@ class ResearcherServiceTest {
   private ResearcherService researcherService;
 
   @Test
-  void givenValidData_whenCreatingResearcher_thenResearcherIsCreated() {
+  void givenValidData_whenCreatingResearcher_thenSavesResearcherAndReturnsResponse() {
     CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
         "John Doe",
         "john@example.com");
@@ -78,27 +78,26 @@ class ResearcherServiceTest {
   }
 
   @Test
-  void givenResearchersWithMatchingName_whenSearchingByName_thenReturnResearchers() {
+  void givenReseachersFound_whenSearchingByName_thenReturnsResearchers() {
     UUID id1 = UUID.randomUUID();
     UUID id2 = UUID.randomUUID();
 
-    List<Researcher> researchers = List.of(
-        Researcher.builder()
-            .name("John Doe")
-            .email("john@example.com")
-            .build(),
-        Researcher.builder()
-            .name("John Doe")
-            .email("john@example.com")
-            .build());
-    researchers.get(0).setId(id1);
-    researchers.get(1).setId(id2);
+    Researcher researcher1 = Researcher.builder()
+        .name("John Doe")
+        .email("john@example.com")
+        .build();
+    researcher1.setId(id1);
+    Researcher researcher2 = Researcher.builder()
+        .name("Jane Doe")
+        .email("jane@example.com")
+        .build();
+    researcher2.setId(id2);
 
-    Mockito.when(researcherRepository.searchByName("Doe")).thenReturn(researchers);
+    Mockito.when(researcherRepository.searchByName("Doe")).thenReturn(List.of(researcher1, researcher2));
 
     List<SearchResearcherResponseDTO> expected = List.of(
-        new SearchResearcherResponseDTO(id1, "John Doe", "john@example.com"),
-        new SearchResearcherResponseDTO(id2, "John Doe", "john@example.com"));
+        new SearchResearcherResponseDTO(researcher1.getId(), researcher1.getName(), researcher1.getEmail()),
+        new SearchResearcherResponseDTO(researcher2.getId(), researcher2.getName(), researcher2.getEmail()));
 
     List<SearchResearcherResponseDTO> result = researcherService.searchByName("Doe");
 

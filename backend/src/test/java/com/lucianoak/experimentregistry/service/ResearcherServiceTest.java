@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 
@@ -56,6 +57,21 @@ class ResearcherServiceTest {
 
     Assertions.assertEquals(dto.name(), capturedResearcher.getName());
     Assertions.assertEquals(dto.email(), capturedResearcher.getEmail());
+  }
+
+  @Test
+  void givenExistingEmail_whenCreatingResearcher_thenThrowsEmailAlreadyExistsException() {
+    CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
+        "John Doe",
+        "john@example.com");
+
+    Mockito.when(researcherRepository.existsByEmail(dto.email())).thenReturn(true);
+
+    Assertions.assertThrows(
+        EmailAlreadyExistsException.class,
+        () -> researcherService.create(dto));
+
+    Mockito.verify(researcherRepository, Mockito.never()).save(Mockito.any(Researcher.class));
   }
 
 }

@@ -1,5 +1,7 @@
 package com.lucianoak.experimentregistry.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
@@ -74,4 +77,33 @@ class ResearcherServiceTest {
     Mockito.verify(researcherRepository, Mockito.never()).save(Mockito.any(Researcher.class));
   }
 
+  @Test
+  void givenResearchersWithMatchingName_whenSearchingByName_thenReturnResearchers() {
+    UUID id1 = UUID.randomUUID();
+    UUID id2 = UUID.randomUUID();
+
+    List<Researcher> researchers = List.of(
+        Researcher.builder()
+            .name("John Doe")
+            .email("john@example.com")
+            .build(),
+        Researcher.builder()
+            .name("John Doe")
+            .email("john@example.com")
+            .build());
+    researchers.get(0).setId(id1);
+    researchers.get(1).setId(id2);
+
+    Mockito.when(researcherRepository.searchByName("Doe")).thenReturn(researchers);
+
+    List<SearchResearcherResponseDTO> expected = List.of(
+        new SearchResearcherResponseDTO(id1, "John Doe", "john@example.com"),
+        new SearchResearcherResponseDTO(id2, "John Doe", "john@example.com"));
+
+    List<SearchResearcherResponseDTO> result = researcherService.searchByName("Doe");
+
+    Assertions.assertEquals(expected, result);
+
+    Mockito.verify(researcherRepository).searchByName("Doe");
+  }
 }

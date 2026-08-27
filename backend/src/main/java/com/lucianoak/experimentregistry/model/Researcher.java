@@ -27,25 +27,25 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public class Researcher {
 
-    @Builder
-    private Researcher(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
+  @Builder
+  private Researcher(String name, String email) {
+    this.name = name;
+    this.email = email;
+  }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id")
+  private UUID id;
 
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
+  @Column(name = "name", nullable = false, length = 255)
+  private String name;
 
-    @Column(name = "email", unique = true, length = 255)
-    private String email;
+  @Column(name = "email", unique = true, length = 255)
+  private String email;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
 
 }

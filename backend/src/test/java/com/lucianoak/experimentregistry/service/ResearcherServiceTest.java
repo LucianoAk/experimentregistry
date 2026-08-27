@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
@@ -80,7 +81,7 @@ class ResearcherServiceTest {
   }
 
   @Test
-  void givenReseachersFound_whenSearchingByName_thenReturnsResearchers() {
+  void givenResearchersFound_whenSearchingByName_thenReturnsResearchers() {
     UUID id1 = UUID.randomUUID();
     UUID id2 = UUID.randomUUID();
 
@@ -107,7 +108,7 @@ class ResearcherServiceTest {
   }
 
   @Test
-  void givenNoReseachersFound_whenSearchingByName_thenReturnEmptyList() {
+  void givenNoResearchersFound_whenSearchingByName_thenReturnEmptyList() {
     Mockito.when(researcherRepository.searchByName("Unknown")).thenReturn(List.<Researcher>of());
 
     List<SearchResearcherResponseDTO> result = researcherService.searchByName("Unknown");
@@ -180,5 +181,27 @@ class ResearcherServiceTest {
 
     Mockito.verify(researcherRepository).findById(id);
     Mockito.verify(researcherRepository, Mockito.never()).delete(Mockito.any(Researcher.class));
+  }
+
+  @Test
+  void givenAvailableEmail_whenCheckingEmailAvailability_thenReturnsAvailableTrue() {
+    String email = "john@example.com";
+
+    Mockito.when(researcherRepository.existsByEmail(email)).thenReturn(false);
+
+    EmailAvailabilityResponseDTO result = researcherService.checkEmailAvailability(email);
+
+    Assertions.assertTrue(result.available());
+  }
+
+  @Test
+  void givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsAvailableFalse() {
+    String email = "john@example.com";
+
+    Mockito.when(researcherRepository.existsByEmail(email)).thenReturn(true);
+
+    EmailAvailabilityResponseDTO result = researcherService.checkEmailAvailability(email);
+
+    Assertions.assertFalse(result.available());
   }
 }

@@ -1,7 +1,7 @@
 package com.lucianoak.experimentregistry.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -15,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
+import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 
@@ -102,7 +104,81 @@ class ResearcherServiceTest {
     List<SearchResearcherResponseDTO> result = researcherService.searchByName("Doe");
 
     Assertions.assertEquals(expected, result);
+  }
 
-    Mockito.verify(researcherRepository).searchByName("Doe");
+  @Test
+  void givenNoReseachersFound_whenSearchingByName_thenReturnEmptyList() {
+    Mockito.when(researcherRepository.searchByName("Unknown")).thenReturn(List.<Researcher>of());
+
+    List<SearchResearcherResponseDTO> result = researcherService.searchByName("Unknown");
+
+    Assertions.assertTrue(result.isEmpty());
+
+    Mockito.verify(researcherRepository).searchByName("Unknown");
+  }
+
+  @Test
+  void givenExistingResearcher_whenFindingById_thenReturnResearcherResponse() {
+    UUID id = UUID.randomUUID();
+
+    Researcher researcher = Researcher.builder()
+        .name("John Doe")
+        .email("john@example.com")
+        .build();
+    researcher.setId(id);
+
+    Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+
+    FindResearcherResponseDTO result = researcherService.findById(id);
+
+    Assertions.assertEquals(researcher.getId(), result.id());
+    Assertions.assertEquals(researcher.getName(), result.name());
+    Assertions.assertEquals(researcher.getEmail(), result.email());
+
+    Mockito.verify(researcherRepository).findById(id);
+  }
+
+  @Test
+  void givenNonExistingResearcher_whenFindingById_thenThrowsResearcherNotFoundException() {
+    UUID id = UUID.randomUUID();
+
+    Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(
+        ResearcherNotFoundException.class,
+        () -> researcherService.findById(id));
+
+    Mockito.verify(researcherRepository).findById(id);
+
+  }
+
+  @Test
+  void givenExistingResearcher_whenDeleting_thenResearcherIsDeleted() {
+    UUID id = UUID.randomUUID();
+    Researcher researcher = Researcher.builder()
+        .name("John Doe")
+        .email("john@example.com")
+        .build();
+    researcher.setId(id);
+
+    Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+
+    researcherService.delete(id);
+
+    Mockito.verify(researcherRepository).findById(id);
+    Mockito.verify(researcherRepository).delete(researcher);
+  }
+
+  @Test
+  void givenNonExistingResearcher_whenDeleting_thenThrowsResearcherNotFoundException() {
+    UUID id = UUID.randomUUID();
+    Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.empty());
+
+    Assertions.assertThrows(
+        ResearcherNotFoundException.class,
+        () -> researcherService.delete(id));
+
+    Mockito.verify(researcherRepository).findById(id);
+    Mockito.verify(researcherRepository, Mockito.never()).delete(Mockito.any(Researcher.class));
   }
 }

@@ -12,6 +12,10 @@ TEST="$2"
 if [ -z "$TEST" ]; then
   ./mvnw test -Dspring.profiles.active="$PROFILE"
 else
+  if [[ "$TEST" == *.* ]]; then
+    TEST="${TEST/./\$}"
+  fi
+
   ./mvnw test \
     -Dspring.profiles.active="$PROFILE" \
     -Dtest="$TEST"

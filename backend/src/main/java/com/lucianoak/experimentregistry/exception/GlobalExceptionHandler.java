@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -74,6 +76,32 @@ public class GlobalExceptionHandler {
       ParameterAlreadyExistsInExperimentException e) {
     HttpStatus status = HttpStatus.CONFLICT;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+      HttpRequestMethodNotSupportedException e) {
+
+    HttpStatus status = HttpStatus.NOT_FOUND;
+
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "Request method '" + e.getMethod() + "' is not supported"));
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleMessageNotReadable(
+      HttpMessageNotReadableException e) {
+
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorResponse(
+            status,
+            "Invalid request body"));
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)

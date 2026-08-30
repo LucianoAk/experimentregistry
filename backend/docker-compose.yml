@@ -29,6 +29,7 @@ services:
     restart: unless-stopped
 
     environment:
+      SPRING_PROFILES_ACTIVE: full
       DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}

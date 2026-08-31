@@ -10,21 +10,20 @@ import org.springframework.data.repository.query.Param;
 import com.lucianoak.experimentregistry.model.Researcher;
 
 public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
-    
-    @Query("""
-        SELECT r
-        FROM Researcher r
-        WHERE LOWER(r.name) LIKE LOWER(CONCAT(:name, '%'))
-        OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))
-        ORDER BY
-            CASE
-                WHEN LOWER(r.name) LIKE LOWER(CONCAT(:name, '%')) THEN 0
-                ELSE 1
-            END,
-            r.name
-    """)
-    List<Researcher> searchByName(@Param("name") String name);
-    
-    boolean existsByEmail(String email);
+
+  @Query("""
+          SELECT r
+          FROM Researcher r
+          WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))
+          ORDER BY
+              CASE
+                  WHEN LOWER(r.name) LIKE LOWER(CONCAT(:name, '%')) THEN 0
+                  ELSE 1
+              END,
+              r.name
+      """)
+  List<Researcher> searchByName(@Param("name") String name);
+
+  boolean existsByEmail(String email);
 
 }

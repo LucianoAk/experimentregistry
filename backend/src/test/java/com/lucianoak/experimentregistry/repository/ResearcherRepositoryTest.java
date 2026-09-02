@@ -26,7 +26,7 @@ public class ResearcherRepositoryTest {
 
   @Container
   @ServiceConnection
-  private static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17");
+  private static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
 
   @Autowired
   private ResearcherRepository researcherRepository;
@@ -156,9 +156,9 @@ public class ResearcherRepositoryTest {
     @Test
     void givenResearchersWithMixedCaseNames_whenSearchingByName_thenReturnsResearchers() {
       List<Researcher> researchers = getResearchersByNames(
-          "Michael Doe",
-          "MiChAeL Johnson",
           "MICHAEL Smith",
+          "MiChAeL Johnson",
+          "Michael Doe",
           "michael Williams");
 
       researchers.forEach(entityManager::persist);

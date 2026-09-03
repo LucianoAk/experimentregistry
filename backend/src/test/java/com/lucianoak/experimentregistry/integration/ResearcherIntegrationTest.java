@@ -1,8 +1,10 @@
 package com.lucianoak.experimentregistry.integration;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -165,9 +167,43 @@ public class ResearcherIntegrationTest {
 
   @Nested
   class SearchByNameTests {
+    @Test
+    void givenMatchingResearchers_whenSearchingByName_thenReturnsResearchers() throws Exception {
+      researcherRepository.saveAll(
+          List.of(
+              Researcher.builder()
+                  .name("John Doe")
+                  .email("john@example.com")
+                  .build(),
+              Researcher.builder()
+                  .name("Jane Doe")
+                  .email("jane@example.com")
+                  .build()));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/search")
+              .param("name", "Doe"))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(2),
+              MockMvcResultMatchers.jsonPath("$[*].id").exists(),
+              MockMvcResultMatchers.jsonPath("$[*].name",
+                  Matchers.contains("Jane Doe", "John Doe")));
+    }
+
+    @Test
+    void givenNonMatchingName_whenSearchingByName_thenReturnsEmptyList() throws Exception {
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/search")
+              .param("name", "Doe"))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(0));
+    }
+
     // TODO:
-    // givenMatchingResearchers_whenSearchingByName_thenReturnsResearchers()
-    // givenNonMatchingName_whenSearchingByName_thenReturnsEmptyList()
     // givenEmptyName_whenSearchingByName_thenReturnsBadRequest()
   }
 

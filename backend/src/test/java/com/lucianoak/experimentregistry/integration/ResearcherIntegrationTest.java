@@ -262,11 +262,6 @@ public class ResearcherIntegrationTest {
           .andExpectAll(
               MockMvcResultMatchers.status().isBadRequest());
     }
-
-    @Test
-    void givenBlankEmail_whenCheckingEmailAvailability_thenReturnsBadRequest() {
-
-    }
   }
 
   @Nested

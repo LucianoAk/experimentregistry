@@ -90,15 +90,7 @@ run_tests() {
     return
   fi
 
-  local tests=()
-
-  for test in "$@"; do
-    if [[ "$test" == *.* ]]; then
-      test="${test/./#}"
-    fi
-
-    tests+=("$test")
-  done
+  local tests=("$@")
 
   local test_pattern
   test_pattern=$(

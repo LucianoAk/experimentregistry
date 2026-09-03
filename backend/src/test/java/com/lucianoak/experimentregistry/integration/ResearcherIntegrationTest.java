@@ -221,9 +221,20 @@ public class ResearcherIntegrationTest {
 
   @Nested
   class CheckEmailAvailabilityTests {
+    @Test
+    void givenAvailableEmail_whenCheckingEmailAvailability_thenReturnsAvailable() throws Exception {
+      String email = "john@example.com";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/email-availability")
+              .param("email", email))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(true));
+    }
     // TODO:
-    // givenAvailableEmail_whenCheckingEmailAvailability_thenReturnsAvailable()
-    // givenExistingEmail_whenCheckingEmailAvailability_thenReturnsUnavailable()
+    // givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsUnavailable()
     // givenInvalidEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
     // givenBlankEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
   }

@@ -251,8 +251,19 @@ public class ResearcherIntegrationTest {
               MockMvcResultMatchers.jsonPath("$.available").value(false));
     }
 
+    @Test
+    void givenInvalidEmail_whenCheckingEmailAvailability_thenReturnsBadRequest() throws Exception {
+      String email = "not-a-valid-email";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/email-availability")
+              .param("email", email))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isBadRequest());
+    }
+
     // TODO:
-    // givenInvalidEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
     // givenBlankEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
   }
 

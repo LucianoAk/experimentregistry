@@ -148,13 +148,19 @@ public class ResearcherIntegrationTest {
       mockMvc.perform(
           MockMvcRequestBuilders
               .get(BASE_URL + "/{id}", id))
-          .andExpect(
-              MockMvcResultMatchers.status().isNotFound());
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }
 
-    // TODO:
-    // givenInvalidId_whenFindingById_thenReturnsBadRequest()
+    @Test
+    void givenInvalidId_whenFindingById_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-uuid";
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
   }
 
   @Nested

@@ -233,8 +233,25 @@ public class ResearcherIntegrationTest {
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.available").value(true));
     }
+
+    @Test
+    void givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsUnavailable() throws Exception {
+      Researcher researcher = researcherRepository.save(
+          Researcher.builder()
+              .name("John Doe")
+              .email("john@example.com")
+              .build());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/email-availability")
+              .param("email", researcher.getEmail()))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(false));
+    }
+
     // TODO:
-    // givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsUnavailable()
     // givenInvalidEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
     // givenBlankEmail_whenCheckingEmailAvailability_thenReturnsBadRequest()
   }

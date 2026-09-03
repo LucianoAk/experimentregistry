@@ -60,12 +60,13 @@ class ResearcherControllerTest {
           MockMvcRequestBuilders
               .get(BASE_URL + "/search")
               .param("name", name))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(2),
+              MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()),
+              MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()));
 
       Mockito.verify(researcherService).searchByName(name);
     }
@@ -103,14 +104,15 @@ class ResearcherControllerTest {
           MockMvcRequestBuilders
               .get(BASE_URL + "/search")
               .param("name", name))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(researchers.get(0).email()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].email").value(researchers.get(1).email()));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(2),
+              MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()),
+              MockMvcResultMatchers.jsonPath("$[0].email").value(researchers.get(0).email()),
+              MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()),
+              MockMvcResultMatchers.jsonPath("$[1].email").value(researchers.get(1).email()));
 
       Mockito.verify(researcherService).searchByName(name);
     }
@@ -135,14 +137,15 @@ class ResearcherControllerTest {
           MockMvcRequestBuilders
               .get(BASE_URL + "/search")
               .param("name", name))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(researchers.get(0).email()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$[1].email").value(researchers.get(1).email()));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(2),
+              MockMvcResultMatchers.jsonPath("$[0].id").value(researchers.get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].name").value(researchers.get(0).name()),
+              MockMvcResultMatchers.jsonPath("$[1].id").value(researchers.get(1).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].name").value(researchers.get(1).name()),
+              MockMvcResultMatchers.jsonPath("$[0].email").value(researchers.get(0).email()),
+              MockMvcResultMatchers.jsonPath("$[1].email").value(researchers.get(1).email()));
 
       Mockito.verify(researcherService).searchByName(name);
     }
@@ -188,10 +191,11 @@ class ResearcherControllerTest {
       mockMvc.perform(
           MockMvcRequestBuilders
               .get(BASE_URL + "/{id}", id))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id.toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(researcher.name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(researcher.email()));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.name").value(researcher.name()),
+              MockMvcResultMatchers.jsonPath("$.email").value(researcher.email()));
 
       Mockito.verify(researcherService).findById(id);
     }
@@ -241,8 +245,9 @@ class ResearcherControllerTest {
           MockMvcRequestBuilders
               .get(BASE_URL + "/email-availability")
               .param("email", email))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.available").value(true));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(true));
 
       Mockito.verify(researcherService).checkEmailAvailability(email);
     }
@@ -258,8 +263,9 @@ class ResearcherControllerTest {
           MockMvcRequestBuilders
               .get(BASE_URL + "/email-availability")
               .param("email", email))
-          .andExpect(MockMvcResultMatchers.status().isOk())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.available").value(false));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(false));
 
       Mockito.verify(researcherService).checkEmailAvailability(email);
     }
@@ -322,10 +328,11 @@ class ResearcherControllerTest {
               .post(BASE_URL)
               .content(objectMapper.writeValueAsString(dto))
               .contentType(MediaType.APPLICATION_JSON))
-          .andExpect(MockMvcResultMatchers.status().isCreated())
-          .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(response.id().toString()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(response.name()))
-          .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(response.email()));
+          .andExpectAll(
+              MockMvcResultMatchers.status().isCreated(),
+              MockMvcResultMatchers.jsonPath("$.id").value(response.id().toString()),
+              MockMvcResultMatchers.jsonPath("$.name").value(response.name()),
+              MockMvcResultMatchers.jsonPath("$.email").value(response.email()));
 
       Mockito.verify(researcherService).create(dto);
     }

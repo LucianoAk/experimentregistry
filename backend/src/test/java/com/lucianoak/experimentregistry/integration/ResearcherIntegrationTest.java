@@ -1,5 +1,7 @@
 package com.lucianoak.experimentregistry.integration;
 
+import java.util.UUID;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -139,8 +141,19 @@ public class ResearcherIntegrationTest {
               MockMvcResultMatchers.jsonPath("$.email").value(researcher.getEmail()));
 
     }
+
+    @Test
+    void givenNonExistingId_whenFindingById_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", id))
+          .andExpect(
+              MockMvcResultMatchers.status().isNotFound());
+
+    }
+
     // TODO:
-    // givenNonExistingId_whenFindingById_thenReturnsNotFound()
     // givenInvalidId_whenFindingById_thenReturnsBadRequest()
   }
 

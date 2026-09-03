@@ -167,12 +167,8 @@ public class ResearcherIntegrationTest {
   class SearchByNameTests {
     // TODO:
     // givenMatchingResearchers_whenSearchingByName_thenReturnsResearchers()
-    // givenCaseInsensitiveName_whenSearchingByName_thenReturnsResearchers()
-    // givenPartialName_whenSearchingByName_thenReturnsResearchers()
-    // givenMatchingResearchers_whenSearchingByName_thenReturnsResearchersInExpectedOrder()
     // givenNonMatchingName_whenSearchingByName_thenReturnsEmptyList()
     // givenEmptyName_whenSearchingByName_thenReturnsBadRequest()
-    // givenNameExceedingMaxLength_whenSearchingByName_thenReturnsBadRequest()
   }
 
   @Nested

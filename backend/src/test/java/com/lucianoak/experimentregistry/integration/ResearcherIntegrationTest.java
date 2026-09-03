@@ -19,6 +19,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
+import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 
 import tools.jackson.core.JacksonException;
@@ -83,8 +84,27 @@ public class ResearcherIntegrationTest {
           });
     }
 
+    @Test
+    void givenDuplicateEmail_whenCreatingResearcher_thenReturnsConflict() throws JacksonException, Exception {
+      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
+          "John Doe",
+          "john@example.com");
+
+      researcherRepository.save(
+          Researcher.builder()
+              .name(dto.name())
+              .email(dto.email())
+              .build());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isConflict());
+    }
+
     // TODO:
-    // givenDuplicateEmail_whenCreatingResearcher_thenReturnsConflict()
     // givenInvalidData_whenCreatingResearcher_thenReturnsBadRequest()
   }
 

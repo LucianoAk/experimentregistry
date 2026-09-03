@@ -266,8 +266,21 @@ public class ResearcherIntegrationTest {
 
   @Nested
   class DeleteTests {
+    @Test
+    void givenExistingResearcher_whenDeletingResearcher_thenReturnsNoContent() throws Exception {
+      Researcher researcher = researcherRepository.save(
+          Researcher.builder()
+              .name("John Doe")
+              .email("john@example.com")
+              .build());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .delete(BASE_URL + "/{id}", researcher.getId()))
+          .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
     // TODO:
-    // givenExistingResearcher_whenDeletingResearcher_thenReturnsNoContent()
     // givenNonExistingId_whenDeletingResearcher_thenReturnsNotFound()
   }
 }

@@ -207,8 +207,16 @@ public class ResearcherIntegrationTest {
               MockMvcResultMatchers.jsonPath("$.length()").value(0));
     }
 
-    // TODO:
-    // givenEmptyName_whenSearchingByName_thenReturnsBadRequest()
+    @Test
+    void givenEmptyName_whenSearchingByName_thenReturnsBadRequest() throws Exception {
+      String name = "";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/search")
+              .param("name", name))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
   }
 
   @Nested

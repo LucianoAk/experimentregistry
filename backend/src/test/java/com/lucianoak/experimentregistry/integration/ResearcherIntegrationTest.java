@@ -280,7 +280,14 @@ public class ResearcherIntegrationTest {
           .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
-    // TODO:
-    // givenNonExistingId_whenDeletingResearcher_thenReturnsNotFound()
+    @Test
+    void givenNonExistingId_whenDeletingResearcher_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .delete(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
   }
 }

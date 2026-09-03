@@ -104,8 +104,20 @@ public class ResearcherIntegrationTest {
           .andExpect(MockMvcResultMatchers.status().isConflict());
     }
 
-    // TODO:
-    // givenInvalidData_whenCreatingResearcher_thenReturnsBadRequest()
+    @Test
+    void givenInvalidData_whenCreatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
+          "John Doe",
+          "not-a-valid-email");
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
   }
 
   @Nested

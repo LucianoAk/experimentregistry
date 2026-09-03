@@ -180,10 +180,12 @@ public class ResearcherIntegrationTest {
                   .email("jane@example.com")
                   .build()));
 
+      String name = "Doe";
+
       mockMvc.perform(
           MockMvcRequestBuilders
               .get(BASE_URL + "/search")
-              .param("name", "Doe"))
+              .param("name", name))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.length()").value(2),
@@ -194,10 +196,12 @@ public class ResearcherIntegrationTest {
 
     @Test
     void givenNonMatchingName_whenSearchingByName_thenReturnsEmptyList() throws Exception {
+      String name = "Doe";
+
       mockMvc.perform(
           MockMvcRequestBuilders
               .get(BASE_URL + "/search")
-              .param("name", "Doe"))
+              .param("name", name))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.length()").value(0));

@@ -45,14 +45,13 @@ public class ResearcherIntegrationTest {
 
   private static final String BASE_URL = "/api/researchers";
 
+  @AfterEach
+  void tearDown() {
+    researcherRepository.deleteAll();
+  }
+
   @Nested
   class CreateTests {
-
-    @AfterEach
-    void tearDown() {
-      researcherRepository.deleteAll();
-    }
-
     @Test
     void givenValidData_whenCreatingResearcher_thenReturnsCreatedResearcher() throws JacksonException, Exception {
       CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
@@ -122,8 +121,25 @@ public class ResearcherIntegrationTest {
 
   @Nested
   class FindByIdTests {
+    @Test
+    void givenExistingResearcher_whenFindingById_thenReturnsResearcher() throws Exception {
+      Researcher researcher = researcherRepository.save(
+          Researcher.builder()
+              .name("John Doe")
+              .email("john@example.com")
+              .build());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", researcher.getId()))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.id").value(researcher.getId().toString()),
+              MockMvcResultMatchers.jsonPath("$.name").value(researcher.getName()),
+              MockMvcResultMatchers.jsonPath("$.email").value(researcher.getEmail()));
+
+    }
     // TODO:
-    // givenExistingResearcher_whenFindingById_thenReturnsResearcher()
     // givenNonExistingId_whenFindingById_thenReturnsNotFound()
     // givenInvalidId_whenFindingById_thenReturnsBadRequest()
   }

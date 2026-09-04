@@ -32,7 +32,7 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class ResearcherIntegrationTest {
+class ResearcherIntegrationTest {
 
   @Container
   @ServiceConnection

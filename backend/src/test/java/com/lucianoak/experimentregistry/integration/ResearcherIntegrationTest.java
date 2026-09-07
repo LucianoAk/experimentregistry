@@ -36,7 +36,7 @@ class ResearcherIntegrationTest {
 
   @Container
   @ServiceConnection
-  private static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
+  private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
 
   @Autowired
   private MockMvc mockMvc;

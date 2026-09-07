@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -31,15 +30,11 @@ class ResearcherE2ETest {
 
   @Container
   @ServiceConnection
-  private static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
+  private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
 
-  @LocalServerPort
-  private int port;
+  private final RestClient restClient;
 
-  private RestClient restClient;
-
-  @BeforeEach
-  void setup() {
+  ResearcherE2ETest(RestClient.Builder restClientBuilder, @LocalServerPort int port) {
     this.restClient = RestClient.builder().baseUrl("http://localhost:" + port + "/api/researchers").build();
   }
 

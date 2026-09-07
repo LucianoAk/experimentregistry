@@ -3,6 +3,7 @@ CREATE TABLE researchers (
     id UUID NOT NULL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -12,6 +13,7 @@ COMMENT ON TABLE researchers IS 'The researcher responsible for an experiment';
 COMMENT ON COLUMN researchers.id IS 'Primary key, the internal database ID for a researcher';
 COMMENT ON COLUMN researchers.name IS 'The name of the researcher';
 COMMENT ON COLUMN researchers.email IS 'The email of the researcher';
+COMMENT ON COLUMN researchers.active IS 'Indicates whether the researcher is active in the system';
 COMMENT ON COLUMN researchers.created_at IS 'The creation date of the entry';
 
 -- Experiment workflows

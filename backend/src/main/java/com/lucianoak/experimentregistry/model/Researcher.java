@@ -44,6 +44,9 @@ public class Researcher {
   @Column(name = "email", unique = true, length = 255)
   private String email;
 
+  @Column(name = "active", nullable = false)
+  private boolean active = true;
+
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;

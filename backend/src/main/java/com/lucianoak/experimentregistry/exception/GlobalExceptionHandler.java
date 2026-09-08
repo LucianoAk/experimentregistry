@@ -78,6 +78,19 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
+  @ExceptionHandler(ResearcherCannotBeDeletedException.class)
+  public ResponseEntity<ErrorResponse> handleResearcherCannotBeDeleted(
+      ResearcherCannotBeDeletedException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    Map<String, String> errors = e.getErrors();
+
+    ErrorResponse errorResponse = (errors == null || errors.isEmpty())
+        ? new ErrorResponse(status, e.getMessage())
+        : new ErrorResponse(status, e.getMessage(), errors);
+
+    return ResponseEntity.status(status).body(errorResponse);
+  }
+
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ErrorResponse> handleMethodNotSupported(
       HttpRequestMethodNotSupportedException e) {

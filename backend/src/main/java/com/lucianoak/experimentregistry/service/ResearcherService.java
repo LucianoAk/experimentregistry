@@ -11,6 +11,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilit
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
+import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
@@ -64,6 +65,12 @@ public class ResearcherService {
   public void delete(UUID id) {
     Researcher researcher = researcherRepository.findById(id)
         .orElseThrow(() -> new ResearcherNotFoundException(id));
+
+    if (!researcher.getExperiments().isEmpty()) {
+      throw new ResearcherCannotBeDeletedException(id)
+          .addError("experiments", "Researcher has experiments associated with them");
+    }
+
     researcherRepository.delete(researcher);
   }
 

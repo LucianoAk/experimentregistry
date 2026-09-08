@@ -41,7 +41,7 @@ public class Experiment {
     this.title = title;
     this.status = status;
     this.workflow = workflow;
-    this.researcher = researcher;
+    researcher.addExperiment(this);
   }
 
   @Id

@@ -20,7 +20,9 @@ import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilit
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
+import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
+import com.lucianoak.experimentregistry.model.Experiment;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 
@@ -193,6 +195,26 @@ class ResearcherServiceTest {
 
       Mockito.verify(researcherRepository).findById(id);
       Mockito.verify(researcherRepository, Mockito.never()).delete(Mockito.any(Researcher.class));
+    }
+
+    @Test
+    void givenResearcherWithExperiments_whenDeleting_thenThrowsResearcherCannotBeDeletedException() {
+      UUID id = UUID.randomUUID();
+      Researcher researcher = Mockito.mock(Researcher.class);
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+      Mockito.when(researcher.getExperiments()).thenReturn(List.of(Mockito.mock(Experiment.class)));
+
+      ResearcherCannotBeDeletedException exception = Assertions.assertThrows(
+          ResearcherCannotBeDeletedException.class,
+          () -> researcherService.delete(id));
+
+      Assertions.assertTrue(exception.getErrors().containsKey("experiments"));
+      Assertions.assertEquals(
+          "Researcher has experiments associated with them",
+          exception.getErrors().get("experiments"));
+      Mockito.verify(researcherRepository).findById(id);
+      Mockito.verify(researcherRepository, Mockito.never()).delete(Mockito.any());
     }
   }
 

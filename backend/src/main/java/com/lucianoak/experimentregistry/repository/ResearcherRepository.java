@@ -14,7 +14,7 @@ public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
   @Query("""
           SELECT r
           FROM Researcher r
-          WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%'))
+          WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')) AND r.active = true
           ORDER BY
               CASE
                   WHEN LOWER(r.name) LIKE LOWER(CONCAT(:name, '%')) THEN 0

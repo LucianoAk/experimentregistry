@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -13,5 +14,5 @@ public record CreateExperimentRequestDTO(
     @NotNull @Size(max = 255) String title,
     @NotNull UUID workflowId,
     @NotNull UUID researcherId,
-    @Valid List<CreateParameterRequestDTO> parameters) {
+    @NotEmpty @Valid List<CreateParameterRequestDTO> parameters) {
 }

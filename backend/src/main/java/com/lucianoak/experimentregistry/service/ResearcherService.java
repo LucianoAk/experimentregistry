@@ -10,6 +10,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -77,5 +78,20 @@ public class ResearcherService {
   public EmailAvailabilityResponseDTO checkEmailAvailability(String email) {
     return new EmailAvailabilityResponseDTO(
         !researcherRepository.existsByEmail(email));
+  }
+
+  @Transactional
+  public ToggleResearcherActivationResponseDTO toggleResearcherActivation(UUID id) {
+    Researcher researcher = researcherRepository.findById(id)
+        .orElseThrow(() -> new ResearcherNotFoundException(id));
+
+    researcher.setActive(!researcher.isActive());
+    researcherRepository.save(researcher);
+
+    return new ToggleResearcherActivationResponseDTO(
+        researcher.getId(),
+        researcher.getName(),
+        researcher.getEmail(),
+        researcher.isActive());
   }
 }

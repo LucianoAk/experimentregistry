@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
 import jakarta.validation.Valid;
@@ -63,5 +65,10 @@ public class ResearcherController {
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     researcherService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("{id}/toggle-active")
+  public ResponseEntity<ToggleResearcherActivationResponseDTO> toggleResearcherActivation(@PathVariable UUID id) {
+    return ResponseEntity.ok(researcherService.toggleResearcherActivation(id));
   }
 }

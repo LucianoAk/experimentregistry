@@ -15,19 +15,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
 @RestController
 @RequestMapping("/api/experiment-statuses")
 @RequiredArgsConstructor
 public class ExperimentStatusController {
-    
-    private final ExperimentStatusService experimentStatusService;
 
-    @GetMapping
-    public ResponseEntity<List<FindExperimentStatusResponseDTO>> getMethodName(@RequestParam UUID workflowId) {
-        return ResponseEntity.ok(experimentStatusService.searchByWorkflow(workflowId));
-    }
-    
-    
+  private final ExperimentStatusService experimentStatusService;
+
+  // TODO: Create update route
+
+  @GetMapping
+  public ResponseEntity<List<FindExperimentStatusResponseDTO>> getMethodName(@RequestParam UUID workflowId) {
+    return ResponseEntity.ok(experimentStatusService.searchByWorkflow(workflowId));
+  }
+
 }

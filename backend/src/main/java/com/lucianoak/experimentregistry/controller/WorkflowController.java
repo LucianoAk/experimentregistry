@@ -25,24 +25,26 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/workflows")
 @RequiredArgsConstructor
 public class WorkflowController {
-    
-    private final WorkflowService workflowService;
 
-    @PostMapping
-    public ResponseEntity<CreateWorkflowResponseDTO> create(@RequestBody @Valid CreateWorkflowRequestDTO dto) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(workflowService.create(dto));
-    }
-    
-    @GetMapping
-    public ResponseEntity<List<FindAllWorkflowResponseDTO>> findAll() {
-        return ResponseEntity.ok(workflowService.findAll());
-    }
+  private final WorkflowService workflowService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FindWorkflowResponseDTO> findById(@PathVariable @Valid UUID id) {
-        return ResponseEntity.ok(workflowService.findById(id));
-    }
-    
+  // TODO: Create update route
+
+  @PostMapping
+  public ResponseEntity<CreateWorkflowResponseDTO> create(@RequestBody @Valid CreateWorkflowRequestDTO dto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(workflowService.create(dto));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<FindAllWorkflowResponseDTO>> findAll() {
+    return ResponseEntity.ok(workflowService.findAll());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<FindWorkflowResponseDTO> findById(@PathVariable @Valid UUID id) {
+    return ResponseEntity.ok(workflowService.findById(id));
+  }
+
 }

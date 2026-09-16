@@ -36,6 +36,8 @@ public class ResearcherController {
 
   private final ResearcherService researcherService;
 
+  // TODO: Create update route
+
   @GetMapping("/search")
   public ResponseEntity<List<SearchResearcherResponseDTO>> searchByName(
       @RequestParam @Size(min = 1, max = 255, message = "Name has invalid number of characters") String name) {

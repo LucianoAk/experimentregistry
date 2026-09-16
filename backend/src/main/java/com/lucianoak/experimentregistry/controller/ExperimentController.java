@@ -23,6 +23,8 @@ public class ExperimentController {
 
   private final ExperimentService experimentService;
 
+  // TODO: Create update route
+
   @PostMapping
   public ResponseEntity<CreateExperimentResponseDTO> create(@RequestBody @Valid CreateExperimentRequestDTO dto) {
     return ResponseEntity.ok(experimentService.create(dto));

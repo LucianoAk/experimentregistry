@@ -80,7 +80,7 @@ public class ResearcherService {
         !researcherRepository.existsByEmail(email));
   }
 
-  // TODO: add test for this mapping
+  // TODO: add test for this method
   @Transactional
   public ToggleResearcherActivationResponseDTO toggleResearcherActivation(UUID id) {
     Researcher researcher = researcherRepository.findById(id)

@@ -5,24 +5,24 @@ POST {{baseUrl}}/researchers
 Content-Type: application/json
 
 {
-    "name": "a",
-    "email": "a@A"
+    "name": "John Doe",
+    "email": "john@example.com"
 }
 
 ### Delete
-@deleteUUID =  
+@deleteUUID = 5313d9d3-1160-4251-a29f-167990384bce
 DELETE {{baseUrl}}/researchers/{{deleteUUID}}
 
 ### Find by Id
-@findUUID = 
+@findUUID = 37f7d38d-d9ec-4697-8729-2e7ee764bf57
 GET {{baseUrl}}/researchers/{{findUUID}}
 
 ### Search by name
-@searchName = 
+@searchName = John
 GET {{baseUrl}}/researchers/search?name={{searchName}}
 
 ### Check email availability
-@checkEmail = 
+@checkEmail = researcher@example.com
 GET {{baseUrl}}/researchers/email-availability?email={{checkEmail}}
 
 ### Toggle activation

@@ -24,3 +24,17 @@ GET {{baseUrl}}/researchers/search?name={{searchName}}
 ### Check email availability
 @checkEmail = 
 GET {{baseUrl}}/researchers/email-availability?email={{checkEmail}}
+
+### Toggle activation
+@toogleActivationUUID = c572f056-5bb9-4a74-bac5-0c9dedaba33c
+PATCH {{baseUrl}}/researchers/{{toogleActivationUUID}}/toggle-active
+
+### Update
+@updateUUID = b29a7c3b-5d85-46e0-9157-a224d20cb5d6
+PUT {{baseUrl}}/researchers/{{updateUUID}}
+Content-Type: application/json
+
+{
+    "name": "",
+    "email": "edited@example.com"
+}

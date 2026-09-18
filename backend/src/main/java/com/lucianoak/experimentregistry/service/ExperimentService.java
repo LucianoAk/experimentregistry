@@ -22,6 +22,7 @@ import com.lucianoak.experimentregistry.repository.ExperimentRepository;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 import com.lucianoak.experimentregistry.repository.WorkflowRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +33,7 @@ public class ExperimentService {
   private final ResearcherRepository researcherRepository;
   private final WorkflowRepository workflowRepository;
 
+  @Transactional
   public CreateExperimentResponseDTO create(CreateExperimentRequestDTO dto) {
     if (experimentRepository.existsByTitle(dto.title())) {
       throw new DuplicateExperimentTitleException(dto.title());

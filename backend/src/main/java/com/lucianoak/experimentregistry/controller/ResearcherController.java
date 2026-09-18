@@ -10,17 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
 import jakarta.validation.Valid;
@@ -73,5 +76,13 @@ public class ResearcherController {
   @PatchMapping("{id}/toggle-active")
   public ResponseEntity<ToggleResearcherActivationResponseDTO> toggleResearcherActivation(@PathVariable UUID id) {
     return ResponseEntity.ok(researcherService.toggleResearcherActivation(id));
+  }
+
+  // TODO: add test for this mapping
+  @PutMapping("/{id}")
+  public ResponseEntity<UpdateResearcherResponseDTO> update(
+      @PathVariable UUID id,
+      @RequestBody @Valid UpdateResearcherRequestDTO dto) {
+    return ResponseEntity.ok(researcherService.update(id, dto));
   }
 }

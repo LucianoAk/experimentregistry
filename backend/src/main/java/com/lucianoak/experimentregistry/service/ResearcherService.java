@@ -6,11 +6,13 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -80,7 +82,7 @@ public class ResearcherService {
         !researcherRepository.existsByEmail(email));
   }
 
-  // TODO: add test for this method
+  // TODO: add tests for this method
   @Transactional
   public ToggleResearcherActivationResponseDTO toggleResearcherActivation(UUID id) {
     Researcher researcher = researcherRepository.findById(id)
@@ -94,5 +96,27 @@ public class ResearcherService {
         researcher.getName(),
         researcher.getEmail(),
         researcher.isActive());
+  }
+
+  // TODO: add tests for this method
+  @Transactional
+  public UpdateResearcherResponseDTO update(UUID id, UpdateResearcherRequestDTO dto) {
+    Researcher researcher = researcherRepository.findById(id)
+        .orElseThrow(() -> new ResearcherNotFoundException(id));
+
+    if (dto.name() != null && !dto.name().isBlank()) {
+      researcher.setName(dto.name());
+    }
+
+    if (dto.email() != null && !dto.email().isBlank()) {
+      researcher.setEmail(dto.email());
+    }
+
+    Researcher updatedResearcher = researcherRepository.save(researcher);
+
+    return new UpdateResearcherResponseDTO(
+        updatedResearcher.getId(),
+        updatedResearcher.getName(),
+        updatedResearcher.getEmail());
   }
 }

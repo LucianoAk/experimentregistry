@@ -97,7 +97,6 @@ public class ResearcherService {
         researcher.isActive());
   }
 
-  // TODO: add tests for this method
   @Transactional
   public UpdateResearcherResponseDTO update(UUID id, UpdateResearcherRequestDTO dto) {
     Researcher researcher = researcherRepository.findById(id)

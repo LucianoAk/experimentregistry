@@ -298,4 +298,13 @@ class ResearcherServiceTest {
       Mockito.verify(researcherRepository, Mockito.never()).save(Mockito.any(Researcher.class));
     }
   }
+
+  @Nested
+  class UpdateTest {
+    // TODO:
+    // givenNonExistingResearcher_whenUpdatingResearcher_thenThrowsResearcherNotFoundException
+    // givenPresentNameAndEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedFields
+    // givenPresentNameAndBlankEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedNameOnly
+    // givenBlankNameAndPresentEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedEmailOnly
+  }
 }

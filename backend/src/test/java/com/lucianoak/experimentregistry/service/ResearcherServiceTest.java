@@ -19,6 +19,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -240,6 +241,28 @@ class ResearcherServiceTest {
       EmailAvailabilityResponseDTO result = researcherService.checkEmailAvailability(email);
 
       Assertions.assertFalse(result.available());
+    }
+  }
+
+  @Nested
+  class ToggleResearcherActivationTests {
+    @Test
+    void givenActiveResearcher_whenTogglingActivation_thenReturnsInactiveResearcher() {
+      UUID id = UUID.randomUUID();
+      Researcher researcher = Researcher.builder()
+          .name("John Doe")
+          .email("john@example.com")
+          .build();
+      researcher.setId(id);
+      researcher.setActive(true);
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+
+      ToggleResearcherActivationResponseDTO result = researcherService.toggleResearcherActivation(id);
+
+      Assertions.assertFalse(result.active());
+
+      Mockito.verify(researcherRepository).save(researcher);
     }
   }
 }

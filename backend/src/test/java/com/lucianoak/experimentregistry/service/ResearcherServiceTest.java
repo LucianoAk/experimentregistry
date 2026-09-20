@@ -21,6 +21,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilit
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.EmailAlreadyExistsException;
 import com.lucianoak.experimentregistry.exception.ResearcherCannotBeDeletedException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -316,8 +317,37 @@ class ResearcherServiceTest {
 
     }
 
+    @Test
+    void givenPresentNameAndEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedFields() {
+      UUID id = UUID.randomUUID();
+      Researcher researcher = Researcher.builder()
+          .name("John Doe")
+          .email("john@example.com")
+          .build();
+      researcher.setId(id);
+
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "Updated Name",
+          "updated@example.com");
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+      Mockito.when(researcherRepository.save(Mockito.any(Researcher.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+      UpdateResearcherResponseDTO result = researcherService.update(id, dto);
+
+      Assertions.assertEquals(dto.name(), result.name());
+      Assertions.assertEquals(dto.email(), result.email());
+
+      ArgumentCaptor<Researcher> captor = ArgumentCaptor.forClass(Researcher.class);
+      Mockito.verify(researcherRepository).save(captor.capture());
+      Researcher capturedResearcher = captor.getValue();
+
+      Assertions.assertEquals(dto.name(), capturedResearcher.getName());
+      Assertions.assertEquals(dto.email(), capturedResearcher.getEmail());
+    }
+
     // TODO:
-    // givenPresentNameAndEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedFields
     // givenPresentNameAndBlankEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedNameOnly
     // givenBlankNameAndPresentEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedEmailOnly
   }

@@ -242,6 +242,28 @@ public class ResearcherRepositoryTest {
               .toList());
     }
 
+    @Test
+    void givenActiveResearchers_whenSearchingByName_thenReturnsResearchers() {
+      List<Researcher> researchers = getResearchersByNames(
+          "John Doe",
+          "John Smith");
+
+      researchers.forEach(entityManager::persist);
+      entityManager.flush();
+
+      List<Researcher> result = researcherRepository.searchByName("John");
+
+      Assertions.assertEquals(
+          researchers.stream()
+              .map(Researcher::getName)
+              .toList(),
+          result.stream()
+              .map(Researcher::getName)
+              .toList());
+
+      Assertions.assertTrue(
+          result.stream().allMatch(Researcher::isActive));
+    }
   }
 
   @Nested

@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
@@ -301,8 +302,21 @@ class ResearcherServiceTest {
 
   @Nested
   class UpdateTest {
+    @Test
+    void givenNonExistingResearcher_whenUpdatingResearcher_thenThrowsResearcherNotFoundException() {
+      UUID id = UUID.randomUUID();
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.empty());
+
+      Assertions.assertThrows(
+          ResearcherNotFoundException.class,
+          () -> researcherService.update(id, Mockito.any(UpdateResearcherRequestDTO.class)));
+
+      Mockito.verify(researcherRepository, Mockito.never()).save(Mockito.any(Researcher.class));
+
+    }
+
     // TODO:
-    // givenNonExistingResearcher_whenUpdatingResearcher_thenThrowsResearcherNotFoundException
     // givenPresentNameAndEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedFields
     // givenPresentNameAndBlankEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedNameOnly
     // givenBlankNameAndPresentEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedEmailOnly

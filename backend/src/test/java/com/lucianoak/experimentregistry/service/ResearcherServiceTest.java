@@ -264,5 +264,24 @@ class ResearcherServiceTest {
 
       Mockito.verify(researcherRepository).save(researcher);
     }
+
+    @Test
+    void givenInactiveResearcher_whenTogglingActivation_thenReturnsActiveResearcher() {
+      UUID id = UUID.randomUUID();
+      Researcher researcher = Researcher.builder()
+          .name("John Doe")
+          .email("john@example.com")
+          .build();
+      researcher.setId(id);
+      researcher.setActive(false);
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+
+      ToggleResearcherActivationResponseDTO result = researcherService.toggleResearcherActivation(id);
+
+      Assertions.assertTrue(result.active());
+
+      Mockito.verify(researcherRepository).save(researcher);
+    }
   }
 }

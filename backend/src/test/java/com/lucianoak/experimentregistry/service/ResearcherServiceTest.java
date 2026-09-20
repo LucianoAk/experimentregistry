@@ -283,5 +283,19 @@ class ResearcherServiceTest {
 
       Mockito.verify(researcherRepository).save(researcher);
     }
+
+    @Test
+    void givenNonExistingResearcher_whenTogglingActivation_thenThrowsResearcherNotFoundException() {
+      UUID id = UUID.randomUUID();
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.empty());
+
+      Assertions.assertThrows(
+          ResearcherNotFoundException.class,
+          () -> researcherService.toggleResearcherActivation(id));
+
+      Mockito.verify(researcherRepository).findById(id);
+      Mockito.verify(researcherRepository, Mockito.never()).save(Mockito.any(Researcher.class));
+    }
   }
 }

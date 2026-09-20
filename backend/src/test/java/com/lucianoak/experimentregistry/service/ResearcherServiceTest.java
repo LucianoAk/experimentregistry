@@ -377,7 +377,34 @@ class ResearcherServiceTest {
       Assertions.assertEquals(researcher.getEmail(), capturedResearcher.getEmail());
     }
 
-    // TODO:
-    // givenBlankNameAndPresentEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedEmailOnly
+    @Test
+    void givenBlankNameAndPresentEmail_whenUpdatingResearcher_thenReturnsResearcherWithUpdatedEmailOnly() {
+      UUID id = UUID.randomUUID();
+      Researcher researcher = Researcher.builder()
+          .name("John Doe")
+          .email("john@example.com")
+          .build();
+      researcher.setId(id);
+
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "",
+          "updated@example.com");
+
+      Mockito.when(researcherRepository.findById(id)).thenReturn(Optional.of(researcher));
+      Mockito.when(researcherRepository.save(Mockito.any(Researcher.class)))
+          .thenAnswer(invocation -> invocation.getArgument(0));
+
+      UpdateResearcherResponseDTO result = researcherService.update(id, dto);
+
+      Assertions.assertEquals(researcher.getName(), result.name());
+      Assertions.assertEquals(dto.email(), result.email());
+
+      ArgumentCaptor<Researcher> captor = ArgumentCaptor.forClass(Researcher.class);
+      Mockito.verify(researcherRepository).save(captor.capture());
+      Researcher capturedResearcher = captor.getValue();
+
+      Assertions.assertEquals(researcher.getName(), capturedResearcher.getName());
+      Assertions.assertEquals(dto.email(), capturedResearcher.getEmail());
+    }
   }
 }

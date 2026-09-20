@@ -264,6 +264,22 @@ public class ResearcherRepositoryTest {
       Assertions.assertTrue(
           result.stream().allMatch(Researcher::isActive));
     }
+
+    @Test
+    void givenInactiveResearchers_whenSearchingByName_thenReturnsEmptyList() {
+      List<Researcher> researchers = getResearchersByNames(
+          "John Doe",
+          "John Smith");
+
+      researchers.forEach(entityManager::persist);
+      researchers.forEach(researcher -> researcher.setActive(false));
+      entityManager.flush();
+
+      List<Researcher> result = researcherRepository.searchByName("John");
+
+      Assertions.assertTrue(result.isEmpty());
+    }
+
   }
 
   @Nested

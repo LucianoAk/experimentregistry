@@ -11,7 +11,6 @@ import com.lucianoak.experimentregistry.model.Researcher;
 
 public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
 
-  // TODO: Add test for active filter
   @Query("""
           SELECT r
           FROM Researcher r

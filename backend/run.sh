@@ -85,7 +85,7 @@ run_tests() {
   fi
 
   if [[ $# -eq 0 ]]; then
-    ./mvnw test \
+    ./mvnw clean test \
       -Dspring.profiles.active="$MODE"
     return
   fi
@@ -98,7 +98,7 @@ run_tests() {
     printf '%s\n' "${tests[*]}"
   )
 
-  ./mvnw test \
+  ./mvnw clean test \
     -Dspring.profiles.active="$MODE" \
     -Dtest="$test_pattern"
 }
@@ -106,7 +106,7 @@ run_tests() {
 # Dev Mode
 
 run_spring_boot() {
-  ./mvnw spring-boot:run -Dspring-boot.run.profiles="$MODE"
+  ./mvnw clean spring-boot:run -Dspring-boot.run.profiles="$MODE"
 }
 
 # Main

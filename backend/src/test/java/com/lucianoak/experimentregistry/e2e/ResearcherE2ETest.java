@@ -38,6 +38,7 @@ class ResearcherE2ETest {
     this.restClient = RestClient.builder().baseUrl("http://localhost:" + port + "/api/researchers").build();
   }
 
+  // TODO: add activation and deactivation step
   @Test
   void givenNewResearcherPayload_whenExecutingCompleteLifecycleJourney_thenStateTransitionsVerified() {
     CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(

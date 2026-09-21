@@ -71,7 +71,7 @@ public class ResearcherController {
   }
 
   // TODO: add test for this mapping
-  @PatchMapping("{id}/toggle-active")
+  @PatchMapping("/{id}/toggle-active")
   public ResponseEntity<ToggleResearcherActivationResponseDTO> toggleResearcherActivation(@PathVariable UUID id) {
     return ResponseEntity.ok(researcherService.toggleResearcherActivation(id));
   }

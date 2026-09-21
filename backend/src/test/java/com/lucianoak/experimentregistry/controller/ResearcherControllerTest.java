@@ -19,6 +19,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
@@ -504,6 +505,28 @@ class ResearcherControllerTest {
 
   @Nested
   class ToggleResearcherActivationTests {
+    @Test
+    void givenValidId_whenTogglingActivation_thenReturnsOk() throws Exception {
+      UUID id = UUID.randomUUID();
+      Mockito.when(researcherService.toggleResearcherActivation(id)).thenReturn(
+          new ToggleResearcherActivationResponseDTO(
+              id,
+              "John Doe",
+              "john@example.com",
+              false));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", id))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.active").value(false));
+
+      Mockito.verify(researcherService).toggleResearcherActivation(id);
+    }
+
     // TODO:
     // givenValidId_whenTogglingActivation_thenReturnsOk
     // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest

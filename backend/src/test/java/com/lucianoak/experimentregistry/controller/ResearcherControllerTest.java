@@ -502,4 +502,11 @@ class ResearcherControllerTest {
     }
   }
 
+  @Nested
+  class ToggleResearcherActivationTests {
+    // TODO:
+    // givenValidId_whenTogglingActivation_thenReturnsOk
+    // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
+    // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
+  }
 }

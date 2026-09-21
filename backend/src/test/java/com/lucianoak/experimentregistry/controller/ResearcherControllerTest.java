@@ -528,7 +528,6 @@ class ResearcherControllerTest {
     }
 
     // TODO:
-    // givenValidId_whenTogglingActivation_thenReturnsOk
     // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
     // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
   }

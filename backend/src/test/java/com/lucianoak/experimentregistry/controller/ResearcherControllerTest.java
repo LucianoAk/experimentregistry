@@ -539,7 +539,17 @@ class ResearcherControllerTest {
       Mockito.verifyNoInteractions(researcherService);
     }
 
-    // TODO:
-    // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
+    @Test
+    void givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+      Mockito.when(researcherService.toggleResearcherActivation(id)).thenThrow(new ResearcherNotFoundException(id));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(researcherService).toggleResearcherActivation(id);
+    }
   }
 }

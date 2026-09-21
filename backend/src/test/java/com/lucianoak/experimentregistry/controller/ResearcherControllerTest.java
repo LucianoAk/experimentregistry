@@ -527,6 +527,18 @@ class ResearcherControllerTest {
       Mockito.verify(researcherService).toggleResearcherActivation(id);
     }
 
+    @Test
+    void givenInvalidId_whenTogglingActivation_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-Id";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(researcherService);
+    }
+
     // TODO:
     // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
     // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound

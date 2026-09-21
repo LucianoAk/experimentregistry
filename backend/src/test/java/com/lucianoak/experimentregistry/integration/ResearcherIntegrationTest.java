@@ -290,4 +290,6 @@ class ResearcherIntegrationTest {
           .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
   }
+
+  // TODO: add tests for toggle acttivation and update
 }

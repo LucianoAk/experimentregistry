@@ -630,7 +630,6 @@ class ResearcherControllerTest {
     }
 
     // TODO:
-    // givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest
     // given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest
     // givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest
   }

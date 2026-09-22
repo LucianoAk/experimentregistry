@@ -607,7 +607,6 @@ class ResearcherControllerTest {
     }
 
     // TODO:
-    // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound
     // givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest
     // givenMissingId_whenUpdatingResearcher_thenReturnsBadRequest
     // givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest

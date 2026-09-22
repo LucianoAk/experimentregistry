@@ -648,7 +648,6 @@ class ResearcherControllerTest {
     }
 
     // TODO:
-    // given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest
     // givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest
   }
 }

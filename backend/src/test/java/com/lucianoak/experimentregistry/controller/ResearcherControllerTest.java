@@ -229,11 +229,6 @@ class ResearcherControllerTest {
 
       Mockito.verifyNoInteractions(researcherService);
     }
-
-    @Test
-    void givenMissingId_whenFindingById_thenReturnsBadRequest() throws Exception {
-
-    }
   }
 
   @Nested

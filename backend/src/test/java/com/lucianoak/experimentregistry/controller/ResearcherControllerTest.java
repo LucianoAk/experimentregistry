@@ -552,4 +552,15 @@ class ResearcherControllerTest {
       Mockito.verify(researcherService).toggleResearcherActivation(id);
     }
   }
+
+  @Nested
+  class UpdateTests {
+    // TODO:
+    // givenValidData_whenUpdatingResearcher_thenReturnsOk
+    // givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest
+    // givenMissingId_whenUpdatingResearcher_thenReturnsBadRequest
+    // givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest
+    // given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest
+    // givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest
+  }
 }

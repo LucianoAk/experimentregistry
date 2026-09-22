@@ -15,11 +15,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
@@ -555,6 +557,34 @@ class ResearcherControllerTest {
 
   @Nested
   class UpdateTests {
+    @Test
+    void givenValidData_whenUpdatingResearcher_thenReturnsOk() throws Exception {
+      UUID id = UUID.randomUUID();
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "John Doe",
+          "john@example.com");
+
+      Mockito.when(researcherService.update(id, dto)).thenReturn(
+          new UpdateResearcherResponseDTO(
+              id,
+              dto.name(),
+              dto.email()));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.name").value(dto.name()),
+              MockMvcResultMatchers.jsonPath("$.email").value(dto.email()));
+
+      Mockito.verify(researcherService).update(id, dto);
+    }
+
     // TODO:
     // givenValidData_whenUpdatingResearcher_thenReturnsOk
     // givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest

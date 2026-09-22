@@ -25,6 +25,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcher
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.service.ResearcherService;
 
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ResearcherController.class)
@@ -604,6 +605,20 @@ class ResearcherControllerTest {
           .andExpect(MockMvcResultMatchers.status().isNotFound());
 
       Mockito.verify(researcherService).update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class));
+    }
+
+    @Test
+    void givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+      String id = "not-a-valid-Id";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(new UpdateResearcherRequestDTO("John Doe", "john@example.com"))))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(researcherService);
     }
 
     // TODO:

@@ -647,7 +647,21 @@ class ResearcherControllerTest {
       Mockito.verifyNoInteractions(researcherService);
     }
 
-    // TODO:
-    // givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest
+    @Test
+    void givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+      UUID id = UUID.randomUUID();
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "John Doe",
+          "not-a-valid-email");
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(researcherService);
+    }
   }
 }

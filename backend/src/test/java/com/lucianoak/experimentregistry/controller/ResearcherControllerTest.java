@@ -585,6 +585,27 @@ class ResearcherControllerTest {
       Mockito.verify(researcherService).update(id, dto);
     }
 
+    @Test
+    void givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "John Doe",
+          "john@example.com");
+
+      Mockito.when(researcherService.update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class)))
+          .thenThrow(new ResearcherNotFoundException(id));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(researcherService).update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class));
+    }
+
     // TODO:
     // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound
     // givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest

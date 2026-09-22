@@ -75,7 +75,6 @@ public class ResearcherController {
     return ResponseEntity.ok(researcherService.toggleResearcherActivation(id));
   }
 
-  // TODO: add test for this mapping
   @PutMapping("/{id}")
   public ResponseEntity<UpdateResearcherResponseDTO> update(
       @PathVariable UUID id,

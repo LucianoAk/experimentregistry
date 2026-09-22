@@ -291,5 +291,19 @@ class ResearcherIntegrationTest {
     }
   }
 
-  // TODO: add tests for toggle acttivation and update
+  @Nested
+  class ToggleResearcherActivationTests {
+    // TODO:
+    // givenActiveResearcher_whenTogglingActivation_thenReturnsOkAndInactiveResearcher
+    // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
+    // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
+  }
+
+  @Nested
+  class UpdateTests {
+    // TODO:
+    // givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher
+    // givenInvalidData_whenUpdatingResearcher_thenReturnsBadRequest
+    // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound
+  }
 }

@@ -616,6 +616,19 @@ class ResearcherControllerTest {
       Mockito.verifyNoInteractions(researcherService);
     }
 
+    @Test
+    void givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(researcherService);
+    }
+
     // TODO:
     // givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest
     // given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest

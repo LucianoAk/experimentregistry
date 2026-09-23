@@ -293,6 +293,24 @@ class ResearcherIntegrationTest {
 
   @Nested
   class ToggleResearcherActivationTests {
+    @Test
+    void givenExistingResearcher_whenTogglingActivation_thenReturnsOkAndToggledActivation() throws Exception {
+      Researcher researcher = researcherRepository.save(
+          Researcher.builder()
+              .name("John Doe")
+              .email("john@example.com")
+              .build());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", researcher.getId()))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(researcher.getId().toString()),
+              MockMvcResultMatchers.jsonPath("$.active").value(!researcher.isActive()));
+    }
+
     // TODO:
     // givenActiveResearcher_whenTogglingActivation_thenReturnsOkAndInactiveResearcher
     // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound

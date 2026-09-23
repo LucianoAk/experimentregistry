@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
+import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
@@ -331,6 +332,31 @@ class ResearcherIntegrationTest {
 
   @Nested
   class UpdateTests {
+    @Test
+    void givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher() throws Exception {
+      Researcher researcher = researcherRepository.save(
+          Researcher.builder()
+              .name("John Doe")
+              .email("john@example.com")
+              .build());
+
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "John Doe",
+          "john@example.com");
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", researcher.getId())
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(researcher.getId().toString()),
+              MockMvcResultMatchers.jsonPath("$.name").value(dto.name()),
+              MockMvcResultMatchers.jsonPath("$.email").value(dto.email()));
+    }
+
     // TODO:
     // givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher
     // givenInvalidData_whenUpdatingResearcher_thenReturnsBadRequest

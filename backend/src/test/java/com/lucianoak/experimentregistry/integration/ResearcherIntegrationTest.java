@@ -320,7 +320,6 @@ class ResearcherIntegrationTest {
     }
 
     // TODO:
-    // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
     // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
   }
 

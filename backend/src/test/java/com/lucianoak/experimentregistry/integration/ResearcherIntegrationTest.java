@@ -311,6 +311,14 @@ class ResearcherIntegrationTest {
               MockMvcResultMatchers.jsonPath("$.active").value(!researcher.isActive()));
     }
 
+    @Test
+    void givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound() throws Exception {
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", UUID.randomUUID()))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
     // TODO:
     // givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound
     // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest

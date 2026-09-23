@@ -319,8 +319,14 @@ class ResearcherIntegrationTest {
           .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    // TODO:
-    // givenInvalidId_whenTogglingActivation_thenReturnsBadRequest
+    @Test
+    void givenInvalidId_whenTogglingActivation_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-uuid";
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .patch(BASE_URL + "/{id}/toggle-active", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
   }
 
   @Nested

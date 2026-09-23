@@ -333,7 +333,7 @@ class ResearcherIntegrationTest {
   @Nested
   class UpdateTests {
     @Test
-    void givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher() throws Exception {
+    void givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher() throws JacksonException, Exception {
       Researcher researcher = researcherRepository.save(
           Researcher.builder()
               .name("John Doe")

@@ -371,7 +371,15 @@ class ResearcherIntegrationTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    // TODO:
-    // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound
+    @Test
+    void givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound() throws JacksonException, Exception {
+      UUID id = UUID.randomUUID();
+
+      mockMvc.perform(
+          MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(new UpdateResearcherRequestDTO("John Doe", "john@example.com"))))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
   }
 }

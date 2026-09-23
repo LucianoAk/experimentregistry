@@ -357,6 +357,20 @@ class ResearcherIntegrationTest {
               MockMvcResultMatchers.jsonPath("$.email").value(dto.email()));
     }
 
+    @Test
+    void givenInvalidData_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
+          "John Doe",
+          "not-a-valid-email");
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", UUID.randomUUID())
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
     // TODO:
     // givenInvalidData_whenUpdatingResearcher_thenReturnsBadRequest
     // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound

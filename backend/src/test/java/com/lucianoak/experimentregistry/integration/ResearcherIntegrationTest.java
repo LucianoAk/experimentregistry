@@ -358,7 +358,6 @@ class ResearcherIntegrationTest {
     }
 
     // TODO:
-    // givenValidData_whenUpdatingResearcher_thenReturnsOkAndUpdatedResearcher
     // givenInvalidData_whenUpdatingResearcher_thenReturnsBadRequest
     // givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound
   }

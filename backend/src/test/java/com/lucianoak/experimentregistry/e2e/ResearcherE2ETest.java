@@ -24,6 +24,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.EmailAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.SearchResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcherActivationResponseDTO;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -56,6 +57,9 @@ class ResearcherE2ETest {
     CreateResearcherResponseDTO created = createResearcher(dto);
     verifyResearcherFoundById(created);
     verifyResearcherFoundBySearch(created);
+    verifyResearcherDeactivation(created);
+    verifyResearcherNotFoundBySearch(created);
+    verifyResearcherActivation(created);
     deleteResearcher(created.id());
   }
 
@@ -117,6 +121,51 @@ class ResearcherE2ETest {
       softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
       softly.assertThat(body).isNotNull();
       softly.assertThat(body).extracting(SearchResearcherResponseDTO::name).contains(dto.name());
+    });
+  }
+
+  private void verifyResearcherDeactivation(CreateResearcherResponseDTO dto) {
+    ResponseEntity<ToggleResearcherActivationResponseDTO> response = restClient.patch()
+        .uri(uriBuilder -> uriBuilder.path("/{id}/toggle-active").build(dto.id()))
+        .retrieve()
+        .toEntity(ToggleResearcherActivationResponseDTO.class);
+
+    ToggleResearcherActivationResponseDTO body = response.getBody();
+    SoftAssertions.assertSoftly(softly -> {
+      softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      softly.assertThat(body.id()).isNotNull();
+      softly.assertThat(body.name()).isEqualTo(dto.name());
+      softly.assertThat(body.email()).isEqualTo(dto.email());
+      softly.assertThat(body.active()).isFalse();
+    });
+  }
+
+  private void verifyResearcherNotFoundBySearch(CreateResearcherResponseDTO dto) {
+    ResponseEntity<List<SearchResearcherResponseDTO>> response = restClient.get()
+        .uri(uriBuilder -> uriBuilder.path("/search").queryParam("name", "John").build())
+        .retrieve()
+        .toEntity(new ParameterizedTypeReference<>() {
+        });
+
+    List<SearchResearcherResponseDTO> body = response.getBody();
+    SoftAssertions.assertSoftly(softly -> {
+      softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    });
+  }
+
+  private void verifyResearcherActivation(CreateResearcherResponseDTO dto) {
+    ResponseEntity<ToggleResearcherActivationResponseDTO> response = restClient.patch()
+        .uri(uriBuilder -> uriBuilder.path("/{id}/toggle-active").build(dto.id()))
+        .retrieve()
+        .toEntity(ToggleResearcherActivationResponseDTO.class);
+
+    ToggleResearcherActivationResponseDTO body = response.getBody();
+    SoftAssertions.assertSoftly(softly -> {
+      softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+      softly.assertThat(body.id()).isNotNull();
+      softly.assertThat(body.name()).isEqualTo(dto.name());
+      softly.assertThat(body.email()).isEqualTo(dto.email());
+      softly.assertThat(body.active()).isTrue();
     });
   }
 

@@ -146,7 +146,6 @@ class ResearcherE2ETest {
         .toEntity(new ParameterizedTypeReference<>() {
         });
 
-    List<SearchResearcherResponseDTO> body = response.getBody();
     SoftAssertions.assertSoftly(softly -> {
       softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     });

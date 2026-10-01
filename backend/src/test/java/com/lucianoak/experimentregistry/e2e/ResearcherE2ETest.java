@@ -46,7 +46,6 @@ class ResearcherE2ETest {
         .build();
   }
 
-  // TODO: add activation and deactivation step
   @Test
   void givenNewResearcherPayload_whenExecutingCompleteLifecycleJourney_thenStateTransitionsVerified() {
     CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(

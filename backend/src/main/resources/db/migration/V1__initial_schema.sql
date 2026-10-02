@@ -57,8 +57,8 @@ COMMENT ON COLUMN experiment_statuses.created_at IS 'The creation date of the en
 CREATE TABLE experiments (
     id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
-    start_date TIMESTAMP WITH TIME ZONE,
-    finish_date TIMESTAMP WITH TIME ZONE,
+    start_date DATE,
+    finish_date DATE,
     result TEXT,
     workflow_id UUID NOT NULL,
     status_id UUID NOT NULL,

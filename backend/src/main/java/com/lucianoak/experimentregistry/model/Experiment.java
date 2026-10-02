@@ -1,6 +1,7 @@
 package com.lucianoak.experimentregistry.model;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +54,10 @@ public class Experiment {
   private String title;
 
   @Column(name = "start_date")
-  private Instant startDate;
+  private LocalDate startDate;
 
   @Column(name = "finish_date")
-  private Instant finishDate;
+  private LocalDate finishDate;
 
   @Column(name = "result")
   private String result;

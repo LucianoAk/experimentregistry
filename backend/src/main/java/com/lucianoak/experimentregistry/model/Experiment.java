@@ -38,8 +38,10 @@ import lombok.Setter;
 public class Experiment {
 
   @Builder
-  private Experiment(String title, Workflow workflow, ExperimentStatus status, Researcher researcher) {
+  private Experiment(String title, LocalDate startDate, Workflow workflow, ExperimentStatus status,
+      Researcher researcher) {
     this.title = title;
+    this.startDate = startDate;
     this.status = status;
     this.workflow = workflow;
     researcher.addExperiment(this);

@@ -55,6 +55,7 @@ public class ExperimentService {
 
     Experiment experiment = Experiment.builder()
         .title(dto.title())
+        .startDate(dto.startDate())
         .workflow(workflow)
         .status(status)
         .researcher(researcher)

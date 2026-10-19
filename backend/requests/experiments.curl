@@ -28,3 +28,6 @@ curl -iX POST $baseUrl
 ### Check title availability
 ---checkName=Experiment%201
 curl -iX GET $baseUrl/title-availability?title=$checkName
+
+### Find All
+curl -iX GET $baseUrl

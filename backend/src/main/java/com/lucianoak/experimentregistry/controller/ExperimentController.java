@@ -1,5 +1,7 @@
 package com.lucianoak.experimentregistry.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
@@ -23,7 +26,7 @@ public class ExperimentController {
 
   private final ExperimentService experimentService;
 
-  // TODO: Create update route
+  // TODO: Create update and get routes
 
   @PostMapping
   public ResponseEntity<CreateExperimentResponseDTO> create(@RequestBody @Valid CreateExperimentRequestDTO dto) {
@@ -33,6 +36,11 @@ public class ExperimentController {
   @GetMapping("/title-availability")
   public ResponseEntity<TitleAvailabilityResponseDTO> checkTittleAvailability(@RequestParam String title) {
     return ResponseEntity.ok(experimentService.checkTitleAvailability(title));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<FindAllExperimentsResponseDTO>> findAll() {
+    return ResponseEntity.ok(experimentService.findAll());
   }
 
 }

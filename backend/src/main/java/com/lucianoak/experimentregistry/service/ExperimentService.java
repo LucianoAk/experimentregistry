@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
@@ -91,5 +92,14 @@ public class ExperimentService {
   public TitleAvailabilityResponseDTO checkTitleAvailability(String title) {
     return new TitleAvailabilityResponseDTO(
         !experimentRepository.existsByTitle(title));
+  }
+
+  public List<FindAllExperimentsResponseDTO> findAll() {
+    return experimentRepository.findAll().stream().map(p -> new FindAllExperimentsResponseDTO(
+        p.getId(),
+        p.getTitle(),
+        p.getStartDate(),
+        p.getStatus().getName(),
+        p.getResearcher().getName())).toList();
   }
 }

@@ -30,7 +30,7 @@ public class ExperimentController {
     return ResponseEntity.ok(experimentService.create(dto));
   }
 
-  @GetMapping
+  @GetMapping("/title-availability")
   public ResponseEntity<TitleAvailabilityResponseDTO> checkTittleAvailability(@RequestParam String title) {
     return ResponseEntity.ok(experimentService.checkTitleAvailability(title));
   }

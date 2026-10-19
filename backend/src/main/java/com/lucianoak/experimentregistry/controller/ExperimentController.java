@@ -16,6 +16,7 @@ import com.lucianoak.experimentregistry.service.ExperimentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+// TODO: change tests to use new url
 @RestController
 @RequestMapping("/api/experiments")
 @RequiredArgsConstructor

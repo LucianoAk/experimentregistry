@@ -24,9 +24,4 @@ public class ExperimentStatusController {
 
   // TODO: Create update route
 
-  @GetMapping
-  public ResponseEntity<List<FindExperimentStatusResponseDTO>> getMethodName(@RequestParam UUID workflowId) {
-    return ResponseEntity.ok(experimentStatusService.searchByWorkflow(workflowId));
-  }
-
 }

@@ -1,0 +1,5 @@
+---baseUrl=http://localhost:8080/api/parameters
+
+### Delete
+---deleteUUID=d86964af-b52a-4ba2-aad2-1e66afe2334d
+curl -iX DELETE $baseUrl/$deleteUUID

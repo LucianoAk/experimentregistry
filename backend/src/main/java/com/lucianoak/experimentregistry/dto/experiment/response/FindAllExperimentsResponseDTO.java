@@ -7,6 +7,7 @@ public record FindAllExperimentsResponseDTO(
     UUID id,
     String title,
     LocalDate startDate,
+    LocalDate finishDate,
     String status,
     String researcher) {
 }

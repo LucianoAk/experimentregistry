@@ -99,6 +99,7 @@ public class ExperimentService {
         p.getId(),
         p.getTitle(),
         p.getStartDate(),
+        p.getFinishDate(),
         p.getStatus().getName(),
         p.getResearcher().getName())).toList();
   }

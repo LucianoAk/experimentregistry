@@ -74,6 +74,7 @@ public class ExperimentService {
     return new CreateExperimentResponseDTO(
         savedExperiment.getId(),
         savedExperiment.getTitle(),
+        savedExperiment.getStartDate(),
         "v" + savedExperiment.getWorkflow().getVersion(),
         savedExperiment.getStatus().getName(),
         savedExperiment.getResearcher().getName(),

@@ -1,0 +1,30 @@
+---baseUrl=http://localhost:8080/api/experiments
+
+### Create
+curl -iX POST $baseUrl
+-H "Content-Type: application/json"
+-d
+{
+  "title": "Experiment 1",
+  "workflowId": "e55e6096-3e67-470d-865a-4360961b3254",
+  "researcherId": "b89a6c0c-9644-4038-b8af-82025668cd17",
+  "startDate": "1970-01-01",
+  "parameters": [
+    {
+      "name": "Parameter 1",
+      "measurament": 100,
+      "unit": "°C",
+      "description": "Temperature of the experiment"
+    },
+    {
+      "name": "Parameter 2",
+      "measurament": 8,
+      "unit": "mg",
+      "description": "Quantity of Substance a"
+    }
+  ]
+}
+
+### Check title availability
+---checkName=Experiment%201
+curl -iX GET $baseUrl?title=$checkName

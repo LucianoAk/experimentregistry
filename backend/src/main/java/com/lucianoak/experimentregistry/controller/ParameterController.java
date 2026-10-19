@@ -21,7 +21,7 @@ public class ParameterController {
 
   // TODO: Create update route
 
-  @DeleteMapping("{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     parameterService.delete(id);
     return ResponseEntity.noContent().build();

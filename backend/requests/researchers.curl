@@ -1,0 +1,42 @@
+---baseUrl=http://localhost:8080/api/researchers
+
+curl $baseUrl
+
+### Create
+curl -iX POST $baseUrl
+-H "Content-Type: application/json"
+-d
+{
+    "name": "John Doe",
+    "email": "john@example.com"
+}
+
+### Delete
+---deleteUUID=e00bf1d0-c673-4b59-8efe-6293b94db5f8
+curl -iX DELETE $baseUrl/$deleteUUID
+
+### Find by Id
+---findUUID=e263129c-bc49-4afd-b2cd-7341cf405df9
+curl -iX GET $baseUrl/$findUUID
+
+### Search by name
+---searchName=John+Doe
+curl -iX GET $baseUrl/search?name=$searchName
+
+### Check email availability
+---checkEmail=researcher@example.com
+curl -iX GET $baseUrl/email-availability?email=$checkEmail
+
+### Toggle activation
+---toogleActivationUUID=a2e04794-703e-4824-be22-c09e8f716902
+curl -iX PATCH $baseUrl/$toogleActivationUUID/toggle-active
+
+### Update
+---updateUUID=3b8c2236-cdbb-4e98-8556-6c6887eb115f
+curl -iX PUT $baseUrl/$updateUUID
+-H "Content-Type: application/json"
+-d
+{
+  "name": "",
+  "email": ""
+}

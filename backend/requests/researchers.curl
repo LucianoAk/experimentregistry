@@ -20,7 +20,7 @@ curl -iX DELETE $baseUrl/$deleteUUID
 curl -iX GET $baseUrl/$findUUID
 
 ### Search by name
----searchName=John+Doe
+---searchName=John%20Doe
 curl -iX GET $baseUrl/search?name=$searchName
 
 ### Check email availability

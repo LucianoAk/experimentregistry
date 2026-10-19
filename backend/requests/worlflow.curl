@@ -1,7 +1,7 @@
 ---baseUrl=http://localhost:8080/api/workflows
 
 ### Create
-curl -X POST $baseUrl
+curl -iX POST $baseUrl
 -H "Content-Type: application/json"
 -d
 {
@@ -12,8 +12,8 @@ curl -X POST $baseUrl
 }
 
 ### Find All
-curl -X GET $baseUrl
+curl -iX GET $baseUrl
 
 ### Find by Id
 ---findUUID=3abfdbf1-f1bc-46a2-92f0-3e87ad940119
-curl -X GET $baseUrl/$findUUID
+curl -iX GET $baseUrl/$findUUID

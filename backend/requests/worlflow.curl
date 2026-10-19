@@ -1,0 +1,19 @@
+---baseUrl=http://localhost:8080/api
+
+### Create
+curl -X POST $baseUrl/workflows
+-H "Content-Type: application/json"
+-d
+{
+  "statuses": [
+    { "name": "Draft" },
+    { "name": "Completed" }
+  ]
+}
+
+### Find All
+curl -X GET $baseUrl/workflows
+
+### Find by Id
+---findUUID=
+curl -X GET $baseUrl/workflows/$findUUID

@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:8080/api
 
+# TODO: remove create add delete
 ### Create
 POST {{baseUrl}}/parameters
 Content-Type: application/json

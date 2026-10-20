@@ -31,3 +31,7 @@ curl -iX GET $baseUrl/title-availability?title=$checkName
 
 ### Find All
 curl -iX GET $baseUrl
+
+### Find By Id
+---findUUID=52aa5380-4b20-4b32-a4ea-0e8fc42585e6
+curl -iX GET $baseUrl/$findUUID

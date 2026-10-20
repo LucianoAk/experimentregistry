@@ -2,15 +2,20 @@ package com.lucianoak.experimentregistry.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
+import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFountException;
@@ -102,5 +107,31 @@ public class ExperimentService {
         p.getFinishDate(),
         p.getStatus().getName(),
         p.getResearcher().getName())).toList();
+  }
+
+  public FindExperimentByIdResponseDTO findById(UUID id) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    return new FindExperimentByIdResponseDTO(
+        experiment.getId(),
+        experiment.getTitle(),
+        experiment.getStartDate(),
+        experiment.getFinishDate(),
+        experiment.getResult(),
+        experiment.getWorkflow().getId(),
+        new FindExperimentStatusResponseDTO(
+            experiment.getStatus().getId(),
+            experiment.getStatus().getName(),
+            experiment.getStatus().getSequenceOrder()),
+        experiment.getResearcher().getId(),
+        experiment.getParameters().stream()
+            .map(p -> new FindParameterResponseDTO(
+                p.getId(),
+                p.getName(),
+                p.getMeasurement(),
+                p.getUnit(),
+                p.getDescription()))
+            .toList()
+
+    );
   }
 }

@@ -32,8 +32,6 @@ public class ExperimentController {
 
   private final ExperimentService experimentService;
 
-  // TODO: Create update and get routes
-
   @PostMapping
   public ResponseEntity<CreateExperimentResponseDTO> create(@RequestBody @Valid CreateExperimentRequestDTO dto) {
     return ResponseEntity.ok(experimentService.create(dto));

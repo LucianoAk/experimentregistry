@@ -35,3 +35,33 @@ curl -iX GET $baseUrl
 ### Find By Id
 ---findUUID=52aa5380-4b20-4b32-a4ea-0e8fc42585e6
 curl -iX GET $baseUrl/$findUUID
+
+### Update
+---updateUUID=80962f2d-c706-4329-8053-850c66be7f60
+curl -iX PUT $baseUrl/$updateUUID
+-H "Content-Type: application/json"
+-d
+{
+  "title": "Experiment 2",
+  "startDate": "1970-01-01",
+  "finishDate": "1970-01-02",
+  "result": "Failure",
+  "workflow": "64d92ecd-9e8a-441b-834c-e2db34a3d15c",
+  "researcher": "43e83185-3368-4c86-9e5a-0ec842b01cbb",
+  "parameters": [
+    {
+      "id": "cd686b28-e70c-4c6c-b846-5262eb862041",
+      "name": "Parameter 1",
+      "measurement": 105,
+      "unit": "°C",
+      "description": "Temperature of the experiment"
+    },
+    {
+      "id": "f5786029-bd8e-452b-ab45-21d02a308b37",
+      "name": "Parameter 2",
+      "measurement": 10,
+      "unit": "Kg",
+      "description": "Quantity of Substance x"
+    }
+  ]
+}

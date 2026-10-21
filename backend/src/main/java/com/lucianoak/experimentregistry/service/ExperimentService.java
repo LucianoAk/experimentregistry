@@ -7,16 +7,22 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.request.UpdateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
+import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFountException;
 import com.lucianoak.experimentregistry.model.Experiment;
@@ -133,5 +139,107 @@ public class ExperimentService {
             .toList()
 
     );
+  }
+
+  @Transactional
+  public UpdateExperimentResponseDTO update(UUID id, UpdateExperimentRequestDTO dto) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+
+    if (dto.title() != null && !dto.title().isBlank()) {
+      experiment.setTitle(dto.title());
+    }
+
+    if (dto.startDate() != null) {
+      experiment.setStartDate(dto.startDate());
+    }
+
+    if (dto.finishDate() != null) {
+      experiment.setFinishDate(dto.finishDate());
+    }
+
+    if (dto.result() != null && !dto.result().isBlank()) {
+      experiment.setResult(dto.result());
+    }
+
+    if (dto.workflow() != null) {
+      Workflow workflow = workflowRepository.findById(dto.workflow())
+          .orElseThrow(() -> new WorkflowNotFountException(dto.workflow()));
+
+      List<ExperimentStatus> statuses = workflow.getStatuses();
+      if (statuses.isEmpty()) {
+        throw new NoStatusAssociatedWithWorkflowException(dto.workflow());
+      }
+
+      ExperimentStatus status = statuses.stream()
+          .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+          .orElseThrow();
+
+      experiment.setWorkflow(workflow);
+      experiment.setStatus(status);
+    }
+
+    if (dto.researcher() != null) {
+      Researcher researcher = researcherRepository.findById(dto.researcher())
+          .orElseThrow(() -> new ResearcherNotFoundException(dto.researcher()));
+      experiment.setResearcher(researcher);
+    }
+
+    if (dto.parameters() != null && !dto.parameters().isEmpty()) {
+      List<Parameter> parameters = experiment.getParameters();
+      for (UpdateParameterRequestDTO parameterDTO : dto.parameters()) {
+        Parameter parameter = parameters.stream().filter(p -> p.getId().equals(parameterDTO.id())).findFirst()
+            .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
+
+        if (parameterDTO.name() != null && !parameterDTO.name().isBlank()) {
+          parameter.setName(parameterDTO.name());
+        }
+
+        if (parameterDTO.measurement() != null) {
+          parameter.setMeasurement(parameterDTO.measurement());
+        }
+
+        if (parameterDTO.unit() != null && !parameterDTO.unit().isBlank()) {
+          parameter.setUnit(parameterDTO.unit());
+        }
+
+        if (parameterDTO.description() != null && !parameterDTO.description().isBlank()) {
+          parameter.setDescription(parameterDTO.description());
+        }
+
+      }
+    }
+
+    Experiment savedExperiment = experimentRepository.save(experiment);
+
+    return new UpdateExperimentResponseDTO(
+        savedExperiment.getId(),
+        savedExperiment.getTitle(),
+        savedExperiment.getStartDate(),
+        savedExperiment.getFinishDate(),
+        savedExperiment.getResult(),
+        new FindWorkflowResponseDTO(
+            savedExperiment.getWorkflow().getId(),
+            savedExperiment.getWorkflow().getVersion(),
+            savedExperiment.getWorkflow().getStatuses().stream()
+                .map(s -> new FindExperimentStatusResponseDTO(
+                    s.getId(),
+                    s.getName(),
+                    s.getSequenceOrder()))
+                .toList(),
+            savedExperiment.getWorkflow().getCreatedAt()),
+        new FindExperimentStatusResponseDTO(
+            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getSequenceOrder()),
+        new FindResearcherResponseDTO(
+            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getEmail()),
+        savedExperiment.getParameters().stream()
+            .map(p -> new FindParameterResponseDTO(
+                p.getId(),
+                p.getName(),
+                p.getMeasurement(),
+                p.getUnit(),
+                p.getDescription()))
+            .toList());
   }
 }

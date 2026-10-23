@@ -78,6 +78,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
+  @ExceptionHandler(ParameterNotExistsInExperimentException.class)
+  public ResponseEntity<ErrorResponse> handleParameterNotExistsInExperiment(
+      ParameterNotExistsInExperimentException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
   @ExceptionHandler(ResearcherCannotBeDeletedException.class)
   public ResponseEntity<ErrorResponse> handleResearcherCannotBeDeleted(
       ResearcherCannotBeDeletedException e) {

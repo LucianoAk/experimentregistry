@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,13 @@ public class ExperimentController {
   public ResponseEntity<List<UpdateExperimentParametersResponseDTO>> updateParameters(@PathVariable @Valid UUID id,
       @RequestBody @Valid List<UpdateExperimentParametersRequestDTO> dto) {
     return ResponseEntity.ok(experimentService.updateParameters(id, dto));
+  }
+
+  @DeleteMapping("/{experimentId}/parameters/{parameterId}")
+  public ResponseEntity<Void> removeParamter(@PathVariable @Valid UUID experimentId,
+      @PathVariable @Valid UUID parameterId) {
+    experimentService.removeParameter(experimentId, parameterId);
+    return ResponseEntity.noContent().build();
   }
 
 }

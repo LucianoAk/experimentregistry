@@ -46,8 +46,8 @@ curl -iX PUT $baseUrl/$updateUUID
   "startDate": "1970-01-01",
   "finishDate": "1970-01-02",
   "result": "Failure",
-  "workflow": "64d92ecd-9e8a-441b-834c-e2db34a3d15c",
-  "researcher": "43e83185-3368-4c86-9e5a-0ec842b01cbb"
+  "workflowId": "64d92ecd-9e8a-441b-834c-e2db34a3d15c",
+  "researcherId": "43e83185-3368-4c86-9e5a-0ec842b01cbb"
 }
 
 ### Update parameters

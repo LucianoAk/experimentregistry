@@ -162,13 +162,13 @@ public class ExperimentService {
       experiment.setResult(dto.result());
     }
 
-    if (dto.workflow() != null) {
-      Workflow workflow = workflowRepository.findById(dto.workflow())
-          .orElseThrow(() -> new WorkflowNotFountException(dto.workflow()));
+    if (dto.workflowId() != null) {
+      Workflow workflow = workflowRepository.findById(dto.workflowId())
+          .orElseThrow(() -> new WorkflowNotFountException(dto.workflowId()));
 
       List<ExperimentStatus> statuses = workflow.getStatuses();
       if (statuses.isEmpty()) {
-        throw new NoStatusAssociatedWithWorkflowException(dto.workflow());
+        throw new NoStatusAssociatedWithWorkflowException(dto.workflowId());
       }
 
       ExperimentStatus status = statuses.stream()
@@ -179,9 +179,9 @@ public class ExperimentService {
       experiment.setStatus(status);
     }
 
-    if (dto.researcher() != null) {
-      Researcher researcher = researcherRepository.findById(dto.researcher())
-          .orElseThrow(() -> new ResearcherNotFoundException(dto.researcher()));
+    if (dto.researcherId() != null) {
+      Researcher researcher = researcherRepository.findById(dto.researcherId())
+          .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
       experiment.setResearcher(researcher);
     }
 

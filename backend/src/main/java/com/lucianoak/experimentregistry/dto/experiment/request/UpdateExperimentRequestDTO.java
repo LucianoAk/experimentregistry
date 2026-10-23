@@ -10,6 +10,6 @@ public record UpdateExperimentRequestDTO(
     LocalDate startDate,
     LocalDate finishDate,
     String result,
-    UUID workflow,
-    UUID researcher) {
+    UUID workflowId,
+    UUID researcherId) {
 }

@@ -7,14 +7,15 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentParametersRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
-import com.lucianoak.experimentregistry.dto.parameter.request.UpdateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
@@ -184,31 +185,6 @@ public class ExperimentService {
       experiment.setResearcher(researcher);
     }
 
-    if (dto.parameters() != null && !dto.parameters().isEmpty()) {
-      List<Parameter> parameters = experiment.getParameters();
-      for (UpdateParameterRequestDTO parameterDTO : dto.parameters()) {
-        Parameter parameter = parameters.stream().filter(p -> p.getId().equals(parameterDTO.id())).findFirst()
-            .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
-
-        if (parameterDTO.name() != null && !parameterDTO.name().isBlank()) {
-          parameter.setName(parameterDTO.name());
-        }
-
-        if (parameterDTO.measurement() != null) {
-          parameter.setMeasurement(parameterDTO.measurement());
-        }
-
-        if (parameterDTO.unit() != null && !parameterDTO.unit().isBlank()) {
-          parameter.setUnit(parameterDTO.unit());
-        }
-
-        if (parameterDTO.description() != null && !parameterDTO.description().isBlank()) {
-          parameter.setDescription(parameterDTO.description());
-        }
-
-      }
-    }
-
     Experiment savedExperiment = experimentRepository.save(experiment);
 
     return new UpdateExperimentResponseDTO(
@@ -232,14 +208,45 @@ public class ExperimentService {
             savedExperiment.getStatus().getSequenceOrder()),
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
-            savedExperiment.getResearcher().getEmail()),
-        savedExperiment.getParameters().stream()
-            .map(p -> new FindParameterResponseDTO(
-                p.getId(),
-                p.getName(),
-                p.getMeasurement(),
-                p.getUnit(),
-                p.getDescription()))
-            .toList());
+            savedExperiment.getResearcher().getEmail()));
+  }
+
+  @Transactional
+  public List<UpdateExperimentParametersResponseDTO> updateParameters(UUID id,
+      List<UpdateExperimentParametersRequestDTO> dto) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+
+    List<Parameter> parameters = experiment.getParameters();
+    for (UpdateExperimentParametersRequestDTO parameterDTO : dto) {
+      Parameter parameter = parameters.stream().filter(p -> p.getId().equals(parameterDTO.id())).findFirst()
+          .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
+
+      if (parameterDTO.name() != null && !parameterDTO.name().isBlank()) {
+        parameter.setName(parameterDTO.name());
+      }
+
+      if (parameterDTO.measurement() != null) {
+        parameter.setMeasurement(parameterDTO.measurement());
+      }
+
+      if (parameterDTO.unit() != null && !parameterDTO.unit().isBlank()) {
+        parameter.setUnit(parameterDTO.unit());
+      }
+
+      if (parameterDTO.description() != null &&
+          !parameterDTO.description().isBlank()) {
+        parameter.setDescription(parameterDTO.description());
+      }
+    }
+
+    Experiment savedExperiment = experimentRepository.save(experiment);
+
+    return savedExperiment.getParameters().stream().map(p -> new UpdateExperimentParametersResponseDTO(
+        p.getId(),
+        p.getName(),
+        p.getMeasurement(),
+        p.getUnit(),
+        p.getDescription()))
+        .toList();
   }
 }

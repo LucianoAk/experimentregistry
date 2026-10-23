@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentParametersRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
@@ -58,6 +60,12 @@ public class ExperimentController {
   public ResponseEntity<UpdateExperimentResponseDTO> update(@PathVariable @Valid UUID id,
       @RequestBody @Valid UpdateExperimentRequestDTO dto) {
     return ResponseEntity.ok(experimentService.update(id, dto));
+  }
+
+  @PutMapping("/{id}/parameters")
+  public ResponseEntity<List<UpdateExperimentParametersResponseDTO>> updateParameters(@PathVariable @Valid UUID id,
+      @RequestBody @Valid List<UpdateExperimentParametersRequestDTO> dto) {
+    return ResponseEntity.ok(experimentService.updateParameters(id, dto));
   }
 
 }

@@ -47,21 +47,27 @@ curl -iX PUT $baseUrl/$updateUUID
   "finishDate": "1970-01-02",
   "result": "Failure",
   "workflow": "64d92ecd-9e8a-441b-834c-e2db34a3d15c",
-  "researcher": "43e83185-3368-4c86-9e5a-0ec842b01cbb",
-  "parameters": [
-    {
-      "id": "cd686b28-e70c-4c6c-b846-5262eb862041",
-      "name": "Parameter 1",
-      "measurement": 105,
-      "unit": "°C",
-      "description": "Temperature of the experiment"
-    },
-    {
-      "id": "f5786029-bd8e-452b-ab45-21d02a308b37",
-      "name": "Parameter 2",
-      "measurement": 10,
-      "unit": "Kg",
-      "description": "Quantity of Substance x"
-    }
-  ]
+  "researcher": "43e83185-3368-4c86-9e5a-0ec842b01cbb"
 }
+
+### Update parameters
+---updateParametersUUID=6893db42-965e-4ac3-aac2-8373d738db68
+curl -iX PUT $baseUrl/$updateParametersUUID/parameters
+-H "Content-Type: application/json"
+-d
+[
+  {
+    "id": "a9ea3269-0027-45fe-b92c-a0c3aa59cb03",
+    "name": "Parameter 1",
+    "measurement": 105,
+    "unit": "°C",
+    "description": "Temperature of the experiment"
+  },
+  {
+    "id": "277b83f5-c221-464e-b442-1b261ce81db3",
+    "name": "Parameter 2",
+    "measurement": 10,
+    "unit": "Kg",
+    "description": "Quantity of Substance x"
+  }
+]

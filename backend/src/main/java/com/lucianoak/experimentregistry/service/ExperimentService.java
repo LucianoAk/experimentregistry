@@ -32,6 +32,7 @@ import com.lucianoak.experimentregistry.model.Parameter;
 import com.lucianoak.experimentregistry.model.Researcher;
 import com.lucianoak.experimentregistry.model.Workflow;
 import com.lucianoak.experimentregistry.repository.ExperimentRepository;
+import com.lucianoak.experimentregistry.repository.ParameterRepository;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 import com.lucianoak.experimentregistry.repository.WorkflowRepository;
 
@@ -45,6 +46,7 @@ public class ExperimentService {
   private final ExperimentRepository experimentRepository;
   private final ResearcherRepository researcherRepository;
   private final WorkflowRepository workflowRepository;
+  private final ParameterRepository parameterRepository;
 
   @Transactional
   public CreateExperimentResponseDTO create(CreateExperimentRequestDTO dto) {
@@ -248,5 +250,16 @@ public class ExperimentService {
         p.getUnit(),
         p.getDescription()))
         .toList();
+  }
+
+  @Transactional
+  public void removeParameter(UUID experimentId, UUID parameterId) {
+    Experiment experiment = experimentRepository.findById(experimentId)
+        .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
+
+    Parameter parameter = parameterRepository.findById(parameterId).orElseThrow(
+        () -> new ParameterNotFoundException(parameterId));
+
+    experiment.removeParameter(parameter);
   }
 }

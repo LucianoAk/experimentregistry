@@ -51,8 +51,8 @@ curl -iX PUT $baseUrl/$updateUUID
 }
 
 ### Update parameters
----updateParametersUUID=6893db42-965e-4ac3-aac2-8373d738db68
-curl -iX PUT $baseUrl/$updateParametersUUID/parameters
+---updateParametersExperimentUUID=6893db42-965e-4ac3-aac2-8373d738db68
+curl -iX PUT $baseUrl/$updateParametersExperimentUUID/parameters
 -H "Content-Type: application/json"
 -d
 [

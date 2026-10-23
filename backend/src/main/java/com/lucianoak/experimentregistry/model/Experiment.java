@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.lucianoak.experimentregistry.exception.ParameterAlreadyExistsInExperimentException;
+import com.lucianoak.experimentregistry.exception.ParameterNotExistsInExperimentException;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -76,7 +77,7 @@ public class Experiment {
   @JoinColumn(name = "researcher_id", nullable = false)
   private Researcher researcher;
 
-  @OneToMany(mappedBy = "experiment", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "experiment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @Getter(value = AccessLevel.NONE)
   @Setter(value = AccessLevel.NONE)
   private List<Parameter> parameters = new ArrayList<>();
@@ -87,12 +88,23 @@ public class Experiment {
 
   public void addParameter(Parameter parameter) {
     boolean alreadyExists = parameters.stream()
-        .anyMatch(existing -> existing.getName().equals(parameter.getName()));
+        .anyMatch(existing -> existing.getId().equals(parameter.getId()));
     if (alreadyExists) {
       throw new ParameterAlreadyExistsInExperimentException(parameter.getName(), this.getId());
     }
     parameters.add(parameter);
     parameter.setExperiment(this);
+  }
+
+  public void removeParameter(Parameter parameter) {
+    boolean alreadyExists = parameters.stream()
+        .anyMatch(existing -> existing.getId().equals(parameter.getId()));
+    if (!alreadyExists) {
+      throw new ParameterNotExistsInExperimentException(parameter.getName(), this.getId());
+    }
+
+    parameter.setExperiment(null);
+    parameters.remove(parameter);
   }
 
   public List<Parameter> getParameters() {

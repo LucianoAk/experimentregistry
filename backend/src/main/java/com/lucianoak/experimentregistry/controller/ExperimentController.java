@@ -84,7 +84,7 @@ public class ExperimentController {
   }
 
   @DeleteMapping("/{experimentId}/parameters/{parameterId}")
-  public ResponseEntity<Void> removeParamter(@PathVariable @Valid UUID experimentId,
+  public ResponseEntity<Void> removeParameter(@PathVariable @Valid UUID experimentId,
       @PathVariable @Valid UUID parameterId) {
     experimentService.removeParameter(experimentId, parameterId);
     return ResponseEntity.noContent().build();

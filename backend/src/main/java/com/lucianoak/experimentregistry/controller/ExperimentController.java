@@ -63,6 +63,12 @@ public class ExperimentController {
     return ResponseEntity.ok(experimentService.update(id, dto));
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable @Valid UUID id) {
+    experimentService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
   @PutMapping("/{id}/parameters")
   public ResponseEntity<List<UpdateExperimentParametersResponseDTO>> updateParameters(@PathVariable @Valid UUID id,
       @RequestBody @Valid List<UpdateExperimentParametersRequestDTO> dto) {

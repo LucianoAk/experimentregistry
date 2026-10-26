@@ -21,7 +21,9 @@ import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimen
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.UpdateExperimentParametersRequestDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
@@ -73,6 +75,12 @@ public class ExperimentController {
   public ResponseEntity<List<UpdateExperimentParametersResponseDTO>> updateParameters(@PathVariable @Valid UUID id,
       @RequestBody @Valid List<UpdateExperimentParametersRequestDTO> dto) {
     return ResponseEntity.ok(experimentService.updateParameters(id, dto));
+  }
+
+  @PostMapping("/{id}/parameters")
+  public ResponseEntity<List<CreateParameterResponseDTO>> addParameter(@PathVariable @Valid UUID id,
+      @RequestBody @Valid CreateParameterRequestDTO dto) {
+    return ResponseEntity.ok(experimentService.addParameter(id, dto));
   }
 
   @DeleteMapping("/{experimentId}/parameters/{parameterId}")

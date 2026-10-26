@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
-import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentParametersRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
-import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.request.UpdateExperimentParametersRequestDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.lucianoak.experimentregistry.dto.experiment.request;
+package com.lucianoak.experimentregistry.dto.parameter.request;
 
 import java.math.BigDecimal;
 import java.util.UUID;

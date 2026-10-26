@@ -50,6 +50,10 @@ curl -iX PUT $baseUrl/$updateUUID
   "researcherId": "43e83185-3368-4c86-9e5a-0ec842b01cbb"
 }
 
+### Delete
+---deleteUUID=97ca1a17-01a0-4d26-8f3b-801e3284844d
+curl -iX DELETE $baseUrl/$deleteUUID
+
 ### Update parameters
 ---updateParametersExperimentUUID=6893db42-965e-4ac3-aac2-8373d738db68
 curl -iX PUT $baseUrl/$updateParametersExperimentUUID/parameters

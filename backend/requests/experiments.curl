@@ -76,6 +76,18 @@ curl -iX PUT $baseUrl/$updateParametersExperimentUUID/parameters
   }
 ]
 
+### Add parameters
+---addParameterExperimentUUID=976ade06-1304-4db9-8c5e-d6f2c0018158
+curl -iX POST $baseUrl/$addParameterExperimentUUID/parameters
+-H "Content-Type: application/json"
+-d
+{
+  "name": "new Parameter",
+  "measurament": 3.14,
+  "unit": " pies",
+  "description": "Pies of the experiment"
+}
+
 ### Remove parameter
 ---removeParameterExperimentUUID=dd42583f-6c6e-4072-85d7-9bc0e61464e9
 ---removeParameterUUID=d45f8ca0-6358-42e4-8b0e-705a73c19618

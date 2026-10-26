@@ -214,6 +214,12 @@ public class ExperimentService {
   }
 
   @Transactional
+  public void delete(UUID id) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    experimentRepository.delete(experiment);
+  }
+
+  @Transactional
   public List<UpdateExperimentParametersResponseDTO> updateParameters(UUID id,
       List<UpdateExperimentParametersRequestDTO> dto) {
     Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));

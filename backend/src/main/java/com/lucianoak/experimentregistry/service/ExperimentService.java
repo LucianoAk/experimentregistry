@@ -14,6 +14,7 @@ import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentBy
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.UpdateExperimentParametersRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
@@ -250,6 +251,27 @@ public class ExperimentService {
     Experiment savedExperiment = experimentRepository.save(experiment);
 
     return savedExperiment.getParameters().stream().map(p -> new UpdateExperimentParametersResponseDTO(
+        p.getId(),
+        p.getName(),
+        p.getMeasurement(),
+        p.getUnit(),
+        p.getDescription()))
+        .toList();
+  }
+
+  public List<CreateParameterResponseDTO> addParameter(UUID experimentId, CreateParameterRequestDTO dto) {
+    Experiment experiment = experimentRepository.findById(experimentId)
+        .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
+
+    experiment.addParameter(Parameter.builder()
+        .name(dto.name())
+        .measurement(dto.measurament())
+        .unit(dto.unit())
+        .description(dto.description()).build());
+
+    experimentRepository.save(experiment);
+
+    return experiment.getParameters().stream().map(p -> new CreateParameterResponseDTO(
         p.getId(),
         p.getName(),
         p.getMeasurement(),

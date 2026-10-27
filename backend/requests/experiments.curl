@@ -92,3 +92,7 @@ curl -iX POST $baseUrl/$addParameterExperimentUUID/parameters
 ---removeParameterExperimentUUID=dd42583f-6c6e-4072-85d7-9bc0e61464e9
 ---removeParameterUUID=d45f8ca0-6358-42e4-8b0e-705a73c19618
 curl -iX DELETE $baseUrl/$removeParameterExperimentUUID/parameters/$removeParameterUUID
+
+### Advance Status
+---advanceStatusExperimentUUID=328086d6-c215-4d4f-a890-0edc513d94be
+curl -iX PATCH $baseUrl/$advanceStatusExperimentUUID/advance-status

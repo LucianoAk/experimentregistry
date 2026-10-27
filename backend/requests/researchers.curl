@@ -1,7 +1,5 @@
 ---baseUrl=http://localhost:8080/api/researchers
 
-curl $baseUrl
-
 ### Create
 curl -iX POST $baseUrl
 -H "Content-Type: application/json"

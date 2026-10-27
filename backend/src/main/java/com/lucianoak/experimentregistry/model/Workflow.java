@@ -34,42 +34,42 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public class Workflow {
 
-    @Builder
-    private Workflow(Integer version) {
-        this.version = version;
+  @Builder
+  private Workflow(Integer version) {
+    this.version = version;
+  }
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id")
+  private UUID id;
+
+  @Column(name = "version", nullable = false, unique = true)
+  private Integer version;
+
+  @OneToMany(mappedBy = "workflow", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private List<ExperimentStatus> statuses = new ArrayList<>();
+
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private Instant createdAt;
+
+  public void addStatus(ExperimentStatus status) {
+    boolean alreadyExists = statuses.stream()
+        .anyMatch(existing -> existing.getName().equals(status.getName()));
+
+    if (alreadyExists) {
+      throw new DuplicateStatusException(status.getName());
     }
+    status.setSequenceOrder(statuses.size() + 1);
+    statuses.add(status);
+    status.setWorkflow(this);
+  }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private UUID id;
-
-    @Column(name = "version", nullable = false, unique = true)
-    private Integer version;
-
-    @OneToMany(mappedBy = "workflow", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Getter(value = AccessLevel.NONE)
-    @Setter(value = AccessLevel.NONE)
-    private List<ExperimentStatus> statuses = new ArrayList<>();
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    public void addStatus(ExperimentStatus status) {
-        boolean alreadyExists = statuses.stream()
-                .anyMatch(existing -> existing.getName().equals(status.getName()));
-
-        if (alreadyExists) {
-            throw new DuplicateStatusException(status.getName());
-        }
-        status.setSequenceOrder(statuses.size() + 1);
-        statuses.add(status);
-        status.setWorkflow(this);
-    }
-
-    public List<ExperimentStatus> getStatuses() {
-        return List.copyOf(statuses);
-    }
+  public List<ExperimentStatus> getStatuses() {
+    return List.copyOf(statuses);
+  }
 
 }

@@ -40,8 +40,6 @@ public class ExperimentController {
 
   private final ExperimentService experimentService;
 
-  // TODO: add patch request: 'change status by sequence order'
-
   @PostMapping
   public ResponseEntity<CreateExperimentResponseDTO> create(@RequestBody @Valid CreateExperimentRequestDTO dto) {
     return ResponseEntity.ok(experimentService.create(dto));

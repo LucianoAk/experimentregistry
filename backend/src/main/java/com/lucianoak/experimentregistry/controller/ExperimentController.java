@@ -21,6 +21,7 @@ import com.lucianoak.experimentregistry.dto.experiment.response.AdvanceExperimen
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.RevertExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
@@ -95,5 +96,10 @@ public class ExperimentController {
   @PatchMapping("/{id}/advance-status")
   public ResponseEntity<AdvanceExperimentStatusResponseDTO> advanceStatus(@PathVariable @Valid UUID id) {
     return ResponseEntity.ok(experimentService.advanceStatus(id));
+  }
+
+  @PatchMapping("/{id}/revert-status")
+  public ResponseEntity<RevertExperimentStatusResponseDTO> revertStatus(@PathVariable @Valid UUID id) {
+    return ResponseEntity.ok(experimentService.revertStatus(id));
   }
 }

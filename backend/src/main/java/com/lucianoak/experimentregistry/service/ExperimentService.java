@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.AdvanceExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
@@ -23,6 +24,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherRe
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
+import com.lucianoak.experimentregistry.exception.LastStatusInWorkflowException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -289,5 +291,42 @@ public class ExperimentService {
         () -> new ParameterNotFoundException(parameterId));
 
     experiment.removeParameter(parameter);
+  }
+
+  @Transactional
+  public AdvanceExperimentStatusResponseDTO advanceStatus(UUID id) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Workflow workflow = experiment.getWorkflow();
+    ExperimentStatus currentStatus = experiment.getStatus();
+
+    ExperimentStatus nextStatus = workflow.getStatuses().stream()
+        .filter(s -> s.getSequenceOrder() > currentStatus.getSequenceOrder())
+        .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+        .orElseThrow(() -> new LastStatusInWorkflowException(workflow.getId()));
+    experiment.setStatus(nextStatus);
+    Experiment savedExperiment = experimentRepository.save(experiment);
+
+    return new AdvanceExperimentStatusResponseDTO(
+        savedExperiment.getId(),
+        savedExperiment.getTitle(),
+        savedExperiment.getStartDate(),
+        savedExperiment.getFinishDate(),
+        savedExperiment.getResult(),
+        new FindWorkflowResponseDTO(
+            savedExperiment.getWorkflow().getId(),
+            savedExperiment.getWorkflow().getVersion(),
+            savedExperiment.getWorkflow().getStatuses().stream()
+                .map(s -> new FindExperimentStatusResponseDTO(
+                    s.getId(),
+                    s.getName(),
+                    s.getSequenceOrder()))
+                .toList(),
+            savedExperiment.getWorkflow().getCreatedAt()),
+        new FindExperimentStatusResponseDTO(
+            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getSequenceOrder()),
+        new FindResearcherResponseDTO(
+            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getEmail()));
   }
 }

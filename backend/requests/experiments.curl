@@ -96,3 +96,7 @@ curl -iX DELETE $baseUrl/$removeParameterExperimentUUID/parameters/$removeParame
 ### Advance Status
 ---advanceStatusExperimentUUID=328086d6-c215-4d4f-a890-0edc513d94be
 curl -iX PATCH $baseUrl/$advanceStatusExperimentUUID/advance-status
+
+## Revert status
+---revertStatusExperimentUUID=bc83a388-bcb8-4659-a0ab-588946587366
+curl -iX PATCH $baseUrl/$revertStatusExperimentUUID/revert-status

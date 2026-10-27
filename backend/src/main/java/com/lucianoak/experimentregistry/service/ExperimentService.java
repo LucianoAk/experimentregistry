@@ -22,9 +22,9 @@ import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResp
 import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
+import com.lucianoak.experimentregistry.exception.AlreadyInLastStatusOfWorkflowException;
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
-import com.lucianoak.experimentregistry.exception.LastStatusInWorkflowException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -302,7 +302,7 @@ public class ExperimentService {
     ExperimentStatus nextStatus = workflow.getStatuses().stream()
         .filter(s -> s.getSequenceOrder() > currentStatus.getSequenceOrder())
         .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
-        .orElseThrow(() -> new LastStatusInWorkflowException(workflow.getId()));
+        .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
     experiment.setStatus(nextStatus);
     Experiment savedExperiment = experimentRepository.save(experiment);
 

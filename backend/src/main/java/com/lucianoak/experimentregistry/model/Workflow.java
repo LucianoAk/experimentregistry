@@ -63,7 +63,7 @@ public class Workflow {
     if (alreadyExists) {
       throw new DuplicateStatusException(status.getName());
     }
-    status.setSequenceOrder(statuses.size() + 1);
+    status.setSequenceOrder(statuses.size());
     statuses.add(status);
     status.setWorkflow(this);
   }

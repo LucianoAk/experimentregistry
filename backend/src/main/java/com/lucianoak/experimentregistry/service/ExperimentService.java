@@ -12,6 +12,7 @@ import com.lucianoak.experimentregistry.dto.experiment.response.AdvanceExperimen
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.RevertExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
@@ -307,6 +308,43 @@ public class ExperimentService {
     Experiment savedExperiment = experimentRepository.save(experiment);
 
     return new AdvanceExperimentStatusResponseDTO(
+        savedExperiment.getId(),
+        savedExperiment.getTitle(),
+        savedExperiment.getStartDate(),
+        savedExperiment.getFinishDate(),
+        savedExperiment.getResult(),
+        new FindWorkflowResponseDTO(
+            savedExperiment.getWorkflow().getId(),
+            savedExperiment.getWorkflow().getVersion(),
+            savedExperiment.getWorkflow().getStatuses().stream()
+                .map(s -> new FindExperimentStatusResponseDTO(
+                    s.getId(),
+                    s.getName(),
+                    s.getSequenceOrder()))
+                .toList(),
+            savedExperiment.getWorkflow().getCreatedAt()),
+        new FindExperimentStatusResponseDTO(
+            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getSequenceOrder()),
+        new FindResearcherResponseDTO(
+            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getEmail()));
+  }
+
+  @Transactional
+  public RevertExperimentStatusResponseDTO revertStatus(UUID id) {
+    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Workflow workflow = experiment.getWorkflow();
+    ExperimentStatus currentStatus = experiment.getStatus();
+
+    ExperimentStatus nextStatus = workflow.getStatuses().stream()
+        .filter(s -> s.getSequenceOrder() < currentStatus.getSequenceOrder())
+        .max(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+        .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
+    experiment.setStatus(nextStatus);
+    Experiment savedExperiment = experimentRepository.save(experiment);
+
+    return new RevertExperimentStatusResponseDTO(
         savedExperiment.getId(),
         savedExperiment.getTitle(),
         savedExperiment.getStartDate(),

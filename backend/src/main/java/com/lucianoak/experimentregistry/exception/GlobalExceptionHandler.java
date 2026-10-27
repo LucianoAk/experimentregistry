@@ -105,6 +105,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
+  @ExceptionHandler(AlreadyInFirstStatusOfWorkflowException.class)
+  public ResponseEntity<ErrorResponse> handleAlreadyInFirstStatusOfWorkflow(
+      AlreadyInFirstStatusOfWorkflowException e) {
+    HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ErrorResponse> handleMethodNotSupported(
       HttpRequestMethodNotSupportedException e) {

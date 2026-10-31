@@ -94,9 +94,24 @@ public class ExperimentService {
         savedExperiment.getId(),
         savedExperiment.getTitle(),
         savedExperiment.getStartDate(),
-        "v" + savedExperiment.getWorkflow().getVersion(),
-        savedExperiment.getStatus().getName(),
-        savedExperiment.getResearcher().getName(),
+        savedExperiment.getFinishDate(),
+        savedExperiment.getResult(),
+        new FindWorkflowResponseDTO(
+            savedExperiment.getWorkflow().getId(),
+            savedExperiment.getWorkflow().getVersion(),
+            savedExperiment.getWorkflow().getStatuses().stream()
+                .map(s -> new FindExperimentStatusResponseDTO(
+                    s.getId(),
+                    s.getName(),
+                    s.getSequenceOrder()))
+                .toList(),
+            savedExperiment.getWorkflow().getCreatedAt()),
+        new FindExperimentStatusResponseDTO(
+            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getSequenceOrder()),
+        new FindResearcherResponseDTO(
+            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getEmail()),
         savedExperiment.getParameters().stream()
             .map(p -> new CreateParameterResponseDTO(
                 p.getId(),

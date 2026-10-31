@@ -108,6 +108,7 @@ class ExperimentControllerTest {
               .contentType(MediaType.APPLICATION_JSON))
           .andExpectAll(
               MockMvcResultMatchers.status().isCreated(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
               MockMvcResultMatchers.jsonPath("$.id").value(experimentId.toString()),
               MockMvcResultMatchers.jsonPath("$.title").value(dto.title()),
               MockMvcResultMatchers.jsonPath("$.startDate").value(dto.startDate().toString()),

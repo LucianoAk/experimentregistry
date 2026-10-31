@@ -3,6 +3,7 @@ package com.lucianoak.experimentregistry.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,7 @@ public class ExperimentController {
 
   @PostMapping
   public ResponseEntity<CreateExperimentResponseDTO> create(@RequestBody @Valid CreateExperimentRequestDTO dto) {
-    return ResponseEntity.ok(experimentService.create(dto));
+    return ResponseEntity.status(HttpStatus.CREATED).body(experimentService.create(dto));
   }
 
   @GetMapping("/title-availability")

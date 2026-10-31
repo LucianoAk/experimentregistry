@@ -12,13 +12,13 @@ curl -iX POST $baseUrl
   "parameters": [
     {
       "name": "Parameter 1",
-      "measurament": 100,
+      "measurement": 100,
       "unit": "°C",
       "description": "Temperature of the experiment"
     },
     {
       "name": "Parameter 2",
-      "measurament": 8,
+      "measurement": 8,
       "unit": "mg",
       "description": "Quantity of Substance a"
     }

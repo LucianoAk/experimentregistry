@@ -83,7 +83,7 @@ public class ExperimentService {
     dto.parameters().forEach(p -> experiment.addParameter(
         Parameter.builder()
             .name(p.name())
-            .measurement(p.measurament())
+            .measurement(p.measurement())
             .unit(p.unit())
             .description(p.description())
             .build()));
@@ -290,7 +290,7 @@ public class ExperimentService {
 
     experiment.addParameter(Parameter.builder()
         .name(dto.name())
-        .measurement(dto.measurament())
+        .measurement(dto.measurement())
         .unit(dto.unit())
         .description(dto.description()).build());
 

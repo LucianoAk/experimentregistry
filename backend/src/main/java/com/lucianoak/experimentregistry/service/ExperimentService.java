@@ -133,8 +133,15 @@ public class ExperimentService {
         p.getTitle(),
         p.getStartDate(),
         p.getFinishDate(),
-        p.getStatus().getName(),
-        p.getResearcher().getName())).toList();
+        new FindExperimentStatusResponseDTO(
+            p.getStatus().getId(),
+            p.getStatus().getName(),
+            p.getStatus().getSequenceOrder()),
+        new FindResearcherResponseDTO(
+            p.getResearcher().getId(),
+            p.getResearcher().getName(),
+            p.getResearcher().getEmail())))
+        .toList();
   }
 
   public FindExperimentByIdResponseDTO findById(UUID id) {

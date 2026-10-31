@@ -175,7 +175,7 @@ class ExperimentControllerTest {
     }
 
     @Test
-    void givenEmptyTitle_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
+    void givenBlankTitle_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
       CreateParameterRequestDTO parameterRequest = new CreateParameterRequestDTO(
           "Temperature",
           BigDecimal.valueOf(25.5),

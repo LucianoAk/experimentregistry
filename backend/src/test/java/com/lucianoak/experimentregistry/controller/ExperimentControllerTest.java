@@ -135,5 +135,17 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void givenMissingBodyContent_whenCreatingExperiment_thenReturnsBadRequest()
+        throws Exception {
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

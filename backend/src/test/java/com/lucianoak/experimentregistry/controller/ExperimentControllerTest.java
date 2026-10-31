@@ -151,7 +151,10 @@ class ExperimentControllerTest {
     @Test
     void givenMissingTitle_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
       CreateParameterRequestDTO parameterRequest = new CreateParameterRequestDTO(
-          "Temperature", BigDecimal.valueOf(25.5), "Celsius", "Desc");
+          "Temperature",
+          BigDecimal.valueOf(25.5),
+          "Celsius",
+          "Desc");
 
       CreateExperimentRequestDTO dto = new CreateExperimentRequestDTO(
           null,

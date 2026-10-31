@@ -120,5 +120,20 @@ class ExperimentControllerTest {
       Mockito.verify(experimentService).create(dto);
     }
 
+    @Test
+    void givenMalformedJson_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .content("""
+                  {
+                  "title": "Test Experiment",
+                  "startDate": "2026-06-01"
+                  """)
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

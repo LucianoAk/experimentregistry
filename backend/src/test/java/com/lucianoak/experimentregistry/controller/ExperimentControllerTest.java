@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
@@ -529,6 +530,26 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+  }
+
+  @Nested
+  class CheckTitleAvailabilityTests {
+    @Test
+    void givenAvailableTitle_whenCheckingTitleAvailability_thenReturnsAvailable() throws Exception {
+      String title = "Quantum Physics";
+
+      Mockito.when(experimentService.checkTitleAvailability(title)).thenReturn(new TitleAvailabilityResponseDTO(true));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/title-availability")
+              .param("title", title))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(true));
+
+      Mockito.verify(experimentService).checkTitleAvailability(title);
     }
   }
 }

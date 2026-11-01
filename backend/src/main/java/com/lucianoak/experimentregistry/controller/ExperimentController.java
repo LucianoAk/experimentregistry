@@ -49,7 +49,6 @@ public class ExperimentController {
 
   @GetMapping("/title-availability")
   public ResponseEntity<TitleAvailabilityResponseDTO> checkTittleAvailability(@RequestParam @NotBlank String title) {
-    System.out.println("Title: " + title);
     return ResponseEntity.ok(experimentService.checkTitleAvailability(title));
   }
 

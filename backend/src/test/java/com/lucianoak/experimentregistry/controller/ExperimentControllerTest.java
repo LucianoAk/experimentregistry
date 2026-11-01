@@ -31,6 +31,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResp
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
+import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -917,6 +918,32 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+
+    @Test
+    void givenNonExistingWorkflow_whenUpdatingExperiment_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+      UUID workflowId = UUID.randomUUID();
+
+      UpdateExperimentRequestDTO dto = new UpdateExperimentRequestDTO(
+          "Quantum Physics Experiment",
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          workflowId,
+          UUID.randomUUID());
+
+      Mockito.when(experimentService.update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class)))
+          .thenThrow(new WorkflowNotFoundException(workflowId));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class));
     }
   }
 }

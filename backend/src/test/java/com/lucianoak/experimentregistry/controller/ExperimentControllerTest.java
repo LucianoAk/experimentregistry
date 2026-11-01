@@ -896,5 +896,27 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void given256CharacterTitle_whenUpdatingExperiment_thenReturnsBadRequest() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      UpdateExperimentRequestDTO dto = new UpdateExperimentRequestDTO(
+          "a".repeat(256),
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          UUID.randomUUID(),
+          UUID.randomUUID());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

@@ -31,6 +31,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResp
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
+import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
@@ -935,6 +936,32 @@ class ExperimentControllerTest {
 
       Mockito.when(experimentService.update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class)))
           .thenThrow(new WorkflowNotFoundException(workflowId));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class));
+    }
+
+    @Test
+    void givenNonExistingResearhcer_whenUpdatingExperiment_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+      UUID researcherId = UUID.randomUUID();
+
+      UpdateExperimentRequestDTO dto = new UpdateExperimentRequestDTO(
+          "Quantum Physics Experiment",
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          UUID.randomUUID(),
+          researcherId);
+
+      Mockito.when(experimentService.update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class)))
+          .thenThrow(new ResearcherNotFoundException(researcherId));
 
       mockMvc.perform(
           MockMvcRequestBuilders

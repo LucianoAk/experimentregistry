@@ -551,5 +551,22 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).checkTitleAvailability(title);
     }
+
+    @Test
+    void givenUnavailableTitle_whenCheckingTitleAvailability_thenReturnsUnavailable() throws Exception {
+      String title = "Quantum Physics";
+
+      Mockito.when(experimentService.checkTitleAvailability(title)).thenReturn(new TitleAvailabilityResponseDTO(false));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/title-availability")
+              .param("title", title))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.available").value(false));
+
+      Mockito.verify(experimentService).checkTitleAvailability(title);
+    }
   }
 }

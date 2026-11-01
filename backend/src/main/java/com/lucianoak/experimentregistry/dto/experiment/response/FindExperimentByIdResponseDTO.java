@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
+import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
+import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 
 public record FindExperimentByIdResponseDTO(
     UUID id,
@@ -13,8 +15,8 @@ public record FindExperimentByIdResponseDTO(
     LocalDate startDate,
     LocalDate finishDate,
     String result,
-    UUID workflow,
+    FindWorkflowResponseDTO workflow,
     FindExperimentStatusResponseDTO status,
-    UUID researcher,
+    FindResearcherResponseDTO researcher,
     List<FindParameterResponseDTO> parameters) {
 }

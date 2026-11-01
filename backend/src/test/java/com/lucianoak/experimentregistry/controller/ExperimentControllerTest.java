@@ -581,5 +581,15 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void givenMissingTitle_whenCheckingTitleAvailability_thenReturnsBadRequest() throws Exception {
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/title-availability"))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

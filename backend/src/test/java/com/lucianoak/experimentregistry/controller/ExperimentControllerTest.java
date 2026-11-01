@@ -863,5 +863,25 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class));
     }
+
+    @Test
+    void givenInvalidId_whenUpdatingExperiment_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-Id";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(new UpdateExperimentRequestDTO(
+                  "Quantum Physics Experiment",
+                  LocalDate.of(2026, 1, 1),
+                  LocalDate.of(2026, 1, 10),
+                  "Successful results",
+                  UUID.randomUUID(),
+                  UUID.randomUUID()))))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

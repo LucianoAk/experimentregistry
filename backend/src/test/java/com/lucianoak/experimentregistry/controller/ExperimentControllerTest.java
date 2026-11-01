@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
@@ -590,6 +591,75 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+  }
+
+  @Nested
+  class FindAllTests {
+    @Test
+    void givenExperimentsExist_whenFindingAll_thenReturnsExperiments() throws Exception {
+      List<FindAllExperimentsResponseDTO> experiments = List.of(
+          new FindAllExperimentsResponseDTO(
+              UUID.randomUUID(),
+              "Quantum Physics Experiment",
+              LocalDate.of(2026, 1, 1),
+              LocalDate.of(2026, 1, 10),
+              new FindExperimentStatusResponseDTO(
+                  UUID.randomUUID(),
+                  "Active",
+                  1),
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(),
+                  "John Doe",
+                  "john@example.com")),
+          new FindAllExperimentsResponseDTO(
+              UUID.randomUUID(),
+              "Chemistry Experiment",
+              LocalDate.of(2026, 2, 1),
+              LocalDate.of(2026, 2, 15),
+              new FindExperimentStatusResponseDTO(
+                  UUID.randomUUID(),
+                  "Pending",
+                  2),
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(),
+                  "Jane Doe",
+                  "jane@example.com")));
+
+      Mockito.when(experimentService.findAll()).thenReturn(experiments);
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(2),
+              MockMvcResultMatchers.jsonPath("$[0].id").value(experiments.get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].title").value(experiments.get(0).title()),
+              MockMvcResultMatchers.jsonPath("$[0].startDate").value(experiments.get(0).startDate().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].finishDate").value(experiments.get(0).finishDate().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].status.id").value(experiments.get(0).status().id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].status.name").value(experiments.get(0).status().name()),
+              MockMvcResultMatchers.jsonPath("$[0].status.sequenceOrder")
+                  .value(experiments.get(0).status().sequenceOrder()),
+              MockMvcResultMatchers.jsonPath("$[0].researcher.id")
+                  .value(experiments.get(0).researcher().id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].researcher.name").value(experiments.get(0).researcher().name()),
+              MockMvcResultMatchers.jsonPath("$[0].researcher.email").value(experiments.get(0).researcher().email()),
+              MockMvcResultMatchers.jsonPath("$[1].id").value(experiments.get(1).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].title").value(experiments.get(1).title()),
+              MockMvcResultMatchers.jsonPath("$[1].startDate").value(experiments.get(1).startDate().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].finishDate").value(experiments.get(1).finishDate().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].status.id").value(experiments.get(1).status().id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].status.name").value(experiments.get(1).status().name()),
+              MockMvcResultMatchers.jsonPath("$[1].status.sequenceOrder")
+                  .value(experiments.get(1).status().sequenceOrder()),
+              MockMvcResultMatchers.jsonPath("$[1].researcher.id")
+                  .value(experiments.get(1).researcher().id().toString()),
+              MockMvcResultMatchers.jsonPath("$[1].researcher.name").value(experiments.get(1).researcher().name()),
+              MockMvcResultMatchers.jsonPath("$[1].researcher.email").value(experiments.get(1).researcher().email()));
+
+      Mockito.verify(experimentService).findAll();
     }
   }
 }

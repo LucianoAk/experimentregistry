@@ -973,4 +973,45 @@ class ExperimentControllerTest {
       Mockito.verify(experimentService).update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class));
     }
   }
+
+  @Nested
+  class DeleteTests {
+    @Test
+    void givenExistingId_whenDeletingExperiment_thenReturnsNoContent() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .delete(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+      Mockito.verify(experimentService).delete(id);
+    }
+
+    @Test
+    void givenNonExistingId_whenDeletingExperiment_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      Mockito.doThrow(new ExperimentNotFoundException(id)).when(experimentService).delete(id);
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .delete(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).delete(id);
+    }
+
+    @Test
+    void givenInvalidId_whenDeletingExperiment_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-Id";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .delete(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
+  }
 }

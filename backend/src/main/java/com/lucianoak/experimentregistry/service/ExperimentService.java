@@ -29,7 +29,7 @@ import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
-import com.lucianoak.experimentregistry.exception.WorkflowNotFountException;
+import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.model.Experiment;
 import com.lucianoak.experimentregistry.model.ExperimentStatus;
 import com.lucianoak.experimentregistry.model.Parameter;
@@ -61,7 +61,7 @@ public class ExperimentService {
         .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
 
     Workflow workflow = workflowRepository.findById(dto.workflowId())
-        .orElseThrow(() -> new WorkflowNotFountException(dto.workflowId()));
+        .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
     List<ExperimentStatus> statuses = workflow.getStatuses();
     if (statuses.isEmpty()) {
@@ -204,7 +204,7 @@ public class ExperimentService {
 
     if (dto.workflowId() != null) {
       Workflow workflow = workflowRepository.findById(dto.workflowId())
-          .orElseThrow(() -> new WorkflowNotFountException(dto.workflowId()));
+          .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
       List<ExperimentStatus> statuses = workflow.getStatuses();
       if (statuses.isEmpty()) {

@@ -36,9 +36,9 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
-  @ExceptionHandler(WorkflowNotFountException.class)
+  @ExceptionHandler(WorkflowNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleWorkflowNotFound(
-      WorkflowNotFountException e) {
+      WorkflowNotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }

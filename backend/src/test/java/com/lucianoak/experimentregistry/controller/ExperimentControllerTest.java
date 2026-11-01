@@ -20,10 +20,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.service.ExperimentService;
@@ -674,6 +676,79 @@ class ExperimentControllerTest {
               MockMvcResultMatchers.jsonPath("$.length()").value(0));
 
       Mockito.verify(experimentService).findAll();
+    }
+  }
+
+  @Nested
+  class FindByIdTests {
+    @Test
+    void givenExistingId_whenFindingById_thenReturnsExperiment() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      FindExperimentByIdResponseDTO experiment = new FindExperimentByIdResponseDTO(
+          id,
+          "Quantum Physics Experiment",
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          new FindWorkflowResponseDTO(
+              UUID.randomUUID(),
+              1,
+              List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+              Instant.parse("2026-01-01T00:00:00Z")),
+          new FindExperimentStatusResponseDTO(
+              UUID.randomUUID(),
+              "Active",
+              1),
+          new FindResearcherResponseDTO(
+              UUID.randomUUID(),
+              "John Doe",
+              "john@example.com"),
+          List.of(new FindParameterResponseDTO(
+              UUID.randomUUID(),
+              "Temperature",
+              BigDecimal.valueOf(25.5),
+              "Celsius",
+              "Room temperature")));
+
+      Mockito.when(experimentService.findById(id)).thenReturn(experiment);
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", id))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.title").value(experiment.title()),
+              MockMvcResultMatchers.jsonPath("$.startDate").value(experiment.startDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.finishDate").value(experiment.finishDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.result").value(experiment.result()),
+              MockMvcResultMatchers.jsonPath("$.workflow.id").value(experiment.workflow().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.workflow.version").value(experiment.workflow().version()),
+              MockMvcResultMatchers.jsonPath("$.workflow.statues[0].id")
+                  .value(experiment.workflow().statues().get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$.workflow.statues[0].name")
+                  .value(experiment.workflow().statues().get(0).name()),
+              MockMvcResultMatchers.jsonPath("$.workflow.statues[0].sequenceOrder")
+                  .value(experiment.workflow().statues().get(0).sequenceOrder()),
+              MockMvcResultMatchers.jsonPath("$.workflow.createdAt")
+                  .value(experiment.workflow().createdAt().toString()),
+              MockMvcResultMatchers.jsonPath("$.status.id").value(experiment.status().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.status.name").value(experiment.status().name()),
+              MockMvcResultMatchers.jsonPath("$.status.sequenceOrder").value(experiment.status().sequenceOrder()),
+              MockMvcResultMatchers.jsonPath("$.researcher.id").value(experiment.researcher().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.researcher.name").value(experiment.researcher().name()),
+              MockMvcResultMatchers.jsonPath("$.researcher.email").value(experiment.researcher().email()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].id")
+                  .value(experiment.parameters().get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].name").value(experiment.parameters().get(0).name()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].measurement")
+                  .value(experiment.parameters().get(0).measurement().doubleValue()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].unit").value(experiment.parameters().get(0).unit()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].description")
+                  .value(experiment.parameters().get(0).description()));
+
+      Mockito.verify(experimentService).findById(id);
     }
   }
 }

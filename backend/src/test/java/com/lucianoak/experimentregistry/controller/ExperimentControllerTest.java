@@ -28,6 +28,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterRe
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
+import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -747,6 +748,20 @@ class ExperimentControllerTest {
               MockMvcResultMatchers.jsonPath("$.parameters[0].unit").value(experiment.parameters().get(0).unit()),
               MockMvcResultMatchers.jsonPath("$.parameters[0].description")
                   .value(experiment.parameters().get(0).description()));
+
+      Mockito.verify(experimentService).findById(id);
+    }
+
+    @Test
+    void givenNonExistingId_whenFindingById_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      Mockito.when(experimentService.findById(id)).thenThrow(new ExperimentNotFoundException(id));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
 
       Mockito.verify(experimentService).findById(id);
     }

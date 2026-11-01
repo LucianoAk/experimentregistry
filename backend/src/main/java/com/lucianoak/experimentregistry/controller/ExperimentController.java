@@ -32,6 +32,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentP
 import com.lucianoak.experimentregistry.service.ExperimentService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,7 +48,8 @@ public class ExperimentController {
   }
 
   @GetMapping("/title-availability")
-  public ResponseEntity<TitleAvailabilityResponseDTO> checkTittleAvailability(@RequestParam String title) {
+  public ResponseEntity<TitleAvailabilityResponseDTO> checkTittleAvailability(@RequestParam @NotBlank String title) {
+    System.out.println("Title: " + title);
     return ResponseEntity.ok(experimentService.checkTitleAvailability(title));
   }
 

@@ -18,10 +18,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilityResponseDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
@@ -776,6 +778,65 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+  }
+
+  @Nested
+  class UpdateTests {
+    @Test
+    void givenValidData_whenUpdatingExperiment_thenReturnsOk() throws Exception {
+      UUID id = UUID.randomUUID();
+      UpdateExperimentRequestDTO dto = new UpdateExperimentRequestDTO(
+          "Quantum Physics Experiment",
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          UUID.randomUUID(),
+          UUID.randomUUID());
+
+      UpdateExperimentResponseDTO response = new UpdateExperimentResponseDTO(
+          id,
+          dto.title(),
+          dto.startDate(),
+          dto.finishDate(),
+          dto.result(),
+          new FindWorkflowResponseDTO(
+              UUID.randomUUID(),
+              1,
+              List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+              Instant.parse("2026-01-01T00:00:00Z")),
+          new FindExperimentStatusResponseDTO(
+              UUID.randomUUID(),
+              "Active",
+              1),
+          new FindResearcherResponseDTO(
+              UUID.randomUUID(),
+              "John Doe",
+              "john@example.com"));
+
+      Mockito.when(experimentService.update(id, dto)).thenReturn(response);
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.title").value(dto.title()),
+              MockMvcResultMatchers.jsonPath("$.startDate").value(dto.startDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.finishDate").value(dto.finishDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.result").value(dto.result()),
+              MockMvcResultMatchers.jsonPath("$.workflow.id").value(response.workflow().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.workflow.version").value(response.workflow().version()),
+              MockMvcResultMatchers.jsonPath("$.status.id").value(response.status().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.status.name").value(response.status().name()),
+              MockMvcResultMatchers.jsonPath("$.researcher.id").value(response.researcher().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.researcher.name").value(response.researcher().name()));
+
+      Mockito.verify(experimentService).update(id, dto);
     }
   }
 }

@@ -427,5 +427,33 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void givenParameterWithExceedingFractionDigitsMeasurement_whenCreatingExperiment_thenReturnsBadRequest()
+        throws Exception {
+      BigDecimal invalidMeasurement = new BigDecimal("123.1234567");
+
+      CreateParameterRequestDTO parameterRequest = new CreateParameterRequestDTO(
+          "Temperature",
+          invalidMeasurement,
+          "Celsius",
+          "Description");
+
+      CreateExperimentRequestDTO dto = new CreateExperimentRequestDTO(
+          "Test Experiment",
+          LocalDate.now(),
+          UUID.randomUUID(),
+          UUID.randomUUID(),
+          List.of(parameterRequest));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .content(objectMapper.writeValueAsString(dto))
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

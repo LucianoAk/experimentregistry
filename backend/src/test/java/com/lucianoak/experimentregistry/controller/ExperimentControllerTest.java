@@ -838,5 +838,30 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).update(id, dto);
     }
+
+    @Test
+    void givenNonExistingExperiment_whenUpdatingExperiment_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      UpdateExperimentRequestDTO dto = new UpdateExperimentRequestDTO(
+          "Quantum Physics Experiment",
+          LocalDate.of(2026, 1, 1),
+          LocalDate.of(2026, 1, 10),
+          "Successful results",
+          UUID.randomUUID(),
+          UUID.randomUUID());
+
+      Mockito.when(experimentService.update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class)))
+          .thenThrow(new ExperimentNotFoundException(id));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .put(BASE_URL + "/{id}", id)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(dto)))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).update(Mockito.eq(id), Mockito.any(UpdateExperimentRequestDTO.class));
+    }
   }
 }

@@ -349,5 +349,30 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void givenParameterWithNameExceedingMaxLength_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
+      CreateParameterRequestDTO parameterRequest = new CreateParameterRequestDTO(
+          "a".repeat(256),
+          BigDecimal.valueOf(25.5),
+          "Celsius",
+          "Description");
+
+      CreateExperimentRequestDTO dto = new CreateExperimentRequestDTO(
+          "Test Experiment",
+          LocalDate.now(),
+          UUID.randomUUID(),
+          UUID.randomUUID(),
+          List.of(parameterRequest));
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .post(BASE_URL)
+              .content(objectMapper.writeValueAsString(dto))
+              .contentType(MediaType.APPLICATION_JSON))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

@@ -765,5 +765,17 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).findById(id);
     }
+
+    @Test
+    void givenInvalidId_whenFindingById_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-Id";
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL + "/{id}", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

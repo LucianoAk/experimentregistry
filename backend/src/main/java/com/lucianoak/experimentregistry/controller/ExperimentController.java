@@ -76,7 +76,7 @@ public class ExperimentController {
 
   @PutMapping("/{id}/parameters")
   public ResponseEntity<List<UpdateExperimentParametersResponseDTO>> updateParameters(@PathVariable @Valid UUID id,
-      @RequestBody @Valid List<UpdateExperimentParametersRequestDTO> dto) {
+      @RequestBody List<@Valid UpdateExperimentParametersRequestDTO> dto) {
     return ResponseEntity.ok(experimentService.updateParameters(id, dto));
   }
 

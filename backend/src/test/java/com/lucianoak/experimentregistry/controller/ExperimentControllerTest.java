@@ -661,5 +661,19 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).findAll();
     }
+
+    @Test
+    void givenNoExperimentsExist_whenFindingAll_thenReturnsEmptyList() throws Exception {
+      Mockito.when(experimentService.findAll()).thenReturn(List.of());
+
+      mockMvc.perform(
+          MockMvcRequestBuilders
+              .get(BASE_URL))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.jsonPath("$.length()").value(0));
+
+      Mockito.verify(experimentService).findAll();
+    }
   }
 }

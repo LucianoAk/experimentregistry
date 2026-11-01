@@ -301,7 +301,7 @@ class ExperimentControllerTest {
     }
 
     @Test
-    void givenParameterWithMissingName_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
+    void givenParameterWithNullName_whenCreatingExperiment_thenReturnsBadRequest() throws Exception {
       CreateParameterRequestDTO parameterRequest = new CreateParameterRequestDTO(
           null,
           BigDecimal.valueOf(25.5),

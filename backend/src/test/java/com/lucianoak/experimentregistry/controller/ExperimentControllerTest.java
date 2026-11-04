@@ -1151,4 +1151,23 @@ class ExperimentControllerTest {
       Mockito.verifyNoInteractions(experimentService);
     }
   }
+
+  @Nested
+  class RemoveParameterTests {
+    @Test
+    void givenValidIds_whenRemovingParameter_thenReturnsNoContent() throws Exception {
+      UUID experimentId = UUID.randomUUID();
+      UUID parameterId = UUID.randomUUID();
+
+      Mockito.doNothing().when(experimentService).removeParameter(experimentId, parameterId);
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.delete(
+                  BASE_URL + "/{experimentId}/parameters/{parameterId}", experimentId, parameterId))
+          .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+      Mockito.verify(experimentService).removeParameter(experimentId, parameterId);
+    }
+  }
 }

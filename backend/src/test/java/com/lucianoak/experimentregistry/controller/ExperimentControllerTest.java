@@ -2,6 +2,7 @@ package com.lucianoak.experimentregistry.controller;
 
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
+import com.lucianoak.experimentregistry.dto.experiment.response.AdvanceExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.CreateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindAllExperimentsResponseDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.FindExperimentByIdResponseDTO;
@@ -1233,6 +1234,57 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+  }
+
+  @Nested
+  class AdvanceStatusTests {
+    @Test
+    void givenValidId_whenAdvancingStatus_thenReturnsOk() throws Exception {
+      UUID id = UUID.randomUUID();
+      AdvanceExperimentStatusResponseDTO response =
+          new AdvanceExperimentStatusResponseDTO(
+              id,
+              "Quantum Physics Experiment",
+              LocalDate.of(2026, 1, 1),
+              LocalDate.of(2026, 1, 10),
+              "Successful results",
+              new FindWorkflowResponseDTO(
+                  UUID.randomUUID(),
+                  1,
+                  List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+                  Instant.parse("2026-01-01T00:00:00Z")),
+              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2),
+              new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
+
+      Mockito.when(experimentService.advanceStatus(id)).thenReturn(response);
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.patch(BASE_URL + "/{id}/advance-status", id)
+                  .contentType(MediaType.APPLICATION_JSON))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
+              MockMvcResultMatchers.jsonPath("$.title").value(response.title()),
+              MockMvcResultMatchers.jsonPath("$.startDate").value(response.startDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.finishDate")
+                  .value(response.finishDate().toString()),
+              MockMvcResultMatchers.jsonPath("$.result").value(response.result()),
+              MockMvcResultMatchers.jsonPath("$.workflow.id")
+                  .value(response.workflow().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.workflow.version")
+                  .value(response.workflow().version()),
+              MockMvcResultMatchers.jsonPath("$.status.id")
+                  .value(response.status().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.status.name").value(response.status().name()),
+              MockMvcResultMatchers.jsonPath("$.researcher.id")
+                  .value(response.researcher().id().toString()),
+              MockMvcResultMatchers.jsonPath("$.researcher.name")
+                  .value(response.researcher().name()));
+
+      Mockito.verify(experimentService).advanceStatus(id);
     }
   }
 }

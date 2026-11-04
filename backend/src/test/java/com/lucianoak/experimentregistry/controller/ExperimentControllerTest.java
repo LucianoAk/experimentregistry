@@ -1069,5 +1069,27 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).updateParameters(Mockito.eq(id), Mockito.anyList());
     }
+
+    @Test
+    void givenInvalidId_whenUpdatingParameters_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-Id";
+      List<UpdateExperimentParametersRequestDTO> requestDtos =
+          List.of(
+              new UpdateExperimentParametersRequestDTO(
+                  UUID.randomUUID(),
+                  "Temperature",
+                  BigDecimal.valueOf(25.5),
+                  "Celsius",
+                  "Room temperature"));
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}/parameters", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(requestDtos)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

@@ -1127,5 +1127,28 @@ class ExperimentControllerTest {
 
       Mockito.verifyNoInteractions(experimentService);
     }
+
+    @Test
+    void givenUnitExceedingMaxLength_whenUpdatingParameters_thenReturnsBadRequest()
+        throws Exception {
+      UUID id = UUID.randomUUID();
+      List<UpdateExperimentParametersRequestDTO> requestDtos =
+          List.of(
+              new UpdateExperimentParametersRequestDTO(
+                  UUID.randomUUID(),
+                  "Temperature",
+                  BigDecimal.valueOf(25.5),
+                  "a".repeat(51),
+                  "Room temperature"));
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}/parameters", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(requestDtos)))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

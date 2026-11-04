@@ -1169,5 +1169,23 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).removeParameter(experimentId, parameterId);
     }
+
+    @Test
+    void givenNonExistingExperimentId_whenRemovingParameter_thenReturnsNotFound() throws Exception {
+      UUID experimentId = UUID.randomUUID();
+      UUID parameterId = UUID.randomUUID();
+
+      Mockito.doThrow(new ExperimentNotFoundException(experimentId))
+          .when(experimentService)
+          .removeParameter(experimentId, parameterId);
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.delete(
+                  BASE_URL + "/{experimentId}/parameters/{parameterId}", experimentId, parameterId))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).removeParameter(experimentId, parameterId);
+    }
   }
 }

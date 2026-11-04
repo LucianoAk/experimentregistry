@@ -1317,5 +1317,16 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).advanceStatus(id);
     }
+
+    @Test
+    void givenInvalidId_whenAdvancingStatus_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-uuid";
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/advance-status", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

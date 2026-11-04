@@ -1220,5 +1220,19 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).removeParameter(experimentId, parameterId);
     }
+
+    @Test
+    void givenInvalidParameterId_whenRemovingParameter_thenReturnsBadRequest() throws Exception {
+      UUID experimentId = UUID.randomUUID();
+      String parameterId = "not-a-valid-uuid";
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.delete(
+                  BASE_URL + "/{experimentId}/parameters/{parameterId}", experimentId, parameterId))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

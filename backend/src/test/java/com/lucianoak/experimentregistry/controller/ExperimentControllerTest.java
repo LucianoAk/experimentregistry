@@ -1044,5 +1044,30 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).updateParameters(Mockito.eq(id), Mockito.anyList());
     }
+
+    @Test
+    void givenNonExistingExperiment_whenUpdatingParameters_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+      List<UpdateExperimentParametersRequestDTO> requestDtos =
+          List.of(
+              new UpdateExperimentParametersRequestDTO(
+                  UUID.randomUUID(),
+                  "Temperature",
+                  BigDecimal.valueOf(25.5),
+                  "Celsius",
+                  "Room temperature"));
+
+      Mockito.when(experimentService.updateParameters(Mockito.eq(id), Mockito.anyList()))
+          .thenThrow(new ExperimentNotFoundException(id));
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}/parameters", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(requestDtos)))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).updateParameters(Mockito.eq(id), Mockito.anyList());
+    }
   }
 }

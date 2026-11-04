@@ -9,8 +9,10 @@ import com.lucianoak.experimentregistry.dto.experiment.response.TitleAvailabilit
 import com.lucianoak.experimentregistry.dto.experiment.response.UpdateExperimentResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.request.CreateParameterRequestDTO;
+import com.lucianoak.experimentregistry.dto.parameter.request.UpdateExperimentParametersRequestDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.CreateParameterResponseDTO;
 import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResponseDTO;
+import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
@@ -995,6 +997,52 @@ class ExperimentControllerTest {
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(experimentService);
+    }
+  }
+
+  @Nested
+  class UpdateParametersTests {
+    @Test
+    void givenValidData_whenUpdatingParameters_thenReturnsOk() throws Exception {
+      UUID id = UUID.randomUUID();
+      List<UpdateExperimentParametersRequestDTO> requestDtos =
+          List.of(
+              new UpdateExperimentParametersRequestDTO(
+                  UUID.randomUUID(),
+                  "Temperature",
+                  BigDecimal.valueOf(25.5),
+                  "Celsius",
+                  "Room temperature"));
+
+      List<UpdateExperimentParametersResponseDTO> responseDtos =
+          List.of(
+              new UpdateExperimentParametersResponseDTO(
+                  requestDtos.get(0).id(),
+                  requestDtos.get(0).name(),
+                  requestDtos.get(0).measurement(),
+                  requestDtos.get(0).unit(),
+                  requestDtos.get(0).description()));
+
+      Mockito.when(experimentService.updateParameters(id, requestDtos)).thenReturn(responseDtos);
+
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}/parameters", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(requestDtos)))
+          .andExpectAll(
+              MockMvcResultMatchers.status().isOk(),
+              MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
+              MockMvcResultMatchers.jsonPath("$.length()").value(1),
+              MockMvcResultMatchers.jsonPath("$[0].id").value(responseDtos.get(0).id().toString()),
+              MockMvcResultMatchers.jsonPath("$[0].name").value(responseDtos.get(0).name()),
+              MockMvcResultMatchers.jsonPath("$[0].measurement")
+                  .value(responseDtos.get(0).measurement().doubleValue()),
+              MockMvcResultMatchers.jsonPath("$[0].unit").value(responseDtos.get(0).unit()),
+              MockMvcResultMatchers.jsonPath("$[0].description")
+                  .value(responseDtos.get(0).description()));
+
+      Mockito.verify(experimentService).updateParameters(Mockito.eq(id), Mockito.anyList());
     }
   }
 }

@@ -16,6 +16,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResp
 import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
+import com.lucianoak.experimentregistry.exception.AlreadyInLastStatusOfWorkflowException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
@@ -1297,6 +1298,22 @@ class ExperimentControllerTest {
       mockMvc
           .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/advance-status", id))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).advanceStatus(id);
+    }
+
+    @Test
+    void givenExperimentInLastStatus_whenAdvancingStatus_thenReturnsUnprocessableEntity()
+        throws Exception {
+      UUID id = UUID.randomUUID();
+      UUID workflowId = UUID.randomUUID();
+
+      Mockito.when(experimentService.advanceStatus(id))
+          .thenThrow(new AlreadyInLastStatusOfWorkflowException(workflowId));
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/advance-status", id))
+          .andExpect(MockMvcResultMatchers.status().isUnprocessableContent());
 
       Mockito.verify(experimentService).advanceStatus(id);
     }

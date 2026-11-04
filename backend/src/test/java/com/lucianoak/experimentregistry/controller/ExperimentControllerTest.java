@@ -1286,5 +1286,19 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).advanceStatus(id);
     }
+
+    @Test
+    void givenNonExistingId_whenAdvancingStatus_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      Mockito.when(experimentService.advanceStatus(id))
+          .thenThrow(new ExperimentNotFoundException(id));
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/advance-status", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).advanceStatus(id);
+    }
   }
 }

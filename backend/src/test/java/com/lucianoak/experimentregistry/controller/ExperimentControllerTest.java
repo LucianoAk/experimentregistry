@@ -18,7 +18,7 @@ import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherRe
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.AlreadyInLastStatusOfWorkflowException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
-import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
+import com.lucianoak.experimentregistry.exception.ParameterNotExistsInExperimentException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.service.ExperimentService;
@@ -1210,7 +1210,7 @@ class ExperimentControllerTest {
       UUID experimentId = UUID.randomUUID();
       UUID parameterId = UUID.randomUUID();
 
-      Mockito.doThrow(new ParameterNotFoundException(parameterId))
+      Mockito.doThrow(new ParameterNotExistsInExperimentException("Parameter", experimentId))
           .when(experimentService)
           .removeParameter(experimentId, parameterId);
 
@@ -1218,7 +1218,7 @@ class ExperimentControllerTest {
           .perform(
               MockMvcRequestBuilders.delete(
                   BASE_URL + "/{experimentId}/parameters/{parameterId}", experimentId, parameterId))
-          .andExpect(MockMvcResultMatchers.status().isNotFound());
+          .andExpect(MockMvcResultMatchers.status().isConflict());
 
       Mockito.verify(experimentService).removeParameter(experimentId, parameterId);
     }

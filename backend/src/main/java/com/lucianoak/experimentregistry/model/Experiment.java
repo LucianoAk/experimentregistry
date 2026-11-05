@@ -1,17 +1,7 @@
 package com.lucianoak.experimentregistry.model;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.lucianoak.experimentregistry.exception.ParameterAlreadyExistsInExperimentException;
 import com.lucianoak.experimentregistry.exception.ParameterNotExistsInExperimentException;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,11 +14,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "experiments")
@@ -39,7 +36,11 @@ import lombok.Setter;
 public class Experiment {
 
   @Builder
-  private Experiment(String title, LocalDate startDate, Workflow workflow, ExperimentStatus status,
+  private Experiment(
+      String title,
+      LocalDate startDate,
+      Workflow workflow,
+      ExperimentStatus status,
       Researcher researcher) {
     this.title = title;
     this.startDate = startDate;
@@ -77,7 +78,11 @@ public class Experiment {
   @JoinColumn(name = "researcher_id", nullable = false)
   private Researcher researcher;
 
-  @OneToMany(mappedBy = "experiment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(
+      mappedBy = "experiment",
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   @Getter(value = AccessLevel.NONE)
   @Setter(value = AccessLevel.NONE)
   private List<Parameter> parameters = new ArrayList<>();
@@ -87,8 +92,8 @@ public class Experiment {
   private Instant createdAt;
 
   public void addParameter(Parameter parameter) {
-    boolean alreadyExists = parameters.stream()
-        .anyMatch(existing -> existing.getName().equals(parameter.getName()));
+    boolean alreadyExists =
+        parameters.stream().anyMatch(existing -> existing.getName().equals(parameter.getName()));
     if (alreadyExists) {
       throw new ParameterAlreadyExistsInExperimentException(parameter.getName(), this.getId());
     }
@@ -97,8 +102,8 @@ public class Experiment {
   }
 
   public void removeParameter(Parameter parameter) {
-    boolean alreadyExists = parameters.stream()
-        .anyMatch(existing -> existing.getId().equals(parameter.getId()));
+    boolean alreadyExists =
+        parameters.stream().anyMatch(existing -> existing.getId().equals(parameter.getId()));
     if (!alreadyExists) {
       throw new ParameterNotExistsInExperimentException(parameter.getName(), this.getId());
     }
@@ -110,5 +115,4 @@ public class Experiment {
   public List<Parameter> getParameters() {
     return List.copyOf(parameters);
   }
-
 }

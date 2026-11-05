@@ -21,7 +21,7 @@ import com.lucianoak.experimentregistry.exception.AlreadyInLastStatusOfWorkflowE
 import com.lucianoak.experimentregistry.exception.DuplicateExperimentTitleException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.NoStatusAssociatedWithWorkflowException;
-import com.lucianoak.experimentregistry.exception.ParameterNotFoundException;
+import com.lucianoak.experimentregistry.exception.ParameterNotExistsInExperimentException;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.model.Experiment;
@@ -276,7 +276,8 @@ public class ExperimentService {
           parameters.stream()
               .filter(p -> p.getId().equals(parameterDTO.id()))
               .findFirst()
-              .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
+              .orElseThrow(
+                  () -> new ParameterNotExistsInExperimentException(parameterDTO.id(), id));
 
       if (parameterDTO.name() != null && !parameterDTO.name().isBlank()) {
         parameter.setName(parameterDTO.name());
@@ -338,7 +339,8 @@ public class ExperimentService {
     Parameter parameter =
         parameterRepository
             .findById(parameterId)
-            .orElseThrow(() -> new ParameterNotFoundException(parameterId));
+            .orElseThrow(
+                () -> new ParameterNotExistsInExperimentException(parameterId, experimentId));
 
     experiment.removeParameter(parameter);
   }

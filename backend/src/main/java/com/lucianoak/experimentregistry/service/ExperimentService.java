@@ -1,11 +1,5 @@
 package com.lucianoak.experimentregistry.service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.lucianoak.experimentregistry.dto.experiment.request.CreateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.request.UpdateExperimentRequestDTO;
 import com.lucianoak.experimentregistry.dto.experiment.response.AdvanceExperimentStatusResponseDTO;
@@ -39,9 +33,12 @@ import com.lucianoak.experimentregistry.repository.ExperimentRepository;
 import com.lucianoak.experimentregistry.repository.ParameterRepository;
 import com.lucianoak.experimentregistry.repository.ResearcherRepository;
 import com.lucianoak.experimentregistry.repository.WorkflowRepository;
-
 import jakarta.transaction.Transactional;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -57,36 +54,44 @@ public class ExperimentService {
     if (experimentRepository.existsByTitle(dto.title())) {
       throw new DuplicateExperimentTitleException(dto.title());
     }
-    Researcher researcher = researcherRepository.findById(dto.researcherId())
-        .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
+    Researcher researcher =
+        researcherRepository
+            .findById(dto.researcherId())
+            .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
 
-    Workflow workflow = workflowRepository.findById(dto.workflowId())
-        .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
+    Workflow workflow =
+        workflowRepository
+            .findById(dto.workflowId())
+            .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
     List<ExperimentStatus> statuses = workflow.getStatuses();
     if (statuses.isEmpty()) {
       throw new NoStatusAssociatedWithWorkflowException(dto.workflowId());
     }
 
-    ExperimentStatus status = statuses.stream()
-        .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
-        .orElseThrow();
+    ExperimentStatus status =
+        statuses.stream()
+            .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+            .orElseThrow();
 
-    Experiment experiment = Experiment.builder()
-        .title(dto.title())
-        .startDate(dto.startDate())
-        .workflow(workflow)
-        .status(status)
-        .researcher(researcher)
-        .build();
+    Experiment experiment =
+        Experiment.builder()
+            .title(dto.title())
+            .startDate(dto.startDate())
+            .workflow(workflow)
+            .status(status)
+            .researcher(researcher)
+            .build();
 
-    dto.parameters().forEach(p -> experiment.addParameter(
-        Parameter.builder()
-            .name(p.name())
-            .measurement(p.measurement())
-            .unit(p.unit())
-            .description(p.description())
-            .build()));
+    dto.parameters()
+        .forEach(p ->
+            experiment.addParameter(
+                Parameter.builder()
+                    .name(p.name())
+                    .measurement(p.measurement())
+                    .unit(p.unit())
+                    .description(p.description())
+                    .build()));
 
     Experiment savedExperiment = experimentRepository.save(experiment);
 
@@ -100,52 +105,52 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getId(),
             savedExperiment.getWorkflow().getVersion(),
             savedExperiment.getWorkflow().getStatuses().stream()
-                .map(s -> new FindExperimentStatusResponseDTO(
-                    s.getId(),
-                    s.getName(),
-                    s.getSequenceOrder()))
+                .map(s ->
+                    new FindExperimentStatusResponseDTO(
+                        s.getId(), s.getName(), s.getSequenceOrder()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
-            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getId(),
+            savedExperiment.getStatus().getName(),
             savedExperiment.getStatus().getSequenceOrder()),
         new FindResearcherResponseDTO(
-            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getId(),
+            savedExperiment.getResearcher().getName(),
             savedExperiment.getResearcher().getEmail()),
         savedExperiment.getParameters().stream()
-            .map(p -> new CreateParameterResponseDTO(
-                p.getId(),
-                p.getName(),
-                p.getMeasurement(),
-                p.getUnit(),
-                p.getDescription()))
+            .map(p ->
+                new CreateParameterResponseDTO(
+                    p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
             .toList());
   }
 
   public TitleAvailabilityResponseDTO checkTitleAvailability(String title) {
-    return new TitleAvailabilityResponseDTO(
-        !experimentRepository.existsByTitle(title));
+    return new TitleAvailabilityResponseDTO(!experimentRepository.existsByTitle(title));
   }
 
   public List<FindAllExperimentsResponseDTO> findAll() {
-    return experimentRepository.findAll().stream().map(p -> new FindAllExperimentsResponseDTO(
-        p.getId(),
-        p.getTitle(),
-        p.getStartDate(),
-        p.getFinishDate(),
-        new FindExperimentStatusResponseDTO(
-            p.getStatus().getId(),
-            p.getStatus().getName(),
-            p.getStatus().getSequenceOrder()),
-        new FindResearcherResponseDTO(
-            p.getResearcher().getId(),
-            p.getResearcher().getName(),
-            p.getResearcher().getEmail())))
+    return experimentRepository.findAll().stream()
+        .map(p ->
+            new FindAllExperimentsResponseDTO(
+                p.getId(),
+                p.getTitle(),
+                p.getStartDate(),
+                p.getFinishDate(),
+                new FindExperimentStatusResponseDTO(
+                    p.getStatus().getId(),
+                    p.getStatus().getName(),
+                    p.getStatus().getSequenceOrder()),
+                new FindResearcherResponseDTO(
+                    p.getResearcher().getId(),
+                    p.getResearcher().getName(),
+                    p.getResearcher().getEmail())))
         .toList();
   }
 
   public FindExperimentByIdResponseDTO findById(UUID id) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
     return new FindExperimentByIdResponseDTO(
         experiment.getId(),
         experiment.getTitle(),
@@ -156,10 +161,9 @@ public class ExperimentService {
             experiment.getWorkflow().getId(),
             experiment.getWorkflow().getVersion(),
             experiment.getWorkflow().getStatuses().stream()
-                .map(s -> new FindExperimentStatusResponseDTO(
-                    s.getId(),
-                    s.getName(),
-                    s.getSequenceOrder()))
+                .map(s ->
+                    new FindExperimentStatusResponseDTO(
+                        s.getId(), s.getName(), s.getSequenceOrder()))
                 .toList(),
             experiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
@@ -171,20 +175,16 @@ public class ExperimentService {
             experiment.getResearcher().getName(),
             experiment.getResearcher().getEmail()),
         experiment.getParameters().stream()
-            .map(p -> new FindParameterResponseDTO(
-                p.getId(),
-                p.getName(),
-                p.getMeasurement(),
-                p.getUnit(),
-                p.getDescription()))
-            .toList()
-
-    );
+            .map(p ->
+                new FindParameterResponseDTO(
+                    p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
+            .toList());
   }
 
   @Transactional
   public UpdateExperimentResponseDTO update(UUID id, UpdateExperimentRequestDTO dto) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
 
     if (dto.title() != null && !dto.title().isBlank()) {
       experiment.setTitle(dto.title());
@@ -203,25 +203,30 @@ public class ExperimentService {
     }
 
     if (dto.workflowId() != null) {
-      Workflow workflow = workflowRepository.findById(dto.workflowId())
-          .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
+      Workflow workflow =
+          workflowRepository
+              .findById(dto.workflowId())
+              .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
       List<ExperimentStatus> statuses = workflow.getStatuses();
       if (statuses.isEmpty()) {
         throw new NoStatusAssociatedWithWorkflowException(dto.workflowId());
       }
 
-      ExperimentStatus status = statuses.stream()
-          .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
-          .orElseThrow();
+      ExperimentStatus status =
+          statuses.stream()
+              .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+              .orElseThrow();
 
       experiment.setWorkflow(workflow);
       experiment.setStatus(status);
     }
 
     if (dto.researcherId() != null) {
-      Researcher researcher = researcherRepository.findById(dto.researcherId())
-          .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
+      Researcher researcher =
+          researcherRepository
+              .findById(dto.researcherId())
+              .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
       experiment.setResearcher(researcher);
     }
 
@@ -237,35 +242,41 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getId(),
             savedExperiment.getWorkflow().getVersion(),
             savedExperiment.getWorkflow().getStatuses().stream()
-                .map(s -> new FindExperimentStatusResponseDTO(
-                    s.getId(),
-                    s.getName(),
-                    s.getSequenceOrder()))
+                .map(s ->
+                    new FindExperimentStatusResponseDTO(
+                        s.getId(), s.getName(), s.getSequenceOrder()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
-            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getId(),
+            savedExperiment.getStatus().getName(),
             savedExperiment.getStatus().getSequenceOrder()),
         new FindResearcherResponseDTO(
-            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getId(),
+            savedExperiment.getResearcher().getName(),
             savedExperiment.getResearcher().getEmail()));
   }
 
   @Transactional
   public void delete(UUID id) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
     experimentRepository.delete(experiment);
   }
 
   @Transactional
-  public List<UpdateExperimentParametersResponseDTO> updateParameters(UUID id,
-      List<UpdateExperimentParametersRequestDTO> dto) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+  public List<UpdateExperimentParametersResponseDTO> updateParameters(
+      UUID id, List<UpdateExperimentParametersRequestDTO> dto) {
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
 
     List<Parameter> parameters = experiment.getParameters();
     for (UpdateExperimentParametersRequestDTO parameterDTO : dto) {
-      Parameter parameter = parameters.stream().filter(p -> p.getId().equals(parameterDTO.id())).findFirst()
-          .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
+      Parameter parameter =
+          parameters.stream()
+              .filter(p -> p.getId().equals(parameterDTO.id()))
+              .findFirst()
+              .orElseThrow(() -> new ParameterNotFoundException(parameterDTO.id()));
 
       if (parameterDTO.name() != null && !parameterDTO.name().isBlank()) {
         parameter.setName(parameterDTO.name());
@@ -279,65 +290,71 @@ public class ExperimentService {
         parameter.setUnit(parameterDTO.unit());
       }
 
-      if (parameterDTO.description() != null &&
-          !parameterDTO.description().isBlank()) {
+      if (parameterDTO.description() != null && !parameterDTO.description().isBlank()) {
         parameter.setDescription(parameterDTO.description());
       }
     }
 
     Experiment savedExperiment = experimentRepository.save(experiment);
 
-    return savedExperiment.getParameters().stream().map(p -> new UpdateExperimentParametersResponseDTO(
-        p.getId(),
-        p.getName(),
-        p.getMeasurement(),
-        p.getUnit(),
-        p.getDescription()))
+    return savedExperiment.getParameters().stream()
+        .map(p ->
+            new UpdateExperimentParametersResponseDTO(
+                p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
         .toList();
   }
 
-  public List<CreateParameterResponseDTO> addParameter(UUID experimentId, CreateParameterRequestDTO dto) {
-    Experiment experiment = experimentRepository.findById(experimentId)
-        .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
+  public List<CreateParameterResponseDTO> addParameter(
+      UUID experimentId, CreateParameterRequestDTO dto) {
+    Experiment experiment =
+        experimentRepository
+            .findById(experimentId)
+            .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
 
-    experiment.addParameter(Parameter.builder()
-        .name(dto.name())
-        .measurement(dto.measurement())
-        .unit(dto.unit())
-        .description(dto.description()).build());
+    experiment.addParameter(
+        Parameter.builder()
+            .name(dto.name())
+            .measurement(dto.measurement())
+            .unit(dto.unit())
+            .description(dto.description())
+            .build());
 
     experimentRepository.save(experiment);
 
-    return experiment.getParameters().stream().map(p -> new CreateParameterResponseDTO(
-        p.getId(),
-        p.getName(),
-        p.getMeasurement(),
-        p.getUnit(),
-        p.getDescription()))
+    return experiment.getParameters().stream()
+        .map(p ->
+            new CreateParameterResponseDTO(
+                p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
         .toList();
   }
 
   @Transactional
   public void removeParameter(UUID experimentId, UUID parameterId) {
-    Experiment experiment = experimentRepository.findById(experimentId)
-        .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
+    Experiment experiment =
+        experimentRepository
+            .findById(experimentId)
+            .orElseThrow(() -> new ExperimentNotFoundException(experimentId));
 
-    Parameter parameter = parameterRepository.findById(parameterId).orElseThrow(
-        () -> new ParameterNotFoundException(parameterId));
+    Parameter parameter =
+        parameterRepository
+            .findById(parameterId)
+            .orElseThrow(() -> new ParameterNotFoundException(parameterId));
 
     experiment.removeParameter(parameter);
   }
 
   @Transactional
   public AdvanceExperimentStatusResponseDTO advanceStatus(UUID id) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
     Workflow workflow = experiment.getWorkflow();
     ExperimentStatus currentStatus = experiment.getStatus();
 
-    ExperimentStatus nextStatus = workflow.getStatuses().stream()
-        .filter(s -> s.getSequenceOrder() > currentStatus.getSequenceOrder())
-        .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
-        .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
+    ExperimentStatus nextStatus =
+        workflow.getStatuses().stream()
+            .filter(s -> s.getSequenceOrder() > currentStatus.getSequenceOrder())
+            .min(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+            .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
     experiment.setStatus(nextStatus);
     Experiment savedExperiment = experimentRepository.save(experiment);
 
@@ -351,30 +368,33 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getId(),
             savedExperiment.getWorkflow().getVersion(),
             savedExperiment.getWorkflow().getStatuses().stream()
-                .map(s -> new FindExperimentStatusResponseDTO(
-                    s.getId(),
-                    s.getName(),
-                    s.getSequenceOrder()))
+                .map(s ->
+                    new FindExperimentStatusResponseDTO(
+                        s.getId(), s.getName(), s.getSequenceOrder()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
-            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getId(),
+            savedExperiment.getStatus().getName(),
             savedExperiment.getStatus().getSequenceOrder()),
         new FindResearcherResponseDTO(
-            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getId(),
+            savedExperiment.getResearcher().getName(),
             savedExperiment.getResearcher().getEmail()));
   }
 
   @Transactional
   public RevertExperimentStatusResponseDTO revertStatus(UUID id) {
-    Experiment experiment = experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
+    Experiment experiment =
+        experimentRepository.findById(id).orElseThrow(() -> new ExperimentNotFoundException(id));
     Workflow workflow = experiment.getWorkflow();
     ExperimentStatus currentStatus = experiment.getStatus();
 
-    ExperimentStatus nextStatus = workflow.getStatuses().stream()
-        .filter(s -> s.getSequenceOrder() < currentStatus.getSequenceOrder())
-        .max(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
-        .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
+    ExperimentStatus nextStatus =
+        workflow.getStatuses().stream()
+            .filter(s -> s.getSequenceOrder() < currentStatus.getSequenceOrder())
+            .max(Comparator.comparingInt(ExperimentStatus::getSequenceOrder))
+            .orElseThrow(() -> new AlreadyInLastStatusOfWorkflowException(workflow.getId()));
     experiment.setStatus(nextStatus);
     Experiment savedExperiment = experimentRepository.save(experiment);
 
@@ -388,17 +408,18 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getId(),
             savedExperiment.getWorkflow().getVersion(),
             savedExperiment.getWorkflow().getStatuses().stream()
-                .map(s -> new FindExperimentStatusResponseDTO(
-                    s.getId(),
-                    s.getName(),
-                    s.getSequenceOrder()))
+                .map(s ->
+                    new FindExperimentStatusResponseDTO(
+                        s.getId(), s.getName(), s.getSequenceOrder()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
-            savedExperiment.getStatus().getId(), savedExperiment.getStatus().getName(),
+            savedExperiment.getStatus().getId(),
+            savedExperiment.getStatus().getName(),
             savedExperiment.getStatus().getSequenceOrder()),
         new FindResearcherResponseDTO(
-            savedExperiment.getResearcher().getId(), savedExperiment.getResearcher().getName(),
+            savedExperiment.getResearcher().getId(),
+            savedExperiment.getResearcher().getName(),
             savedExperiment.getResearcher().getEmail()));
   }
 }

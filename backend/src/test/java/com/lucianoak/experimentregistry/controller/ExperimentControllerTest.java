@@ -1212,7 +1212,7 @@ class ExperimentControllerTest {
       UUID experimentId = UUID.randomUUID();
       UUID parameterId = UUID.randomUUID();
 
-      Mockito.doThrow(new ParameterNotExistsInExperimentException("Parameter", experimentId))
+      Mockito.doThrow(new ParameterNotExistsInExperimentException(parameterId, experimentId))
           .when(experimentService)
           .removeParameter(experimentId, parameterId);
 

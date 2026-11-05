@@ -105,7 +105,7 @@ public class Experiment {
     boolean alreadyExists =
         parameters.stream().anyMatch(existing -> existing.getId().equals(parameter.getId()));
     if (!alreadyExists) {
-      throw new ParameterNotExistsInExperimentException(parameter.getName(), this.getId());
+      throw new ParameterNotExistsInExperimentException(parameter.getId(), this.getId());
     }
 
     parameter.setExperiment(null);

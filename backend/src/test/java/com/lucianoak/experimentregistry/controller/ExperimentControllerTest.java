@@ -1411,5 +1411,16 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).revertStatus(id);
     }
+
+    @Test
+    void givenInvalidId_whenRevertingStatus_thenReturnsBadRequest() throws Exception {
+      String id = "not-a-valid-uuid";
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/revert-status", id))
+          .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+      Mockito.verifyNoInteractions(experimentService);
+    }
   }
 }

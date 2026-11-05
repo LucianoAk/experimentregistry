@@ -1303,7 +1303,7 @@ class ExperimentControllerTest {
     }
 
     @Test
-    void givenExperimentInLastStatus_whenAdvancingStatus_thenReturnsUnprocessableEntity()
+    void givenExperimentInLastStatus_whenAdvancingStatus_thenReturnsUnprocessableContent()
         throws Exception {
       UUID id = UUID.randomUUID();
       UUID workflowId = UUID.randomUUID();

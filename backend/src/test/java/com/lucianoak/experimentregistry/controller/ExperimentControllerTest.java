@@ -17,6 +17,7 @@ import com.lucianoak.experimentregistry.dto.parameter.response.FindParameterResp
 import com.lucianoak.experimentregistry.dto.parameter.response.UpdateExperimentParametersResponseDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.FindResearcherResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
+import com.lucianoak.experimentregistry.exception.AlreadyInFirstStatusOfWorkflowException;
 import com.lucianoak.experimentregistry.exception.AlreadyInLastStatusOfWorkflowException;
 import com.lucianoak.experimentregistry.exception.ExperimentNotFoundException;
 import com.lucianoak.experimentregistry.exception.ParameterNotExistsInExperimentException;
@@ -1391,6 +1392,22 @@ class ExperimentControllerTest {
       mockMvc
           .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/revert-status", id))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).revertStatus(id);
+    }
+
+    @Test
+    void givenExperimentInFirstStatus_whenRevertingStatus_thenReturnsUnprocessableContent()
+        throws Exception {
+      UUID id = UUID.randomUUID();
+      UUID workflowId = UUID.randomUUID();
+
+      Mockito.when(experimentService.revertStatus(id))
+          .thenThrow(new AlreadyInFirstStatusOfWorkflowException(workflowId));
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/revert-status", id))
+          .andExpect(MockMvcResultMatchers.status().isUnprocessableContent());
 
       Mockito.verify(experimentService).revertStatus(id);
     }

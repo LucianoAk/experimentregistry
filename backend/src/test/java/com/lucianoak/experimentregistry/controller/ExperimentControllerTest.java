@@ -1380,5 +1380,19 @@ class ExperimentControllerTest {
 
       Mockito.verify(experimentService).revertStatus(id);
     }
+
+    @Test
+    void givenNonExistingId_whenRevertingStatus_thenReturnsNotFound() throws Exception {
+      UUID id = UUID.randomUUID();
+
+      Mockito.when(experimentService.revertStatus(id))
+          .thenThrow(new ExperimentNotFoundException(id));
+
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/revert-status", id))
+          .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+      Mockito.verify(experimentService).revertStatus(id);
+    }
   }
 }

@@ -2,7 +2,6 @@ package com.lucianoak.experimentregistry.exception;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,36 +22,31 @@ public class GlobalExceptionHandler {
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(EmailAlreadyExistsException.class)
-  public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
-      EmailAlreadyExistsException e) {
+  public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException e) {
     HttpStatus status = HttpStatus.CONFLICT;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
   @ExceptionHandler(ResearcherNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleResearcherNotFound(
-      ResearcherNotFoundException e) {
+  public ResponseEntity<ErrorResponse> handleResearcherNotFound(ResearcherNotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
   @ExceptionHandler(WorkflowNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleWorkflowNotFound(
-      WorkflowNotFoundException e) {
+  public ResponseEntity<ErrorResponse> handleWorkflowNotFound(WorkflowNotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
   @ExceptionHandler(DuplicateStatusException.class)
-  public ResponseEntity<ErrorResponse> handleDuplicateStatus(
-      DuplicateStatusException e) {
+  public ResponseEntity<ErrorResponse> handleDuplicateStatus(DuplicateStatusException e) {
     HttpStatus status = HttpStatus.CONFLICT;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
   @ExceptionHandler(ExperimentNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleExperimentNotFound(
-      ExperimentNotFoundException e) {
+  public ResponseEntity<ErrorResponse> handleExperimentNotFound(ExperimentNotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
@@ -61,6 +55,13 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> hendleNoStatusAssociatedWithWorkflow(
       NoStatusAssociatedWithWorkflowException e) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
+  @ExceptionHandler(StatusNotAssociatedWithWorkflowException.class)
+  public ResponseEntity<ErrorResponse> handleStatusNotAssociatedWithWorkflow(
+      StatusNotAssociatedWithWorkflowException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
@@ -91,9 +92,10 @@ public class GlobalExceptionHandler {
     HttpStatus status = HttpStatus.CONFLICT;
     Map<String, String> errors = e.getErrors();
 
-    ErrorResponse errorResponse = (errors == null || errors.isEmpty())
-        ? new ErrorResponse(status, e.getMessage())
-        : new ErrorResponse(status, e.getMessage(), errors);
+    ErrorResponse errorResponse =
+        (errors == null || errors.isEmpty())
+            ? new ErrorResponse(status, e.getMessage())
+            : new ErrorResponse(status, e.getMessage(), errors);
 
     return ResponseEntity.status(status).body(errorResponse);
   }
@@ -118,37 +120,27 @@ public class GlobalExceptionHandler {
 
     HttpStatus status = HttpStatus.NOT_FOUND;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Request method '" + e.getMethod() + "' is not supported"));
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, "Request method '" + e.getMethod() + "' is not supported"));
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorResponse> handleMessageNotReadable(
-      HttpMessageNotReadableException e) {
+  public ResponseEntity<ErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException e) {
 
     HttpStatus status = HttpStatus.BAD_REQUEST;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Invalid request body"));
+    return ResponseEntity.status(status).body(new ErrorResponse(status, "Invalid request body"));
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<ErrorResponse> handleTypeMismatch(
-      MethodArgumentTypeMismatchException e) {
+  public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    return ResponseEntity.status(status).body(new ErrorResponse(status,
-        "Invalid value for parameter '" + e.getName() + "'"));
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, "Invalid value for parameter '" + e.getName() + "'"));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleValidation(
-      MethodArgumentNotValidException e) {
+  public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
     Map<String, String> errors = new HashMap<>();
 
     e.getBindingResult()
@@ -157,75 +149,59 @@ public class GlobalExceptionHandler {
 
     HttpStatus status = HttpStatus.BAD_REQUEST;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Validation failed",
-            errors));
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, "Validation failed", errors));
   }
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<ErrorResponse> handleMissingRequestParameter(
       MissingServletRequestParameterException e) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Required parameter '" + e.getParameterName() + "' is missing"));
+    return ResponseEntity.status(status)
+        .body(
+            new ErrorResponse(
+                status, "Required parameter '" + e.getParameterName() + "' is missing"));
   }
 
   @ExceptionHandler(HandlerMethodValidationException.class)
-  public ResponseEntity<ErrorResponse> handleMethodValidation(
-      HandlerMethodValidationException e) {
+  public ResponseEntity<ErrorResponse> handleMethodValidation(HandlerMethodValidationException e) {
     Map<String, String> errors = new HashMap<>();
 
-    e.getValueResults().forEach(result -> {
-      String parameterName = result.getMethodParameter().getParameterName();
+    e.getValueResults()
+        .forEach(result -> {
+          String parameterName = result.getMethodParameter().getParameterName();
 
-      result.getResolvableErrors().forEach(error -> {
-        String message = error.getDefaultMessage();
+          result
+              .getResolvableErrors()
+              .forEach(error -> {
+                String message = error.getDefaultMessage();
 
-        if (parameterName != null && message != null) {
-          errors.put(parameterName, message);
-        }
-      });
-    });
+                if (parameterName != null && message != null) {
+                  errors.put(parameterName, message);
+                }
+              });
+        });
 
     HttpStatus status = HttpStatus.BAD_REQUEST;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Validation failed",
-            errors));
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, "Validation failed", errors));
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
-  public ResponseEntity<ErrorResponse> handleNoResourceFound(
-      NoResourceFoundException e) {
+  public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "Resource not found"));
+    return ResponseEntity.status(status).body(new ErrorResponse(status, "Resource not found"));
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleUnexpected(
-      Exception e) {
+  public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
     log.error("Unexpected error", e);
 
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    return ResponseEntity
-        .status(status)
-        .body(new ErrorResponse(
-            status,
-            "An unexpected error occurred"));
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, "An unexpected error occurred"));
   }
 }

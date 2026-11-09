@@ -42,7 +42,7 @@ CREATE TABLE experiment_statuses (
 
 ALTER TABLE experiment_statuses ADD CONSTRAINT pk_experiment_statuses PRIMARY KEY (id);
 ALTER TABLE experiment_statuses ADD CONSTRAINT fk_experiment_statues_experiment_workflows FOREIGN KEY (workflow_id) REFERENCES experiment_workflows(id) ON DELETE CASCADE;
-ALTER TABLE experiment_statuses ADD CONSTRAINT chk_experiment_sequence_order CHECK (sequence_order >= 1);
+ALTER TABLE experiment_statuses ADD CONSTRAINT chk_experiment_sequence_order CHECK (sequence_order >= 0);
 ALTER TABLE experiment_statuses ADD CONSTRAINT uq_experiment_statuses_name UNIQUE (workflow_id, name);
 ALTER TABLE experiment_statuses ADD CONSTRAINT uq_experiment_statuses_sequence UNIQUE (workflow_id, sequence_order);
 

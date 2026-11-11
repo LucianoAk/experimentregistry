@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.endpoint.InvalidEndpointRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -112,6 +113,14 @@ public class GlobalExceptionHandler {
       AlreadyInFirstStatusOfWorkflowException e) {
     HttpStatus status = HttpStatus.UNPROCESSABLE_CONTENT;
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
+  @ExceptionHandler(InvalidEndpointRequestException.class)
+  public ResponseEntity<ErrorResponse> handleAlreadyInFirstStatusOfWorkflow(
+      InvalidEndpointRequestException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    return ResponseEntity.status(status)
+        .body(new ErrorResponse(status, e.getMessage() + ". " + e.getReason()));
   }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

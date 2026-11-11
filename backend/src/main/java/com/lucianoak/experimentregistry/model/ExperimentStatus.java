@@ -48,7 +48,7 @@ public class ExperimentStatus {
   @Setter(AccessLevel.PACKAGE)
   private Workflow workflow;
 
-  @Min(value = 1)
+  @Min(value = 0)
   @Column(name = "sequence_order", nullable = false)
   private Integer sequenceOrder;
 

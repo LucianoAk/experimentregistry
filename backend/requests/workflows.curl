@@ -17,3 +17,19 @@ curl -iX GET $baseUrl
 ### Find by Id
 ---findUUID=3abfdbf1-f1bc-46a2-92f0-3e87ad940119
 curl -iX GET $baseUrl/$findUUID
+
+### Update Experiment Statuses
+---updateStatusesExperimentUUID=3ea68316-3ed1-4669-a8ee-36b3b828c52a
+curl -iX PUT $baseUrl/$updateStatusesExperimentUUID/statuses
+-H "Content-Type: application/json"
+-d
+[
+  {
+    "id": "3ea68316-3ed1-4669-a8ee-36b3b828c52a",
+    "name": "Edited"
+  },
+  {
+    "id": "65c40682-9f8a-4e79-af70-975c6658fa53",
+    "name": "Modified"
+  }
+]

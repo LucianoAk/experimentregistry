@@ -7,6 +7,7 @@ curl -iX POST $baseUrl
 {
   "statuses": [
     { "name": "Draft" },
+    { "name": "In progress" },
     { "name": "Completed" }
   ]
 }
@@ -19,17 +20,24 @@ curl -iX GET $baseUrl
 curl -iX GET $baseUrl/$findUUID
 
 ### Update Experiment Statuses
----updateStatusesExperimentUUID=3ea68316-3ed1-4669-a8ee-36b3b828c52a
+---updateStatusesExperimentUUID=433ec45d-797c-46bf-b543-cf8373155f13
 curl -iX PUT $baseUrl/$updateStatusesExperimentUUID/statuses
 -H "Content-Type: application/json"
 -d
 [
-  {
-    "id": "3ea68316-3ed1-4669-a8ee-36b3b828c52a",
-    "name": "Edited"
-  },
-  {
-    "id": "65c40682-9f8a-4e79-af70-975c6658fa53",
-    "name": "Modified"
-  }
+    {
+      "id": "506717ed-79c8-403c-9543-4aaf64161728",
+      "name": "Draft",
+      "sequenceOrder": 1
+    },
+    {
+      "id": "49aeb79e-fd8c-47ad-b337-a100ab83e4e3",
+      "name": "In progress",
+      "sequenceOrder": 0
+    },
+    {
+      "id": "0d371d75-fb96-42b0-a096-e6ac4facbcf4",
+      "name": "Completed",
+      "sequenceOrder": 2
+    }
 ]

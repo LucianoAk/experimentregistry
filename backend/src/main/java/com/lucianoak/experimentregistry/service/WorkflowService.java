@@ -14,9 +14,14 @@ import com.lucianoak.experimentregistry.model.ExperimentStatus;
 import com.lucianoak.experimentregistry.model.Workflow;
 import com.lucianoak.experimentregistry.repository.WorkflowRepository;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.endpoint.InvalidEndpointRequestException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -70,10 +75,22 @@ public class WorkflowService {
   @Transactional
   public List<UpdateExperimentStatusesResponseDTO> updateExperimentStatuses(
       UUID id, List<UpdateExperimentStatusesRequestDTO> dtos) {
+
+    Set<Integer> seenOrders = new HashSet<>();
+    for (UpdateExperimentStatusesRequestDTO dto : dtos) {
+      if (dto.sequenceOrder() != null) {
+        if (!seenOrders.add(dto.sequenceOrder())) {
+          throw new InvalidEndpointRequestException(
+              "Invalid experiment status request", "Duplicate sequence order found in request");
+        }
+      }
+    }
+
     Workflow workflow =
         workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException(id));
 
-    List<ExperimentStatus> statuses = workflow.getStatuses();
+    List<ExperimentStatus> statuses = new ArrayList<>(workflow.getStatuses());
+    statuses.sort(Comparator.comparing(ExperimentStatus::getSequenceOrder));
 
     for (UpdateExperimentStatusesRequestDTO statusDTO : dtos) {
       ExperimentStatus status =
@@ -84,6 +101,27 @@ public class WorkflowService {
                   new StatusNotAssociatedWithWorkflowException(statusDTO.id(), workflow.getId()));
 
       status.setName(statusDTO.name());
+
+      if (statusDTO.sequenceOrder() != null
+          && !statusDTO.sequenceOrder().equals(status.getSequenceOrder())) {
+        int newOrder = statusDTO.sequenceOrder();
+
+        if (newOrder < 0 || newOrder >= statuses.size()) {
+          throw new InvalidEndpointRequestException(
+              "Invalid experiment status request", "Sequence order out of bounds: " + newOrder);
+        }
+
+        int oldIndex = statuses.indexOf(status);
+
+        if (oldIndex != newOrder) {
+          statuses.remove(oldIndex);
+          statuses.add(newOrder, status);
+        }
+      }
+    }
+
+    for (int i = 0; i < statuses.size(); i++) {
+      statuses.get(i).setSequenceOrder(i);
     }
 
     workflowRepository.save(workflow);

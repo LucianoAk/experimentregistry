@@ -1,6 +1,8 @@
 package com.lucianoak.experimentregistry.controller;
 
+import com.lucianoak.experimentregistry.dto.experimentstatus.request.CreateExperimentStatusRequestDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.request.UpdateExperimentStatusesRequestDTO;
+import com.lucianoak.experimentregistry.dto.experimentstatus.response.CreateExperimentStatuesResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.UpdateExperimentStatusesResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.request.CreateWorkflowRequestDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.CreateWorkflowResponseDTO;
@@ -8,6 +10,7 @@ import com.lucianoak.experimentregistry.dto.workflow.response.FindAllWorkflowRes
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.service.WorkflowService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +54,13 @@ public class WorkflowController {
       @PathVariable @Valid UUID id,
       @RequestBody List<@Valid UpdateExperimentStatusesRequestDTO> dtos) {
     return ResponseEntity.ok(workflowService.updateExperimentStatuses(id, dtos));
+  }
+
+  @PostMapping("/{id}/statuses/{position}")
+  public ResponseEntity<List<CreateExperimentStatuesResponseDTO>> addExperimentStatus(
+      @PathVariable UUID id,
+      @PathVariable @Min(value = 0) Integer position,
+      @RequestBody @Valid CreateExperimentStatusRequestDTO dto) {
+    return ResponseEntity.ok(workflowService.addExperimentStatus(id, position, dto));
   }
 }

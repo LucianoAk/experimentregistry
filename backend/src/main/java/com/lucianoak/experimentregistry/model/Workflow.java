@@ -59,20 +59,36 @@ public class Workflow {
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
-  public void addStatus(ExperimentStatus status) {
-    boolean alreadyExists = statuses.stream()
-        .anyMatch(existing -> existing.getName().equals(status.getName()));
+  public void addStatus(ExperimentStatus status, Integer position) {
+    boolean alreadyExists =
+        statuses.stream().anyMatch(existing -> existing.getName().equals(status.getName()));
 
     if (alreadyExists) {
       throw new DuplicateStatusException(status.getName());
     }
-    status.setSequenceOrder(statuses.size());
-    statuses.add(status);
+
+    statuses.sort(Comparator.comparing(ExperimentStatus::getSequenceOrder));
+
+    int targetPosition = (position == null) ? statuses.size() : position;
+
+    if (targetPosition < 0 || targetPosition > statuses.size()) {
+      throw new InvalidEndpointRequestException(
+          "Invalid experiment status request", "Sequence order out of bounds: " + targetPosition);
+    }
+
+    statuses.add(targetPosition, status);
     status.setWorkflow(this);
+
+    for (int i = 0; i < statuses.size(); i++) {
+      statuses.get(i).setSequenceOrder(i);
+    }
+  }
+
+  public void addStatus(ExperimentStatus status) {
+    addStatus(status, null);
   }
 
   public List<ExperimentStatus> getStatuses() {
     return List.copyOf(statuses);
   }
-
 }

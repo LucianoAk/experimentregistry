@@ -30,9 +30,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class ExperimentStatus {
 
   @Builder
-  private ExperimentStatus(String name, Integer sequenceOrder) {
+  private ExperimentStatus(String name) {
     this.name = name;
-    this.sequenceOrder = sequenceOrder;
   }
 
   @Id

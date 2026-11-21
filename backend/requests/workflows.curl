@@ -41,3 +41,13 @@ curl -iX PUT $baseUrl/$updateStatusesExperimentUUID/statuses
       "sequenceOrder": 2
     }
 ]
+
+### Add Experiment Status
+---addStatusExperimentUUID=61a7fcd2-0f9d-4afa-aee7-50d4793d1cb7
+---position=0
+curl -iX POST $baseUrl/$addStatusExperimentUUID/statuses/$position
+-H "Content-Type: application/json"
+-d
+{
+  "name": "TODO"
+}

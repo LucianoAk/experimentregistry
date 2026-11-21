@@ -1,5 +1,6 @@
 package com.lucianoak.experimentregistry.service;
 
+import com.lucianoak.experimentregistry.dto.experimentstatus.request.CreateExperimentStatusRequestDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.request.UpdateExperimentStatusesRequestDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.CreateExperimentStatuesResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
@@ -129,6 +130,22 @@ public class WorkflowService {
     return workflow.getStatuses().stream()
         .map(s ->
             new UpdateExperimentStatusesResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+        .toList();
+  }
+
+  @Transactional
+  public List<CreateExperimentStatuesResponseDTO> addExperimentStatus(
+      UUID id, Integer position, CreateExperimentStatusRequestDTO dto) {
+    Workflow workflow =
+        workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException(id));
+
+    workflow.addStatus(ExperimentStatus.builder().name(dto.name()).build(), position);
+
+    workflow = workflowRepository.save(workflow);
+
+    return workflow.getStatuses().stream()
+        .map(s ->
+            new CreateExperimentStatuesResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
         .toList();
   }
 }

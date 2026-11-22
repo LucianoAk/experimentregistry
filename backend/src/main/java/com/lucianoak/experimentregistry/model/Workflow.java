@@ -59,6 +59,10 @@ public class Workflow {
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
+  public List<ExperimentStatus> getStatuses() {
+    return List.copyOf(statuses);
+  }
+
   public void addStatus(ExperimentStatus status, Integer position) {
     boolean alreadyExists =
         statuses.stream().anyMatch(existing -> existing.getName().equals(status.getName()));
@@ -86,9 +90,5 @@ public class Workflow {
 
   public void addStatus(ExperimentStatus status) {
     addStatus(status, null);
-  }
-
-  public List<ExperimentStatus> getStatuses() {
-    return List.copyOf(statuses);
   }
 }

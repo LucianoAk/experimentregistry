@@ -148,4 +148,21 @@ public class WorkflowService {
             new CreateExperimentStatuesResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
         .toList();
   }
+
+  @Transactional
+  public List<FindExperimentStatusResponseDTO> removeExperimentStatus(
+      UUID workflowId, UUID statusId) {
+    Workflow workflow =
+        workflowRepository
+            .findById(workflowId)
+            .orElseThrow(() -> new WorkflowNotFoundException(workflowId));
+
+    workflow.removeStatus(statusId);
+
+    workflow = workflowRepository.save(workflow);
+
+    return workflow.getStatuses().stream()
+        .map(s -> new FindExperimentStatusResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+        .toList();
+  }
 }

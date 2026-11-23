@@ -33,8 +33,6 @@ public class WorkflowController {
 
   private final WorkflowService workflowService;
 
-  // TODO: Create update, delete and delete status routes
-
   @PostMapping
   public ResponseEntity<CreateWorkflowResponseDTO> create(
       @RequestBody @Valid CreateWorkflowRequestDTO dto) {

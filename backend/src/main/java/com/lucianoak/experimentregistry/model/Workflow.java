@@ -1,6 +1,7 @@
 package com.lucianoak.experimentregistry.model;
 
 import com.lucianoak.experimentregistry.exception.DuplicateStatusException;
+import com.lucianoak.experimentregistry.exception.StatusNotAssociatedWithWorkflowException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -90,5 +91,19 @@ public class Workflow {
 
   public void addStatus(ExperimentStatus status) {
     addStatus(status, null);
+  }
+
+  public void removeStatus(UUID statusId) {
+    boolean removed = statuses.removeIf(s -> s.getId().equals(statusId));
+
+    if (!removed) {
+      throw new StatusNotAssociatedWithWorkflowException(statusId, this.getId());
+    }
+
+    statuses.sort(Comparator.comparing(ExperimentStatus::getSequenceOrder));
+
+    for (int i = 0; i < statuses.size(); i++) {
+      statuses.get(i).setSequenceOrder(i);
+    }
   }
 }

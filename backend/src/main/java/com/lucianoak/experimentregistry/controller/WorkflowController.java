@@ -51,6 +51,12 @@ public class WorkflowController {
     return ResponseEntity.ok(workflowService.findById(id));
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    workflowService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
   @PutMapping("/{id}/statuses")
   public ResponseEntity<List<UpdateExperimentStatusesResponseDTO>> updateExperimentStatues(
       @PathVariable @Valid UUID id,

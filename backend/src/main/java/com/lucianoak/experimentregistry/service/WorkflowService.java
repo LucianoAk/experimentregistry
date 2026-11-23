@@ -74,6 +74,14 @@ public class WorkflowService {
   }
 
   @Transactional
+  public void delete(UUID id) {
+    Workflow workflow =
+        workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException(id));
+
+    workflowRepository.delete(workflow);
+  }
+
+  @Transactional
   public List<UpdateExperimentStatusesResponseDTO> updateExperimentStatuses(
       UUID id, List<UpdateExperimentStatusesRequestDTO> dtos) {
 

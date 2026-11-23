@@ -3,6 +3,7 @@ package com.lucianoak.experimentregistry.controller;
 import com.lucianoak.experimentregistry.dto.experimentstatus.request.CreateExperimentStatusRequestDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.request.UpdateExperimentStatusesRequestDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.CreateExperimentStatuesResponseDTO;
+import com.lucianoak.experimentregistry.dto.experimentstatus.response.FindExperimentStatusResponseDTO;
 import com.lucianoak.experimentregistry.dto.experimentstatus.response.UpdateExperimentStatusesResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.request.CreateWorkflowRequestDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.CreateWorkflowResponseDTO;
@@ -16,6 +17,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,5 +64,11 @@ public class WorkflowController {
       @PathVariable @Min(value = 0) Integer position,
       @RequestBody @Valid CreateExperimentStatusRequestDTO dto) {
     return ResponseEntity.ok(workflowService.addExperimentStatus(id, position, dto));
+  }
+
+  @DeleteMapping("/{workflowId}/statuses/{statusId}")
+  public ResponseEntity<List<FindExperimentStatusResponseDTO>> removeExperimentStatus(
+      @PathVariable UUID workflowId, @PathVariable UUID statusId) {
+    return ResponseEntity.ok(workflowService.removeExperimentStatus(workflowId, statusId));
   }
 }

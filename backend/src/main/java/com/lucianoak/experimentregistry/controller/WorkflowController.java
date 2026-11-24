@@ -51,7 +51,7 @@ public class WorkflowController {
 
   // TODO: add verification to delete only when no experiments are associated with the workflow
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable UUID id) {
+  public ResponseEntity<Void> delete(@PathVariable @Valid UUID id) {
     workflowService.delete(id);
     return ResponseEntity.noContent().build();
   }

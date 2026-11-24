@@ -65,7 +65,7 @@ public class WorkflowController {
 
   @PostMapping("/{id}/statuses/{position}")
   public ResponseEntity<List<CreateExperimentStatuesResponseDTO>> addExperimentStatus(
-      @PathVariable UUID id,
+      @PathVariable @Valid UUID id,
       @PathVariable @Min(value = 0) Integer position,
       @RequestBody @Valid CreateExperimentStatusRequestDTO dto) {
     return ResponseEntity.ok(workflowService.addExperimentStatus(id, position, dto));

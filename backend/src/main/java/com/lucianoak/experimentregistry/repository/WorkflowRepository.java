@@ -10,5 +10,7 @@ public interface WorkflowRepository extends JpaRepository<Workflow, UUID> {
 
   List<Workflow> findAllByActiveTrueOrderByVersionDesc();
 
+  Optional<Workflow> findByIdAndActiveTrue(UUID id);
+
   Optional<Workflow> findTopByOrderByVersionDesc();
 }

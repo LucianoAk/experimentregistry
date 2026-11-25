@@ -44,8 +44,8 @@ public class Experiment {
       Researcher researcher) {
     this.title = title;
     this.startDate = startDate;
-    this.status = status;
     workflow.addExperiment(this);
+    status.addExperiment(this);
     researcher.addExperiment(this);
   }
 

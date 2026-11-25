@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.Instant;
@@ -47,6 +48,11 @@ public class ExperimentStatus {
   @Setter(AccessLevel.PACKAGE)
   private Workflow workflow;
 
+  @OneToMany(mappedBy = "status", fetch = FetchType.LAZY)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private List<Experiment> experiments = new ArrayList<>();
+
   @Min(value = 0)
   @Column(name = "sequence_order", nullable = false)
   private Integer sequenceOrder;
@@ -54,4 +60,13 @@ public class ExperimentStatus {
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
+
+  public List<Experiment> getExperiments() {
+    return List.copyOf(experiments);
+  }
+
+  public void addExperiment(Experiment experiment) {
+    experiments.add(experiment);
+    experiment.setWorkflow(this);
+  }
 }

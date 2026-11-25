@@ -69,6 +69,6 @@ public class ExperimentStatus {
 
   public void addExperiment(Experiment experiment) {
     experiments.add(experiment);
-    experiment.setWorkflow(this);
+    experiment.setStatus(this);
   }
 }

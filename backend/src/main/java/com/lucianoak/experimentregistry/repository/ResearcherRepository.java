@@ -1,17 +1,16 @@
 package com.lucianoak.experimentregistry.repository;
 
+import com.lucianoak.experimentregistry.model.Researcher;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.lucianoak.experimentregistry.model.Researcher;
-
 public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
 
-  @Query("""
+  @Query(
+      """
           SELECT r
           FROM Researcher r
           WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')) AND r.active = true
@@ -24,6 +23,7 @@ public interface ResearcherRepository extends JpaRepository<Researcher, UUID> {
       """)
   List<Researcher> searchByName(@Param("name") String name);
 
-  boolean existsByEmail(String email);
+  Optional<Researcher> findByIdAndActiveTrue(UUID id);
 
+  boolean existsByEmail(String email);
 }

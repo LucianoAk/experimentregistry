@@ -20,6 +20,7 @@ COMMENT ON COLUMN researchers.created_at IS 'The creation date of the entry';
 CREATE TABLE experiment_workflows (
     id UUID NOT NULL,
     version INTEGER NOT NULL UNIQUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -29,6 +30,7 @@ ALTER TABLE experiment_workflows ADD CONSTRAINT chk_experiment_workflows_version
 COMMENT ON TABLE experiment_workflows IS 'The workflow versions for experiments';
 COMMENT ON COLUMN experiment_workflows.id IS 'Primary key, the internal database ID for an experiment workflow';
 COMMENT ON COLUMN experiment_workflows.version IS 'The version number of the experiment workflow';
+COMMENT ON COLUMN experiment_workflows.active IS 'Indicates whether the experiment workflow is active in the system';
 COMMENT ON COLUMN experiment_workflows.created_at IS 'The creation date of the entry';
 
 -- Experiment statuses

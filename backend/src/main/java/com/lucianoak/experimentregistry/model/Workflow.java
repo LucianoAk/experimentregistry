@@ -62,6 +62,9 @@ public class Workflow {
   @Setter(value = AccessLevel.NONE)
   private List<Experiment> experiments = new ArrayList<>();
 
+  @Column(name = "active", nullable = false)
+  private boolean active = true;
+
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;

@@ -55,7 +55,7 @@ public class WorkflowService {
   }
 
   public List<FindAllWorkflowResponseDTO> findAll() {
-    return workflowRepository.findAllByOrderByVersionDesc().stream()
+    return workflowRepository.findAllByActiveTrueOrderByVersionDesc().stream()
         .map(w -> new FindAllWorkflowResponseDTO(w.getId(), w.getVersion(), w.getCreatedAt()))
         .toList();
   }

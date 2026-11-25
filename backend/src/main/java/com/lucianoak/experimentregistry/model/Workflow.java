@@ -56,6 +56,11 @@ public class Workflow {
   @Setter(value = AccessLevel.NONE)
   private List<ExperimentStatus> statuses = new ArrayList<>();
 
+  @OneToMany(mappedBy = "workflow", fetch = FetchType.LAZY)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private List<Experiment> experiments = new ArrayList<>();
+
   @CreatedDate
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
@@ -105,5 +110,14 @@ public class Workflow {
     for (int i = 0; i < statuses.size(); i++) {
       statuses.get(i).setSequenceOrder(i);
     }
+  }
+
+  public List<Experiment> getExperiments() {
+    return List.copyOf(experiments);
+  }
+
+  public void addExperiment(Experiment experiment) {
+    experiments.add(experiment);
+    experiment.setWorkflow(this);
   }
 }

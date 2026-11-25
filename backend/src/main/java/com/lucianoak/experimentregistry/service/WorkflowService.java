@@ -10,6 +10,7 @@ import com.lucianoak.experimentregistry.dto.workflow.response.CreateWorkflowResp
 import com.lucianoak.experimentregistry.dto.workflow.response.FindAllWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.exception.StatusNotAssociatedWithWorkflowException;
+import com.lucianoak.experimentregistry.exception.WorkflowHasAssociatedExperimentsException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
 import com.lucianoak.experimentregistry.model.ExperimentStatus;
 import com.lucianoak.experimentregistry.model.Workflow;
@@ -77,6 +78,10 @@ public class WorkflowService {
   public void delete(UUID id) {
     Workflow workflow =
         workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException(id));
+
+    if (!workflow.getExperiments().isEmpty()) {
+      throw new WorkflowHasAssociatedExperimentsException(id);
+    }
 
     workflowRepository.delete(workflow);
   }

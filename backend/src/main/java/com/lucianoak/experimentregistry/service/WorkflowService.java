@@ -9,6 +9,7 @@ import com.lucianoak.experimentregistry.dto.workflow.request.CreateWorkflowReque
 import com.lucianoak.experimentregistry.dto.workflow.response.CreateWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindAllWorkflowResponseDTO;
 import com.lucianoak.experimentregistry.dto.workflow.response.FindWorkflowResponseDTO;
+import com.lucianoak.experimentregistry.dto.workflow.response.ToggleWorkflowActivationResponseDTO;
 import com.lucianoak.experimentregistry.exception.StatusNotAssociatedWithWorkflowException;
 import com.lucianoak.experimentregistry.exception.WorkflowHasAssociatedExperimentsException;
 import com.lucianoak.experimentregistry.exception.WorkflowNotFoundException;
@@ -84,6 +85,24 @@ public class WorkflowService {
     }
 
     workflowRepository.delete(workflow);
+  }
+
+  @Transactional
+  public ToggleWorkflowActivationResponseDTO toggleWorkflowActivation(UUID id) {
+    Workflow workflow =
+        workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException(id));
+
+    workflow.setActive(!workflow.isActive());
+    workflowRepository.save(workflow);
+
+    return new ToggleWorkflowActivationResponseDTO(
+        workflow.getId(),
+        workflow.getVersion(),
+        workflow.getStatuses().stream()
+            .map(s ->
+                new FindExperimentStatusResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+            .toList(),
+        workflow.isActive());
   }
 
   @Transactional

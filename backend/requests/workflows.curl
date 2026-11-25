@@ -23,6 +23,10 @@ curl -iX GET $baseUrl/$findUUID
 ---deleteUUID=b5a2f188-121f-4558-9dcf-7afd485996e4
 curl -iX DELETE $baseUrl/$deleteUUID
 
+### Toggle Activation
+---toggleActivationUUID=5311c3de-4fb9-4340-806a-f6992ba6889b
+curl -iX PATCH $baseUrl/$toggleActivationUUID/toggle-active
+
 ### Update Experiment Statuses
 ---updateStatusesExperimentUUID=433ec45d-797c-46bf-b543-cf8373155f13
 curl -iX PUT $baseUrl/$updateStatusesExperimentUUID/statuses

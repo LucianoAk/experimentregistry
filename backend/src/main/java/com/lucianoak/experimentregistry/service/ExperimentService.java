@@ -56,7 +56,7 @@ public class ExperimentService {
     }
     Researcher researcher =
         researcherRepository
-            .findById(dto.researcherId())
+            .findByIdAndActiveTrue(dto.researcherId())
             .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
 
     Workflow workflow =
@@ -225,7 +225,7 @@ public class ExperimentService {
     if (dto.researcherId() != null) {
       Researcher researcher =
           researcherRepository
-              .findById(dto.researcherId())
+              .findByIdAndActiveTrue(dto.researcherId())
               .orElseThrow(() -> new ResearcherNotFoundException(dto.researcherId()));
       experiment.setResearcher(researcher);
     }

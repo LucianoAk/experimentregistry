@@ -61,7 +61,7 @@ public class ExperimentService {
 
     Workflow workflow =
         workflowRepository
-            .findById(dto.workflowId())
+            .findByIdAndActiveTrue(dto.workflowId())
             .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
     List<ExperimentStatus> statuses = workflow.getStatuses();
@@ -205,7 +205,7 @@ public class ExperimentService {
     if (dto.workflowId() != null) {
       Workflow workflow =
           workflowRepository
-              .findById(dto.workflowId())
+              .findByIdAndActiveTrue(dto.workflowId())
               .orElseThrow(() -> new WorkflowNotFoundException(dto.workflowId()));
 
       List<ExperimentStatus> statuses = workflow.getStatuses();

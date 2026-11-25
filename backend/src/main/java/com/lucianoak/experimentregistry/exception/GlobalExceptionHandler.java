@@ -122,6 +122,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
   }
 
+  @ExceptionHandler(ExperimentStatusHasAssociatedExperimentsException.class)
+  public ResponseEntity<ErrorResponse> handleExperimentStatusHasAssociatedExperiment(
+      ExperimentStatusHasAssociatedExperimentsException e) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    return ResponseEntity.status(status).body(new ErrorResponse(status, e.getMessage()));
+  }
+
   @ExceptionHandler(InvalidEndpointRequestException.class)
   public ResponseEntity<ErrorResponse> handleAlreadyInFirstStatusOfWorkflow(
       InvalidEndpointRequestException e) {

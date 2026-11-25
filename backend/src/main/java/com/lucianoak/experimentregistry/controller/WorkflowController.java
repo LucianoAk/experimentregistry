@@ -49,7 +49,6 @@ public class WorkflowController {
     return ResponseEntity.ok(workflowService.findById(id));
   }
 
-  // TODO: add verification to delete only when no experiments are associated with the workflow
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable @Valid UUID id) {
     workflowService.delete(id);
@@ -71,7 +70,6 @@ public class WorkflowController {
     return ResponseEntity.ok(workflowService.addExperimentStatus(id, position, dto));
   }
 
-  // TODO: add verification to delete only when no experiments are associated with the status
   @DeleteMapping("/{workflowId}/statuses/{statusId}")
   public ResponseEntity<List<FindExperimentStatusResponseDTO>> removeExperimentStatus(
       @PathVariable @Valid UUID workflowId, @PathVariable @Valid UUID statusId) {

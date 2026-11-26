@@ -101,7 +101,8 @@ class ExperimentControllerTest {
               workflowResponse,
               statusResponse,
               researcherResponse,
-              List.of(parameterResponse));
+              List.of(parameterResponse),
+              Instant.now());
 
       Mockito.when(experimentService.create(dto)).thenReturn(response);
 
@@ -120,8 +121,8 @@ class ExperimentControllerTest {
               MockMvcResultMatchers.jsonPath("$.researcher.id").value(researcherId.toString()),
               MockMvcResultMatchers.jsonPath("$.parameters.length()").value(1),
               MockMvcResultMatchers.jsonPath("$.parameters[0].id").value(parameterId.toString()),
-              MockMvcResultMatchers.jsonPath("$.parameters[0].name")
-                  .value(parameterRequest.name()));
+              MockMvcResultMatchers.jsonPath("$.parameters[0].name").value(parameterRequest.name()),
+              MockMvcResultMatchers.jsonPath("$.createdAt").value(response.createdAt()));
 
       Mockito.verify(experimentService).create(dto);
     }

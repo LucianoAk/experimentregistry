@@ -1,19 +1,5 @@
 package com.lucianoak.experimentregistry.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import com.lucianoak.experimentregistry.dto.researcher.request.CreateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.request.UpdateResearcherRequestDTO;
 import com.lucianoak.experimentregistry.dto.researcher.response.CreateResearcherResponseDTO;
@@ -24,21 +10,30 @@ import com.lucianoak.experimentregistry.dto.researcher.response.ToggleResearcher
 import com.lucianoak.experimentregistry.dto.researcher.response.UpdateResearcherResponseDTO;
 import com.lucianoak.experimentregistry.exception.ResearcherNotFoundException;
 import com.lucianoak.experimentregistry.service.ResearcherService;
-
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ResearcherController.class)
 class ResearcherControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-  @MockitoBean
-  private ResearcherService researcherService;
+  @MockitoBean private ResearcherService researcherService;
 
   private static final String BASE_URL = "/api/researchers";
 
@@ -46,24 +41,17 @@ class ResearcherControllerTest {
   class SearchByNameTests {
     @Test
     void givenValidName_whenSearchingByName_thenReturnsResearchers() throws Exception {
-      List<SearchResearcherResponseDTO> researchers = List.of(
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "John Doe",
-              "john@example.com"),
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "Jane Doe",
-              "jane@example.com"));
+      List<SearchResearcherResponseDTO> researchers =
+          List.of(
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"),
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "Jane Doe", "jane@example.com"));
 
       String name = "Doe";
 
       Mockito.when(researcherService.searchByName(name)).thenReturn(researchers);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search")
-              .param("name", name))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search").param("name", name))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.length()").value(2),
@@ -79,10 +67,8 @@ class ResearcherControllerTest {
     void givenEmptyName_whenSearchingByName_thenReturnsBadRequest() throws Exception {
       String name = "";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search")
-              .param("name", name))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search").param("name", name))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -90,24 +76,17 @@ class ResearcherControllerTest {
 
     @Test
     void given1CharacterName_whenSearchingByName_thenReturnsResearchers() throws Exception {
-      List<SearchResearcherResponseDTO> researchers = List.of(
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "John Doe",
-              "john@example.com"),
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "Jane Doe",
-              "jane@example.com"));
+      List<SearchResearcherResponseDTO> researchers =
+          List.of(
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"),
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "Jane Doe", "jane@example.com"));
 
       String name = "D";
 
       Mockito.when(researcherService.searchByName(name)).thenReturn(researchers);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search")
-              .param("name", name))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search").param("name", name))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.length()").value(2),
@@ -123,24 +102,17 @@ class ResearcherControllerTest {
 
     @Test
     void given255CharacterName_whenSearchingByName_thenReturnsResearchers() throws Exception {
-      List<SearchResearcherResponseDTO> researchers = List.of(
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "John Doe",
-              "john@example.com"),
-          new SearchResearcherResponseDTO(
-              UUID.randomUUID(),
-              "Jane Doe",
-              "jane@example.com"));
+      List<SearchResearcherResponseDTO> researchers =
+          List.of(
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"),
+              new SearchResearcherResponseDTO(UUID.randomUUID(), "Jane Doe", "jane@example.com"));
 
       String name = "a".repeat(255);
 
       Mockito.when(researcherService.searchByName(name)).thenReturn(researchers);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search")
-              .param("name", name))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search").param("name", name))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.length()").value(2),
@@ -158,10 +130,8 @@ class ResearcherControllerTest {
     void givenNameExceedingMaxLength_whenSearchingByName_thenReturnsBadRequest() throws Exception {
       String name = "a".repeat(256);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search")
-              .param("name", name))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search").param("name", name))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -169,13 +139,11 @@ class ResearcherControllerTest {
 
     @Test
     void givenMissingName_whenSearchingByName_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/search"))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/search"))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
-
     }
   }
 
@@ -185,16 +153,13 @@ class ResearcherControllerTest {
     void givenExistingId_whenFindingById_thenReturnsResearcher() throws Exception {
       UUID id = UUID.randomUUID();
 
-      FindResearcherResponseDTO researcher = new FindResearcherResponseDTO(
-          id,
-          "John Doe",
-          "john@example.com");
+      FindResearcherResponseDTO researcher =
+          new FindResearcherResponseDTO(id, "John Doe", "john@example.com");
 
       Mockito.when(researcherService.findById(id)).thenReturn(researcher);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", id))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
@@ -210,9 +175,8 @@ class ResearcherControllerTest {
 
       Mockito.when(researcherService.findById(id)).thenThrow(new ResearcherNotFoundException(id));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", id))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
 
       Mockito.verify(researcherService).findById(id);
@@ -222,9 +186,8 @@ class ResearcherControllerTest {
     void givenInvalidId_whenFindingById_thenReturnsBadRequest() throws Exception {
       String id = "not-a-valid-Id";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", id))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -237,13 +200,12 @@ class ResearcherControllerTest {
     void givenAvailableEmail_whenCheckingEmailAvailability_thenReturnsAvailable() throws Exception {
       String email = "john@example.com";
 
-      Mockito.when(researcherService.checkEmailAvailability(email)).thenReturn(
-          new EmailAvailabilityResponseDTO(true));
+      Mockito.when(researcherService.checkEmailAvailability(email))
+          .thenReturn(new EmailAvailabilityResponseDTO(true));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/email-availability")
-              .param("email", email))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.get(BASE_URL + "/email-availability").param("email", email))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.available").value(true));
@@ -252,16 +214,16 @@ class ResearcherControllerTest {
     }
 
     @Test
-    void givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsUnavailable() throws Exception {
+    void givenUnavailableEmail_whenCheckingEmailAvailability_thenReturnsUnavailable()
+        throws Exception {
       String email = "john@example.com";
 
-      Mockito.when(researcherService.checkEmailAvailability(email)).thenReturn(
-          new EmailAvailabilityResponseDTO(false));
+      Mockito.when(researcherService.checkEmailAvailability(email))
+          .thenReturn(new EmailAvailabilityResponseDTO(false));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/email-availability")
-              .param("email", email))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.get(BASE_URL + "/email-availability").param("email", email))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.available").value(false));
@@ -273,10 +235,9 @@ class ResearcherControllerTest {
     void givenInvalidEmail_whenCheckingEmailAvailability_thenReturnsBadRequest() throws Exception {
       String email = "not-a-valid-email";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/email-availability")
-              .param("email", email))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.get(BASE_URL + "/email-availability").param("email", email))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -286,10 +247,9 @@ class ResearcherControllerTest {
     void givenEmptyEmail_whenCheckingEmailAvailability_thenReturnsBadRequest() throws Exception {
       String email = "";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/email-availability")
-              .param("email", email))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.get(BASE_URL + "/email-availability").param("email", email))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -297,9 +257,8 @@ class ResearcherControllerTest {
 
     @Test
     void givenMissingEmail_whenCheckingEmailAvailability_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .get(BASE_URL + "/email-availability"))
+      mockMvc
+          .perform(MockMvcRequestBuilders.get(BASE_URL + "/email-availability"))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -310,43 +269,42 @@ class ResearcherControllerTest {
   class CreateTests {
     @Test
     void givenValidData_whenCreatingResearcher_thenReturnsCreatedResearcher() throws Exception {
-      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
-          "John Doe",
-          "john@example.com");
+      CreateResearcherRequestDTO dto =
+          new CreateResearcherRequestDTO("John Doe", "john@example.com");
 
       UUID id = UUID.randomUUID();
-      CreateResearcherResponseDTO response = new CreateResearcherResponseDTO(
-          id,
-          dto.name(),
-          dto.email());
+      CreateResearcherResponseDTO response =
+          new CreateResearcherResponseDTO(id, dto.name(), dto.email(), Instant.now());
 
       Mockito.when(researcherService.create(dto)).thenReturn(response);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content(objectMapper.writeValueAsString(dto))
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(objectMapper.writeValueAsString(dto))
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpectAll(
               MockMvcResultMatchers.status().isCreated(),
               MockMvcResultMatchers.jsonPath("$.id").value(response.id().toString()),
               MockMvcResultMatchers.jsonPath("$.name").value(response.name()),
-              MockMvcResultMatchers.jsonPath("$.email").value(response.email()));
+              MockMvcResultMatchers.jsonPath("$.email").value(response.email()),
+              MockMvcResultMatchers.jsonPath("$.createdAt").value(response.createdAt()));
 
       Mockito.verify(researcherService).create(dto);
     }
 
     @Test
     void givenMalformedJson_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content("""
-                  {
-                    "name": "John",
-                    "email": "john@example.com"
-                  """)
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(
+                      """
+                      {
+                        "name": "John",
+                        "email": "john@example.com"
+                      """)
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -354,10 +312,8 @@ class ResearcherControllerTest {
 
     @Test
     void givenMissingBodyContent_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(MockMvcRequestBuilders.post(BASE_URL).contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -365,15 +321,13 @@ class ResearcherControllerTest {
 
     @Test
     void givenEmptyName_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
-          "",
-          "john@example.com");
+      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO("", "john@example.com");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content(objectMapper.writeValueAsString(dto))
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(objectMapper.writeValueAsString(dto))
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -381,15 +335,16 @@ class ResearcherControllerTest {
 
     @Test
     void givenMissingName_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content("""
-                  {
-                    "email": "john@example.com"
-                  }
-                  """)
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(
+                      """
+                      {
+                        "email": "john@example.com"
+                      }
+                      """)
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -397,15 +352,14 @@ class ResearcherControllerTest {
 
     @Test
     void given256CharacterName_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
-          "a".repeat(256),
-          "john@example.com");
+      CreateResearcherRequestDTO dto =
+          new CreateResearcherRequestDTO("a".repeat(256), "john@example.com");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content(objectMapper.writeValueAsString(dto))
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(objectMapper.writeValueAsString(dto))
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -413,15 +367,13 @@ class ResearcherControllerTest {
 
     @Test
     void givenEmptyEmail_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
-          "John Doe",
-          "");
+      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO("John Doe", "");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content(objectMapper.writeValueAsString(dto))
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(objectMapper.writeValueAsString(dto))
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -429,15 +381,16 @@ class ResearcherControllerTest {
 
     @Test
     void givenMissingEmail_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content("""
-                  {
-                    "name": "John Doe"
-                  }
-                  """)
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(
+                      """
+                      {
+                        "name": "John Doe"
+                      }
+                      """)
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -445,15 +398,14 @@ class ResearcherControllerTest {
 
     @Test
     void givenInvalidEmail_whenCreatingResearcher_thenReturnsBadRequest() throws Exception {
-      CreateResearcherRequestDTO dto = new CreateResearcherRequestDTO(
-          "John Doe",
-          "not-a-valid-email");
+      CreateResearcherRequestDTO dto =
+          new CreateResearcherRequestDTO("John Doe", "not-a-valid-email");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .post(BASE_URL)
-              .content(objectMapper.writeValueAsString(dto))
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.post(BASE_URL)
+                  .content(objectMapper.writeValueAsString(dto))
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -466,9 +418,8 @@ class ResearcherControllerTest {
     void givenExistingId_whenDeletingResearcher_thenReturnsNoContent() throws Exception {
       UUID id = UUID.randomUUID();
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .delete(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", id))
           .andExpect(MockMvcResultMatchers.status().isNoContent());
 
       Mockito.verify(researcherService).delete(id);
@@ -480,9 +431,8 @@ class ResearcherControllerTest {
 
       Mockito.doThrow(new ResearcherNotFoundException(id)).when(researcherService).delete(id);
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .delete(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", id))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
 
       Mockito.verify(researcherService).delete(id);
@@ -492,9 +442,8 @@ class ResearcherControllerTest {
     void givenInvalidId_whenDeletingResearcher_thenReturnsBadRequest() throws Exception {
       String id = "not-a-valid-Id";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .delete(BASE_URL + "/{id}", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", id))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -506,16 +455,12 @@ class ResearcherControllerTest {
     @Test
     void givenValidId_whenTogglingActivation_thenReturnsOk() throws Exception {
       UUID id = UUID.randomUUID();
-      Mockito.when(researcherService.toggleResearcherActivation(id)).thenReturn(
-          new ToggleResearcherActivationResponseDTO(
-              id,
-              "John Doe",
-              "john@example.com",
-              false));
+      Mockito.when(researcherService.toggleResearcherActivation(id))
+          .thenReturn(
+              new ToggleResearcherActivationResponseDTO(id, "John Doe", "john@example.com", false));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .patch(BASE_URL + "/{id}/toggle-active", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/toggle-active", id))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
@@ -529,9 +474,8 @@ class ResearcherControllerTest {
     void givenInvalidId_whenTogglingActivation_thenReturnsBadRequest() throws Exception {
       String id = "not-a-valid-Id";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .patch(BASE_URL + "/{id}/toggle-active", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/toggle-active", id))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -540,11 +484,11 @@ class ResearcherControllerTest {
     @Test
     void givenNonExistingResearcher_whenTogglingActivation_thenReturnsNotFound() throws Exception {
       UUID id = UUID.randomUUID();
-      Mockito.when(researcherService.toggleResearcherActivation(id)).thenThrow(new ResearcherNotFoundException(id));
+      Mockito.when(researcherService.toggleResearcherActivation(id))
+          .thenThrow(new ResearcherNotFoundException(id));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .patch(BASE_URL + "/{id}/toggle-active", id))
+      mockMvc
+          .perform(MockMvcRequestBuilders.patch(BASE_URL + "/{id}/toggle-active", id))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
 
       Mockito.verify(researcherService).toggleResearcherActivation(id);
@@ -556,21 +500,17 @@ class ResearcherControllerTest {
     @Test
     void givenValidData_whenUpdatingResearcher_thenReturnsOk() throws Exception {
       UUID id = UUID.randomUUID();
-      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
-          "John Doe",
-          "john@example.com");
+      UpdateResearcherRequestDTO dto =
+          new UpdateResearcherRequestDTO("John Doe", "john@example.com");
 
-      Mockito.when(researcherService.update(id, dto)).thenReturn(
-          new UpdateResearcherResponseDTO(
-              id,
-              dto.name(),
-              dto.email()));
+      Mockito.when(researcherService.update(id, dto))
+          .thenReturn(new UpdateResearcherResponseDTO(id, dto.name(), dto.email()));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(dto)))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(dto)))
           .andExpectAll(
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
@@ -585,32 +525,37 @@ class ResearcherControllerTest {
     void givenNonExistingResearcher_whenUpdatingResearcher_thenReturnsNotFound() throws Exception {
       UUID id = UUID.randomUUID();
 
-      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
-          "John Doe",
-          "john@example.com");
+      UpdateResearcherRequestDTO dto =
+          new UpdateResearcherRequestDTO("John Doe", "john@example.com");
 
-      Mockito.when(researcherService.update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class)))
+      Mockito.when(
+              researcherService.update(
+                  Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class)))
           .thenThrow(new ResearcherNotFoundException(id));
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(dto)))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(dto)))
           .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-      Mockito.verify(researcherService).update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class));
+      Mockito.verify(researcherService)
+          .update(Mockito.eq(id), Mockito.any(UpdateResearcherRequestDTO.class));
     }
 
     @Test
-    void givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+    void givenInvalidId_whenUpdatingResearcher_thenReturnsBadRequest()
+        throws JacksonException, Exception {
       String id = "not-a-valid-Id";
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(new UpdateResearcherRequestDTO("John Doe", "john@example.com"))))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(
+                      objectMapper.writeValueAsString(
+                          new UpdateResearcherRequestDTO("John Doe", "john@example.com"))))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
@@ -620,45 +565,45 @@ class ResearcherControllerTest {
     void givenMissingBodyContent_whenUpdatingResearcher_thenReturnsBadRequest() throws Exception {
       UUID id = UUID.randomUUID();
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
     }
 
     @Test
-    void given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+    void given256CharacterName_whenUpdatingResearcher_thenReturnsBadRequest()
+        throws JacksonException, Exception {
       UUID id = UUID.randomUUID();
 
-      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
-          "a".repeat(256),
-          "john@example.com");
+      UpdateResearcherRequestDTO dto =
+          new UpdateResearcherRequestDTO("a".repeat(256), "john@example.com");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(dto)))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(dto)))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);
     }
 
     @Test
-    void givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest() throws JacksonException, Exception {
+    void givenInvalidEmail_whenUpdatingResearcher_thenReturnsBadRequest()
+        throws JacksonException, Exception {
       UUID id = UUID.randomUUID();
-      UpdateResearcherRequestDTO dto = new UpdateResearcherRequestDTO(
-          "John Doe",
-          "not-a-valid-email");
+      UpdateResearcherRequestDTO dto =
+          new UpdateResearcherRequestDTO("John Doe", "not-a-valid-email");
 
-      mockMvc.perform(
-          MockMvcRequestBuilders
-              .put(BASE_URL + "/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(objectMapper.writeValueAsString(dto)))
+      mockMvc
+          .perform(
+              MockMvcRequestBuilders.put(BASE_URL + "/{id}", id)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(dto)))
           .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
       Mockito.verifyNoInteractions(researcherService);

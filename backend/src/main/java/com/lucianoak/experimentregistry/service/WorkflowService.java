@@ -43,7 +43,7 @@ public class WorkflowService {
     dto.statuses()
         .forEach(s -> workflow.addStatus(ExperimentStatus.builder().name(s.name()).build()));
 
-    workflowRepository.save(workflow);
+    workflow = workflowRepository.save(workflow);
 
     return new CreateWorkflowResponseDTO(
         workflow.getId(),
@@ -52,7 +52,8 @@ public class WorkflowService {
             .map(s ->
                 new CreateExperimentStatuesResponseDTO(
                     s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
-            .toList());
+            .toList(),
+        workflow.getCreatedAt());
   }
 
   public List<FindAllWorkflowResponseDTO> findAll() {

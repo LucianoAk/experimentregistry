@@ -90,7 +90,8 @@ class ExperimentControllerTest {
           new FindExperimentStatusResponseDTO(statusId, "PENDING", 1, Instant.now());
 
       FindResearcherResponseDTO researcherResponse =
-          new FindResearcherResponseDTO(researcherId, "John Doe", "john@example.com");
+          new FindResearcherResponseDTO(
+              researcherId, "John Doe", "john@example.com", Instant.now());
 
       CreateExperimentResponseDTO response =
           new CreateExperimentResponseDTO(
@@ -589,7 +590,8 @@ class ExperimentControllerTest {
                   LocalDate.of(2026, 1, 10),
                   new FindExperimentStatusResponseDTO(
                       UUID.randomUUID(), "Active", 1, Instant.now()),
-                  new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com")),
+                  new FindResearcherResponseDTO(
+                      UUID.randomUUID(), "John Doe", "john@example.com", Instant.now())),
               new FindAllExperimentsResponseDTO(
                   UUID.randomUUID(),
                   "Chemistry Experiment",
@@ -598,7 +600,7 @@ class ExperimentControllerTest {
                   new FindExperimentStatusResponseDTO(
                       UUID.randomUUID(), "Pending", 2, Instant.now()),
                   new FindResearcherResponseDTO(
-                      UUID.randomUUID(), "Jane Doe", "jane@example.com")));
+                      UUID.randomUUID(), "Jane Doe", "jane@example.com", Instant.now())));
 
       Mockito.when(experimentService.findAll()).thenReturn(experiments);
 
@@ -625,6 +627,8 @@ class ExperimentControllerTest {
                   .value(experiments.get(0).researcher().name()),
               MockMvcResultMatchers.jsonPath("$[0].researcher.email")
                   .value(experiments.get(0).researcher().email()),
+              MockMvcResultMatchers.jsonPath("$[0].researcher.createdAt")
+                  .value(experiments.get(0).researcher().createdAt()),
               MockMvcResultMatchers.jsonPath("$[1].id").value(experiments.get(1).id().toString()),
               MockMvcResultMatchers.jsonPath("$[1].title").value(experiments.get(1).title()),
               MockMvcResultMatchers.jsonPath("$[1].startDate")
@@ -642,7 +646,9 @@ class ExperimentControllerTest {
               MockMvcResultMatchers.jsonPath("$[1].researcher.name")
                   .value(experiments.get(1).researcher().name()),
               MockMvcResultMatchers.jsonPath("$[1].researcher.email")
-                  .value(experiments.get(1).researcher().email()));
+                  .value(experiments.get(1).researcher().email()),
+              MockMvcResultMatchers.jsonPath("$[1].researcher.createdAt")
+                  .value(experiments.get(1).researcher().createdAt()));
 
       Mockito.verify(experimentService).findAll();
     }
@@ -682,7 +688,8 @@ class ExperimentControllerTest {
                           UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
               new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1, Instant.now()),
-              new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"),
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(), "John Doe", "john@example.com", Instant.now()),
               List.of(
                   new FindParameterResponseDTO(
                       UUID.randomUUID(),
@@ -728,6 +735,8 @@ class ExperimentControllerTest {
                   .value(experiment.researcher().name()),
               MockMvcResultMatchers.jsonPath("$.researcher.email")
                   .value(experiment.researcher().email()),
+              MockMvcResultMatchers.jsonPath("$.researcher.createdAt")
+                  .value(experiment.researcher().createdAt()),
               MockMvcResultMatchers.jsonPath("$.parameters[0].id")
                   .value(experiment.parameters().get(0).id().toString()),
               MockMvcResultMatchers.jsonPath("$.parameters[0].name")
@@ -797,7 +806,8 @@ class ExperimentControllerTest {
                           UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
               new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1, Instant.now()),
-              new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(), "John Doe", "john@example.com", Instant.now()));
 
       Mockito.when(experimentService.update(id, dto)).thenReturn(response);
 
@@ -1270,7 +1280,8 @@ class ExperimentControllerTest {
                           UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
               new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2, Instant.now()),
-              new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(), "John Doe", "john@example.com", Instant.now()));
 
       Mockito.when(experimentService.advanceStatus(id)).thenReturn(response);
 
@@ -1364,7 +1375,8 @@ class ExperimentControllerTest {
                           UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
               new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2, Instant.now()),
-              new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
+              new FindResearcherResponseDTO(
+                  UUID.randomUUID(), "John Doe", "john@example.com", Instant.now()));
 
       Mockito.when(experimentService.revertStatus(id)).thenReturn(response);
 

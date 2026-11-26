@@ -52,7 +52,7 @@ public class ResearcherService {
         researcherRepository.findById(id).orElseThrow(() -> new ResearcherNotFoundException(id));
 
     return new FindResearcherResponseDTO(
-        researcher.getId(), researcher.getName(), researcher.getEmail());
+        researcher.getId(), researcher.getName(), researcher.getEmail(), researcher.getCreatedAt());
   }
 
   @Transactional

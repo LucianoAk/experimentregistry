@@ -118,7 +118,8 @@ public class ExperimentService {
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
-            savedExperiment.getResearcher().getEmail()),
+            savedExperiment.getResearcher().getEmail(),
+            savedExperiment.getResearcher().getCreatedAt()),
         savedExperiment.getParameters().stream()
             .map(p ->
                 new CreateParameterResponseDTO(
@@ -152,7 +153,8 @@ public class ExperimentService {
                 new FindResearcherResponseDTO(
                     p.getResearcher().getId(),
                     p.getResearcher().getName(),
-                    p.getResearcher().getEmail())))
+                    p.getResearcher().getEmail(),
+                    p.getResearcher().getCreatedAt())))
         .toList();
   }
 
@@ -182,7 +184,8 @@ public class ExperimentService {
         new FindResearcherResponseDTO(
             experiment.getResearcher().getId(),
             experiment.getResearcher().getName(),
-            experiment.getResearcher().getEmail()),
+            experiment.getResearcher().getEmail(),
+            experiment.getResearcher().getCreatedAt()),
         experiment.getParameters().stream()
             .map(p ->
                 new FindParameterResponseDTO(
@@ -265,7 +268,8 @@ public class ExperimentService {
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
-            savedExperiment.getResearcher().getEmail()));
+            savedExperiment.getResearcher().getEmail(),
+            savedExperiment.getResearcher().getCreatedAt()));
   }
 
   @Transactional
@@ -399,7 +403,8 @@ public class ExperimentService {
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
-            savedExperiment.getResearcher().getEmail()));
+            savedExperiment.getResearcher().getEmail(),
+            savedExperiment.getResearcher().getCreatedAt()));
   }
 
   @Transactional
@@ -440,6 +445,7 @@ public class ExperimentService {
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
-            savedExperiment.getResearcher().getEmail()));
+            savedExperiment.getResearcher().getEmail(),
+            savedExperiment.getResearcher().getCreatedAt()));
   }
 }

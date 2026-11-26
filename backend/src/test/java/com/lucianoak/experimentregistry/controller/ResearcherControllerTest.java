@@ -154,7 +154,7 @@ class ResearcherControllerTest {
       UUID id = UUID.randomUUID();
 
       FindResearcherResponseDTO researcher =
-          new FindResearcherResponseDTO(id, "John Doe", "john@example.com");
+          new FindResearcherResponseDTO(id, "John Doe", "john@example.com", Instant.now());
 
       Mockito.when(researcherService.findById(id)).thenReturn(researcher);
 
@@ -164,7 +164,8 @@ class ResearcherControllerTest {
               MockMvcResultMatchers.status().isOk(),
               MockMvcResultMatchers.jsonPath("$.id").value(id.toString()),
               MockMvcResultMatchers.jsonPath("$.name").value(researcher.name()),
-              MockMvcResultMatchers.jsonPath("$.email").value(researcher.email()));
+              MockMvcResultMatchers.jsonPath("$.email").value(researcher.email()),
+              MockMvcResultMatchers.jsonPath("$.createdAt").value(researcher.createdAt()));
 
       Mockito.verify(researcherService).findById(id);
     }

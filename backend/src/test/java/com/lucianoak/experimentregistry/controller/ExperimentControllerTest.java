@@ -696,7 +696,8 @@ class ExperimentControllerTest {
                       "Temperature",
                       BigDecimal.valueOf(25.5),
                       "Celsius",
-                      "Room temperature")),
+                      "Room temperature",
+                      Instant.now())),
               Instant.now());
 
       Mockito.when(experimentService.findById(id)).thenReturn(experiment);
@@ -747,6 +748,8 @@ class ExperimentControllerTest {
                   .value(experiment.parameters().get(0).unit()),
               MockMvcResultMatchers.jsonPath("$.parameters[0].description")
                   .value(experiment.parameters().get(0).description()),
+              MockMvcResultMatchers.jsonPath("$.parameters[0].createdAt")
+                  .value(experiment.parameters().get(0).createdAt()),
               MockMvcResultMatchers.jsonPath("$.createdAt").value(experiment.createdAt()));
 
       Mockito.verify(experimentService).findById(id);

@@ -189,7 +189,12 @@ public class ExperimentService {
         experiment.getParameters().stream()
             .map(p ->
                 new FindParameterResponseDTO(
-                    p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
+                    p.getId(),
+                    p.getName(),
+                    p.getMeasurement(),
+                    p.getUnit(),
+                    p.getDescription(),
+                    p.getCreatedAt()))
             .toList(),
         experiment.getCreatedAt());
   }

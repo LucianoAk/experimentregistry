@@ -122,7 +122,8 @@ public class ExperimentService {
             .map(p ->
                 new CreateParameterResponseDTO(
                     p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
-            .toList());
+            .toList(),
+        savedExperiment.getCreatedAt());
   }
 
   public TitleAvailabilityResponseDTO checkTitleAvailability(String title) {

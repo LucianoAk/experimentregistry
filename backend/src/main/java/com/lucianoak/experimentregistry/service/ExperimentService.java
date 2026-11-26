@@ -179,7 +179,8 @@ public class ExperimentService {
             .map(p ->
                 new FindParameterResponseDTO(
                     p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
-            .toList());
+            .toList(),
+        experiment.getCreatedAt());
   }
 
   @Transactional

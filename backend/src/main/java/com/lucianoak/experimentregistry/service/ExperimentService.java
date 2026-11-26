@@ -107,13 +107,14 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getStatuses().stream()
                 .map(s ->
                     new FindExperimentStatusResponseDTO(
-                        s.getId(), s.getName(), s.getSequenceOrder()))
+                        s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
             savedExperiment.getStatus().getId(),
             savedExperiment.getStatus().getName(),
-            savedExperiment.getStatus().getSequenceOrder()),
+            savedExperiment.getStatus().getSequenceOrder(),
+            savedExperiment.getStatus().getCreatedAt()),
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
@@ -141,7 +142,8 @@ public class ExperimentService {
                 new FindExperimentStatusResponseDTO(
                     p.getStatus().getId(),
                     p.getStatus().getName(),
-                    p.getStatus().getSequenceOrder()),
+                    p.getStatus().getSequenceOrder(),
+                    p.getStatus().getCreatedAt()),
                 new FindResearcherResponseDTO(
                     p.getResearcher().getId(),
                     p.getResearcher().getName(),
@@ -164,13 +166,14 @@ public class ExperimentService {
             experiment.getWorkflow().getStatuses().stream()
                 .map(s ->
                     new FindExperimentStatusResponseDTO(
-                        s.getId(), s.getName(), s.getSequenceOrder()))
+                        s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
                 .toList(),
             experiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
             experiment.getStatus().getId(),
             experiment.getStatus().getName(),
-            experiment.getStatus().getSequenceOrder()),
+            experiment.getStatus().getSequenceOrder(),
+            experiment.getStatus().getCreatedAt()),
         new FindResearcherResponseDTO(
             experiment.getResearcher().getId(),
             experiment.getResearcher().getName(),
@@ -246,13 +249,14 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getStatuses().stream()
                 .map(s ->
                     new FindExperimentStatusResponseDTO(
-                        s.getId(), s.getName(), s.getSequenceOrder()))
+                        s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
             savedExperiment.getStatus().getId(),
             savedExperiment.getStatus().getName(),
-            savedExperiment.getStatus().getSequenceOrder()),
+            savedExperiment.getStatus().getSequenceOrder(),
+            savedExperiment.getStatus().getCreatedAt()),
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
@@ -374,13 +378,14 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getStatuses().stream()
                 .map(s ->
                     new FindExperimentStatusResponseDTO(
-                        s.getId(), s.getName(), s.getSequenceOrder()))
+                        s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
             savedExperiment.getStatus().getId(),
             savedExperiment.getStatus().getName(),
-            savedExperiment.getStatus().getSequenceOrder()),
+            savedExperiment.getStatus().getSequenceOrder(),
+            savedExperiment.getStatus().getCreatedAt()),
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),
@@ -414,13 +419,14 @@ public class ExperimentService {
             savedExperiment.getWorkflow().getStatuses().stream()
                 .map(s ->
                     new FindExperimentStatusResponseDTO(
-                        s.getId(), s.getName(), s.getSequenceOrder()))
+                        s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
                 .toList(),
             savedExperiment.getWorkflow().getCreatedAt()),
         new FindExperimentStatusResponseDTO(
             savedExperiment.getStatus().getId(),
             savedExperiment.getStatus().getName(),
-            savedExperiment.getStatus().getSequenceOrder()),
+            savedExperiment.getStatus().getSequenceOrder(),
+            savedExperiment.getStatus().getCreatedAt()),
         new FindResearcherResponseDTO(
             savedExperiment.getResearcher().getId(),
             savedExperiment.getResearcher().getName(),

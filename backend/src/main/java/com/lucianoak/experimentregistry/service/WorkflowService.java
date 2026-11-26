@@ -70,7 +70,8 @@ public class WorkflowService {
         workflow.getVersion(),
         workflow.getStatuses().stream()
             .map(s ->
-                new FindExperimentStatusResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+                new FindExperimentStatusResponseDTO(
+                    s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
             .toList(),
         workflow.getCreatedAt());
   }
@@ -100,7 +101,8 @@ public class WorkflowService {
         workflow.getVersion(),
         workflow.getStatuses().stream()
             .map(s ->
-                new FindExperimentStatusResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+                new FindExperimentStatusResponseDTO(
+                    s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
             .toList(),
         workflow.isActive());
   }
@@ -195,7 +197,9 @@ public class WorkflowService {
     workflow = workflowRepository.save(workflow);
 
     return workflow.getStatuses().stream()
-        .map(s -> new FindExperimentStatusResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+        .map(s ->
+            new FindExperimentStatusResponseDTO(
+                s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
         .toList();
   }
 }

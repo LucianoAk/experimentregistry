@@ -86,7 +86,7 @@ class ExperimentControllerTest {
           new FindWorkflowResponseDTO(workflowId, 1, List.of(), Instant.now());
 
       FindExperimentStatusResponseDTO statusResponse =
-          new FindExperimentStatusResponseDTO(statusId, "PENDING", 1);
+          new FindExperimentStatusResponseDTO(statusId, "PENDING", 1, Instant.now());
 
       FindResearcherResponseDTO researcherResponse =
           new FindResearcherResponseDTO(researcherId, "John Doe", "john@example.com");
@@ -586,14 +586,16 @@ class ExperimentControllerTest {
                   "Quantum Physics Experiment",
                   LocalDate.of(2026, 1, 1),
                   LocalDate.of(2026, 1, 10),
-                  new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1),
+                  new FindExperimentStatusResponseDTO(
+                      UUID.randomUUID(), "Active", 1, Instant.now()),
                   new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com")),
               new FindAllExperimentsResponseDTO(
                   UUID.randomUUID(),
                   "Chemistry Experiment",
                   LocalDate.of(2026, 2, 1),
                   LocalDate.of(2026, 2, 15),
-                  new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Pending", 2),
+                  new FindExperimentStatusResponseDTO(
+                      UUID.randomUUID(), "Pending", 2, Instant.now()),
                   new FindResearcherResponseDTO(
                       UUID.randomUUID(), "Jane Doe", "jane@example.com")));
 
@@ -674,9 +676,11 @@ class ExperimentControllerTest {
               new FindWorkflowResponseDTO(
                   UUID.randomUUID(),
                   1,
-                  List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+                  List.of(
+                      new FindExperimentStatusResponseDTO(
+                          UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
-              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1),
+              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1, Instant.now()),
               new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"),
               List.of(
                   new FindParameterResponseDTO(
@@ -787,9 +791,11 @@ class ExperimentControllerTest {
               new FindWorkflowResponseDTO(
                   UUID.randomUUID(),
                   1,
-                  List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+                  List.of(
+                      new FindExperimentStatusResponseDTO(
+                          UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
-              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1),
+              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1, Instant.now()),
               new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
 
       Mockito.when(experimentService.update(id, dto)).thenReturn(response);
@@ -1258,9 +1264,11 @@ class ExperimentControllerTest {
               new FindWorkflowResponseDTO(
                   UUID.randomUUID(),
                   1,
-                  List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+                  List.of(
+                      new FindExperimentStatusResponseDTO(
+                          UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
-              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2),
+              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2, Instant.now()),
               new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
 
       Mockito.when(experimentService.advanceStatus(id)).thenReturn(response);
@@ -1350,9 +1358,11 @@ class ExperimentControllerTest {
               new FindWorkflowResponseDTO(
                   UUID.randomUUID(),
                   1,
-                  List.of(new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Active", 1)),
+                  List.of(
+                      new FindExperimentStatusResponseDTO(
+                          UUID.randomUUID(), "Active", 1, Instant.now())),
                   Instant.parse("2026-01-01T00:00:00Z")),
-              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2),
+              new FindExperimentStatusResponseDTO(UUID.randomUUID(), "Completed", 2, Instant.now()),
               new FindResearcherResponseDTO(UUID.randomUUID(), "John Doe", "john@example.com"));
 
       Mockito.when(experimentService.revertStatus(id)).thenReturn(response);

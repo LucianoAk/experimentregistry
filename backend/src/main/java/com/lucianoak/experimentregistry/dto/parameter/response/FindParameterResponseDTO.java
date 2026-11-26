@@ -1,6 +1,7 @@
 package com.lucianoak.experimentregistry.dto.parameter.response;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 public record FindParameterResponseDTO(
@@ -8,5 +9,5 @@ public record FindParameterResponseDTO(
     String name,
     BigDecimal measurement,
     String unit,
-    String description) {
-}
+    String description,
+    Instant createdAt) {}

@@ -80,7 +80,8 @@ class ExperimentControllerTest {
               parameterRequest.name(),
               parameterRequest.measurement(),
               parameterRequest.unit(),
-              parameterRequest.description());
+              parameterRequest.description(),
+              Instant.now());
 
       FindWorkflowResponseDTO workflowResponse =
           new FindWorkflowResponseDTO(workflowId, 1, List.of(), Instant.now());

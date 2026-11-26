@@ -122,7 +122,12 @@ public class ExperimentService {
         savedExperiment.getParameters().stream()
             .map(p ->
                 new CreateParameterResponseDTO(
-                    p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
+                    p.getId(),
+                    p.getName(),
+                    p.getMeasurement(),
+                    p.getUnit(),
+                    p.getDescription(),
+                    p.getCreatedAt()))
             .toList(),
         savedExperiment.getCreatedAt());
   }
@@ -331,7 +336,12 @@ public class ExperimentService {
     return experiment.getParameters().stream()
         .map(p ->
             new CreateParameterResponseDTO(
-                p.getId(), p.getName(), p.getMeasurement(), p.getUnit(), p.getDescription()))
+                p.getId(),
+                p.getName(),
+                p.getMeasurement(),
+                p.getUnit(),
+                p.getDescription(),
+                p.getCreatedAt()))
         .toList();
   }
 

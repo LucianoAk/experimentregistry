@@ -51,7 +51,7 @@ public class WorkflowService {
         workflow.getStatuses().stream()
             .map(s ->
                 new CreateExperimentStatuesResponseDTO(
-                    s.getId(), s.getName(), s.getSequenceOrder()))
+                    s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
             .toList());
   }
 
@@ -177,7 +177,8 @@ public class WorkflowService {
 
     return workflow.getStatuses().stream()
         .map(s ->
-            new CreateExperimentStatuesResponseDTO(s.getId(), s.getName(), s.getSequenceOrder()))
+            new CreateExperimentStatuesResponseDTO(
+                s.getId(), s.getName(), s.getSequenceOrder(), s.getCreatedAt()))
         .toList();
   }
 
